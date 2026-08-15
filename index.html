@@ -1,152 +1,1147 @@
 <!DOCTYPE html>
+
 <html lang="en">
+
 <head>
+
   <meta charset="UTF-8">
+
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Grow+Change</title>
-  <meta name="description" content="Grow+Change is a trading education, simulation, analytics, and community platform designed to help traders learn, practice, and improve.">
+
+  <title>Grow+Change | Early Access</title>
+
+  <meta
+
+    name="description"
+
+    content="Grow+Change offers a structured path from market knowledge to trading proficiency through education, simulation, analytics, and community."
+
+  >
+
   <style>
-    * { box-sizing: border-box; }
+
+    * {
+
+      box-sizing: border-box;
+
+    }
+
+    html {
+
+      scroll-behavior: smooth;
+
+    }
 
     body {
+
       margin: 0;
+
       font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+
       background: #0b0d10;
+
       color: #ffffff;
+
       line-height: 1.6;
+
     }
 
     .container {
+
+      width: 100%;
+
       max-width: 900px;
-      margin: auto;
+
+      margin: 0 auto;
+
       padding: 70px 24px;
+
     }
 
     .brand {
+
       font-size: 18px;
-      font-weight: 700;
-      letter-spacing: 1px;
-      margin-bottom: 70px;
+
+      font-weight: 800;
+
+      letter-spacing: 1.5px;
+
+      margin-bottom: 65px;
+
     }
 
     h1 {
-      font-size: clamp(48px, 10vw, 82px);
-      line-height: 1;
-      margin: 0 0 25px;
-    }
 
-    .accent { color: #7ee787; }
+      max-width: 850px;
 
-    .lead {
-      font-size: 21px;
-      color: #b8bec7;
-      max-width: 700px;
-    }
+      margin: 0 0 24px;
 
-    section {
-      margin-top: 80px;
+      font-size: clamp(42px, 8vw, 72px);
+
+      line-height: 1.05;
+
     }
 
     h2 {
+
+      margin: 0 0 15px;
+
       font-size: 30px;
-      margin-bottom: 15px;
+
+    }
+
+    h3 {
+
+      margin-top: 0;
+
     }
 
     p {
+
       color: #b8bec7;
+
+    }
+
+    .accent {
+
+      color: #7ee787;
+
+    }
+
+    .lead {
+
+      max-width: 760px;
+
+      margin-bottom: 0;
+
+      font-size: 21px;
+
+      color: #b8bec7;
+
+    }
+
+    section {
+
+      margin-top: 80px;
+
+    }
+
+    .hero-actions {
+
+      margin-top: 32px;
+
+    }
+
+    .button,
+
+    button {
+
+      display: inline-flex;
+
+      align-items: center;
+
+      justify-content: center;
+
+      padding: 14px 22px;
+
+      border: 0;
+
+      border-radius: 10px;
+
+      background: #7ee787;
+
+      color: #07110a;
+
+      font: inherit;
+
+      font-weight: 750;
+
+      text-decoration: none;
+
+      cursor: pointer;
+
+    }
+
+    .button:hover,
+
+    button:hover {
+
+      filter: brightness(1.07);
+
+    }
+
+    button:disabled {
+
+      opacity: 0.65;
+
+      cursor: wait;
+
     }
 
     .cards {
+
       display: grid;
+
       grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+
       gap: 16px;
+
       margin-top: 30px;
+
     }
 
     .card {
-      border: 1px solid #292e36;
-      border-radius: 16px;
+
       padding: 24px;
+
+      border: 1px solid #292e36;
+
+      border-radius: 16px;
+
       background: #11151a;
+
     }
 
-    .card h3 {
-      margin-top: 0;
+    .early-access {
+
+      padding: clamp(24px, 5vw, 42px);
+
+      border: 1px solid #292e36;
+
+      border-radius: 20px;
+
+      background: #11151a;
+
+    }
+
+    .eyebrow {
+
+      margin: 0 0 8px;
+
+      color: #7ee787;
+
+      font-size: 13px;
+
+      font-weight: 800;
+
+      letter-spacing: 0.12em;
+
+      text-transform: uppercase;
+
+    }
+
+    form {
+
+      display: grid;
+
+      gap: 18px;
+
+      margin-top: 28px;
+
+    }
+
+    .form-grid {
+
+      display: grid;
+
+      grid-template-columns: repeat(2, minmax(0, 1fr));
+
+      gap: 16px;
+
+    }
+
+    label {
+
+      display: block;
+
+      margin-bottom: 7px;
+
+      color: #e6edf3;
+
+      font-size: 14px;
+
+      font-weight: 650;
+
+    }
+
+    input,
+
+    select {
+
+      width: 100%;
+
+      padding: 12px 13px;
+
+      border: 1px solid #30363d;
+
+      border-radius: 10px;
+
+      background: #0b0d10;
+
+      color: #ffffff;
+
+      font: inherit;
+
+    }
+
+    input:focus,
+
+    select:focus {
+
+      outline: none;
+
+      border-color: #7ee787;
+
+      box-shadow: 0 0 0 3px rgba(126, 231, 135, 0.12);
+
+    }
+
+    .check-row {
+
+      display: flex;
+
+      align-items: flex-start;
+
+      gap: 10px;
+
+    }
+
+    .check-row input {
+
+      width: auto;
+
+      margin-top: 5px;
+
+    }
+
+    .check-row label {
+
+      margin: 0;
+
+      color: #b8bec7;
+
+      font-weight: 500;
+
+    }
+
+    .check-row a {
+
+      color: #ffffff;
+
+    }
+
+    .honeypot {
+
+      position: absolute;
+
+      left: -9999px;
+
+      width: 1px;
+
+      height: 1px;
+
+      overflow: hidden;
+
+    }
+
+    .form-status {
+
+      min-height: 24px;
+
+      margin: 0;
+
+    }
+
+    .form-status.success {
+
+      color: #7ee787;
+
+    }
+
+    .form-status.error {
+
+      color: #ff9b9b;
+
     }
 
     footer {
+
       margin-top: 100px;
+
       padding-top: 30px;
+
       border-top: 1px solid #292e36;
+
       color: #7d8590;
+
     }
 
     footer a {
-      color: #b8bec7;
+
       margin-right: 20px;
+
+      color: #b8bec7;
+
     }
+
+    @media (max-width: 640px) {
+
+      .container {
+
+        padding: 48px 20px;
+
+      }
+
+      .form-grid {
+
+        grid-template-columns: 1fr;
+
+      }
+
+      .button {
+
+        width: 100%;
+
+      }
+
+    }
+
   </style>
+
 </head>
 
 <body>
+
   <main class="container">
 
-    <div class="brand">GROW+CHANGE</div>
+    <div class="brand">
 
-    <h1>Learn. Practice.<br><span class="accent">Grow.</span></h1>
+      GROW+CHANGE
+
+    </div>
+
+    <h1>
+
+      A structured path from market knowledge to
+
+      <span class="accent">trading proficiency.</span>
+
+    </h1>
 
     <p class="lead">
-      Grow+Change is a trading education, simulation, analytics, and
-      community platform built to help traders develop their knowledge,
-      discipline, and decision-making skills.
+
+      Grow+Change is a trading education, simulation, analytics,
+
+      and community platform designed to help traders develop
+
+      their knowledge, discipline, and decision-making skills.
+
     </p>
 
+    <div class="hero-actions">
+
+      <a class="button" href="#early-access">
+
+        Request Early Access
+
+      </a>
+
+    </div>
+
     <section>
+
       <h2>Built for trader development</h2>
+
       <p>
-        Grow+Change combines structured education with simulated market
-        experiences, performance analytics, risk-management tools, and
-        community features in one platform.
+
+        Grow+Change combines structured education with simulated
+
+        market experiences, performance analytics, risk-management
+
+        tools, and community features in one platform.
+
       </p>
 
       <div class="cards">
+
         <div class="card">
+
           <h3>Learn</h3>
-          <p>Progressive trading education, challenges, achievements, and practical lessons.</p>
+
+          <p>
+
+            Progressive trading education, practical lessons,
+
+            challenges, and achievements.
+
+          </p>
+
         </div>
 
         <div class="card">
+
           <h3>Practice</h3>
-          <p>Use simulated markets to practice trading and risk management without risking real capital.</p>
+
+          <p>
+
+            Practice trading and risk management through simulated
+
+            markets without risking real capital.
+
+          </p>
+
         </div>
 
         <div class="card">
+
           <h3>Analyze</h3>
-          <p>Review performance and develop better trading habits through analytics and structured feedback.</p>
+
+          <p>
+
+            Review performance and develop stronger trading habits
+
+            through analytics and structured feedback.
+
+          </p>
+
         </div>
 
         <div class="card">
+
           <h3>Community</h3>
-          <p>Learn alongside other traders through groups, challenges, leaderboards, and shared progress.</p>
+
+          <p>
+
+            Learn alongside other traders through groups,
+
+            challenges, leaderboards, and shared progress.
+
+          </p>
+
         </div>
+
       </div>
+
+    </section>
+
+    <section
+
+      id="early-access"
+
+      class="early-access"
+
+    >
+
+      <p class="eyebrow">
+
+        Private testing is underway
+
+      </p>
+
+      <h2>
+
+        Join the G+C Early Access List
+
+      </h2>
+
+      <p>
+
+        Be among the first to experience a structured path from
+
+        market knowledge to trading proficiency. Receive launch
+
+        updates, private beta opportunities, and priority access
+
+        as G+C moves toward release.
+
+      </p>
+
+      <form id="earlyAccessForm">
+
+        <div class="form-grid">
+
+          <div>
+
+            <label for="firstName">
+
+              First name
+
+            </label>
+
+            <input
+
+              id="firstName"
+
+              name="firstName"
+
+              type="text"
+
+              maxlength="80"
+
+              autocomplete="given-name"
+
+              required
+
+            >
+
+          </div>
+
+          <div>
+
+            <label for="email">
+
+              Email address
+
+            </label>
+
+            <input
+
+              id="email"
+
+              name="email"
+
+              type="email"
+
+              maxlength="254"
+
+              autocomplete="email"
+
+              required
+
+            >
+
+          </div>
+
+          <div>
+
+            <label for="experience">
+
+              Trading experience
+
+            </label>
+
+            <select
+
+              id="experience"
+
+              name="experience"
+
+              required
+
+            >
+
+              <option value="" selected disabled>
+
+                Select one
+
+              </option>
+
+              <option value="Beginner">
+
+                Beginner
+
+              </option>
+
+              <option value="Intermediate">
+
+                Intermediate
+
+              </option>
+
+              <option value="Advanced">
+
+                Advanced
+
+              </option>
+
+            </select>
+
+          </div>
+
+          <div>
+
+            <label for="interest">
+
+              Primary market interest
+
+            </label>
+
+            <select
+
+              id="interest"
+
+              name="interest"
+
+              required
+
+            >
+
+              <option value="" selected disabled>
+
+                Select one
+
+              </option>
+
+              <option value="Stocks">
+
+                Stocks
+
+              </option>
+
+              <option value="Futures">
+
+                Futures
+
+              </option>
+
+              <option value="Crypto">
+
+                Crypto
+
+              </option>
+
+              <option value="Multiple Markets">
+
+                Multiple Markets
+
+              </option>
+
+            </select>
+
+          </div>
+
+        </div>
+
+        <div
+
+          class="honeypot"
+
+          aria-hidden="true"
+
+        >
+
+          <label for="companyWebsite">
+
+            Company website
+
+          </label>
+
+          <input
+
+            id="companyWebsite"
+
+            name="companyWebsite"
+
+            type="text"
+
+            tabindex="-1"
+
+            autocomplete="off"
+
+          >
+
+        </div>
+
+        <div class="check-row">
+
+          <input
+
+            id="betaInterest"
+
+            name="betaInterest"
+
+            type="checkbox"
+
+          >
+
+          <label for="betaInterest">
+
+            I would be interested in participating in private
+
+            beta testing.
+
+          </label>
+
+        </div>
+
+        <div class="check-row">
+
+          <input
+
+            id="consent"
+
+            name="consent"
+
+            type="checkbox"
+
+            required
+
+          >
+
+          <label for="consent">
+
+            I agree to receive G+C launch and beta updates and
+
+            acknowledge the
+
+            <a href="privacy/">Privacy Policy</a>.
+
+          </label>
+
+        </div>
+
+        <div>
+
+          <button
+
+            id="submitButton"
+
+            type="submit"
+
+          >
+
+            Request Early Access
+
+          </button>
+
+        </div>
+
+        <p
+
+          id="formStatus"
+
+          class="form-status"
+
+          role="status"
+
+          aria-live="polite"
+
+        ></p>
+
+      </form>
+
     </section>
 
     <section>
-      <h2>Responsible trading</h2>
+
+      <h2>
+
+        Responsible trading
+
+      </h2>
+
       <p>
-        Grow+Change emphasizes education, risk awareness, trading psychology,
-        and responsible decision-making. Simulated performance does not
-        guarantee future results.
+
+        Grow+Change emphasizes education, risk awareness,
+
+        trading psychology, and responsible decision-making.
+
+        Simulated performance does not guarantee future results.
+
       </p>
+
     </section>
 
     <footer>
-      <a href="terms/">Terms of Use</a>
-      <a href="privacy/">Privacy Policy</a>
-      <p>© 2026 Grow+Change. All rights reserved.</p>
+
+      <a href="terms/">
+
+        Terms of Use
+
+      </a>
+
+      <a href="privacy/">
+
+        Privacy Policy
+
+      </a>
+
+      <p>
+
+        © 2026 Grow+Change. All rights reserved.
+
+      </p>
+
     </footer>
 
   </main>
+
+  <script>
+
+    const SUPABASE_URL =
+
+      "https://wzifxrfewalvbswcltlb.supabase.co";
+
+    const SUPABASE_PUBLISHABLE_KEY =
+
+      "sb_publishable_hTwn_3sD-K2-t2Ewtbzrdg_P8AgNoFU";
+
+    const form =
+
+      document.getElementById("earlyAccessForm");
+
+    const statusEl =
+
+      document.getElementById("formStatus");
+
+    const submitButton =
+
+      document.getElementById("submitButton");
+
+    function setStatus(message, type = "") {
+
+      statusEl.textContent = message;
+
+      statusEl.className =
+
+        `form-status ${type}`.trim();
+
+    }
+
+    form.addEventListener(
+
+      "submit",
+
+      async function(event) {
+
+        event.preventDefault();
+
+        const honeypot =
+
+          document
+
+            .getElementById("companyWebsite")
+
+            .value
+
+            .trim();
+
+        if (honeypot) {
+
+          form.reset();
+
+          setStatus(
+
+            "You're on the list. We'll contact you as G+C approaches the next stage of private testing.",
+
+            "success"
+
+          );
+
+          return;
+
+        }
+
+        submitButton.disabled = true;
+
+        submitButton.textContent =
+
+          "Submitting...";
+
+        setStatus("");
+
+        const payload = {
+
+          first_name:
+
+            document
+
+              .getElementById("firstName")
+
+              .value
+
+              .trim(),
+
+          email:
+
+            document
+
+              .getElementById("email")
+
+              .value
+
+              .trim()
+
+              .toLowerCase(),
+
+          trading_experience:
+
+            document
+
+              .getElementById("experience")
+
+              .value,
+
+          primary_interest:
+
+            document
+
+              .getElementById("interest")
+
+              .value,
+
+          beta_interest:
+
+            document
+
+              .getElementById("betaInterest")
+
+              .checked,
+
+          consent:
+
+            document
+
+              .getElementById("consent")
+
+              .checked,
+
+          source:
+
+            "github_pages"
+
+        };
+
+        try {
+
+          const response =
+
+            await fetch(
+
+              `${SUPABASE_URL}/rest/v1/early_access_signups`,
+
+              {
+
+                method: "POST",
+
+                headers: {
+
+                  "apikey":
+
+                    SUPABASE_PUBLISHABLE_KEY,
+
+                  "Content-Type":
+
+                    "application/json",
+
+                  "Prefer":
+
+                    "return=minimal"
+
+                },
+
+                body:
+
+                  JSON.stringify(payload)
+
+              }
+
+            );
+
+          if (response.ok) {
+
+            form.reset();
+
+            setStatus(
+
+              "You're on the list. We'll contact you as G+C approaches the next stage of private testing.",
+
+              "success"
+
+            );
+
+          } else if (
+
+            response.status === 409
+
+          ) {
+
+            setStatus(
+
+              "That email is already on the G+C early access list.",
+
+              "success"
+
+            );
+
+          } else {
+
+            let message =
+
+              "We couldn't submit your request. Please try again.";
+
+            try {
+
+              const errorData =
+
+                await response.json();
+
+              if (errorData && errorData.message) {
+
+                console.error(
+
+                  "Waitlist submission error:",
+
+                  errorData.message
+
+                );
+
+              }
+
+            } catch (error) {
+
+              console.error(
+
+                "Unable to read submission error."
+
+              );
+
+            }
+
+            setStatus(
+
+              message,
+
+              "error"
+
+            );
+
+          }
+
+        } catch (error) {
+
+          console.error(
+
+            "Waitlist connection error:",
+
+            error
+
+          );
+
+          setStatus(
+
+            "We couldn't submit your request. Please check your connection and try again.",
+
+            "error"
+
+          );
+
+        } finally {
+
+          submitButton.disabled = false;
+
+          submitButton.textContent =
+
+            "Request Early Access";
+
+        }
+
+      }
+
+    );
+
+  </script>
+
 </body>
+
 </html>
