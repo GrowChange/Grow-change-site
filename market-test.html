@@ -1,0 +1,917 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+  <meta name="robots" content="noindex,nofollow">
+  <title>Grow+Change — 30-Minute Market Test</title>
+  <style>
+    :root{
+      --bg:#08111b;--panel:#0e1b29;--panel2:#0a1622;--line:#25384d;
+      --text:#eef4f8;--muted:#91a4b5;--mint:#7fe0b0;--cyan:#7dc7de;
+      --green:#66d19e;--red:#ef7777;--gold:#d6c27a;--danger:#e49393;
+    }
+    *{box-sizing:border-box}
+    html{background:var(--bg)}
+    body{margin:0;min-height:100vh;color:var(--text);font-family:Inter,ui-sans-serif,system-ui,-apple-system,BlinkMacSystemFont,"Segoe UI",sans-serif;
+      background:
+        radial-gradient(circle at 18% 8%,rgba(125,199,222,.08),transparent 28%),
+        radial-gradient(circle at 85% 20%,rgba(127,224,176,.06),transparent 25%),
+        var(--bg)}
+    button,input,select,textarea{font:inherit}
+    button{touch-action:manipulation}
+    .shell{max-width:1180px;margin:0 auto;padding:26px 16px 56px}
+    .brand{display:flex;align-items:center;gap:12px;margin-bottom:18px}
+    .mark{width:48px;height:48px;border-radius:16px;background:linear-gradient(135deg,#274f7a,#1c7091 55%,#244c42);
+      display:grid;place-items:center;font-weight:950;color:#fff}
+    .brand h1{font-size:19px;letter-spacing:.04em;margin:0}.brand small{display:block;color:var(--muted);margin-top:2px}
+    .card{background:linear-gradient(180deg,rgba(19,36,55,.97),rgba(14,27,41,.97));border:1px solid var(--line);border-radius:22px;padding:18px;box-shadow:0 22px 60px rgba(0,0,0,.22)}
+    .header{display:flex;justify-content:space-between;gap:14px;align-items:flex-start;flex-wrap:wrap}
+    .badge,.pill{display:inline-flex;align-items:center;padding:7px 9px;border-radius:999px;border:1px solid var(--line);font-size:10px;font-weight:850}
+    .badge{color:var(--mint);background:#0a1622}.pill{color:var(--mint);border-color:rgba(127,224,176,.32);background:rgba(127,224,176,.06)}
+    h2{font-size:28px;margin:8px 0 4px}h3{font-size:17px;margin:0 0 8px}h4{margin:0 0 8px;font-size:13px}
+    p{color:var(--muted);line-height:1.5;margin:4px 0}
+    .timeline{display:grid;grid-template-columns:repeat(4,1fr);gap:8px;margin-top:14px}
+    .timeline div{background:#0a1622;border:1px solid var(--line);border-radius:12px;padding:9px;font-size:10px;color:var(--muted)}
+    .timeline b{display:block;color:#e8f2f7;margin-bottom:3px}
+    .metrics{display:grid;grid-template-columns:repeat(5,minmax(0,1fr));gap:8px;margin:14px 0}
+    .metric{background:#0a1622;border:1px solid var(--line);border-radius:14px;padding:11px;min-width:0}
+    .metric b{display:block;color:var(--muted);font-size:9px;text-transform:uppercase;letter-spacing:.06em;margin-bottom:5px}
+    .metric strong{display:block;font-size:16px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+    .positive{color:var(--green)!important}.negative{color:var(--red)!important}
+    .chart-wrap{position:relative;background:#07131e;border:1px solid var(--line);border-radius:16px;overflow:hidden}
+    canvas{display:block;width:100%;height:390px;touch-action:none;user-select:none;-webkit-user-select:none;cursor:crosshair}
+    .chart-overlay{position:absolute;left:12px;right:12px;top:10px;display:flex;justify-content:space-between;gap:8px;pointer-events:none}
+    .chart-overlay span{padding:5px 8px;border-radius:999px;background:rgba(7,19,30,.85);border:1px solid var(--line);font-size:10px;color:#c9d7e2}
+    .preview{position:absolute;left:12px;bottom:12px;right:12px;z-index:5;padding:10px;border-radius:13px;background:rgba(7,19,30,.95);border:1px solid rgba(125,199,222,.34);backdrop-filter:blur(8px)}
+    .hidden{display:none!important}
+    .preview-top{display:flex;justify-content:space-between;gap:8px;align-items:center;flex-wrap:wrap}
+    .preview strong{font-size:11px}.preview-stats{display:flex;gap:10px;flex-wrap:wrap;margin-top:7px;font-size:10px;color:#c9d7e2}
+    .preview-actions{display:flex;gap:8px;margin-top:8px}.preview-actions button{width:auto;margin:0}
+    .toolbar,.zoombar{display:flex;gap:7px;flex-wrap:wrap;margin-top:10px}
+    button{border:0;border-radius:11px;padding:10px 12px;background:linear-gradient(135deg,var(--mint),var(--cyan));color:#071019;font-weight:850;cursor:pointer}
+    button.secondary,.tool{background:#12263a;color:#dce9f2;border:1px solid var(--line)}
+    button.buy{background:linear-gradient(135deg,#4aae7f,#7fe0b0)}
+    button.sell{background:linear-gradient(135deg,#b24e59,#ef7777);color:#fff}
+    button.danger{background:#7c3038;color:#fff}
+    button.active{border-color:var(--cyan);box-shadow:0 0 0 2px rgba(125,199,222,.10)}
+    button:disabled{opacity:.45;cursor:not-allowed}
+    .tool{padding:9px 10px;font-size:11px}
+    .chart-readout{display:flex;gap:10px;flex-wrap:wrap;margin-top:8px;padding:9px 10px;background:#0a1622;border:1px solid var(--line);border-radius:11px;font-size:10px;color:var(--muted)}
+    .chart-readout strong{color:#e8f2f7}
+    .layout{display:grid;grid-template-columns:1.2fr .8fr;gap:12px;margin-top:12px}
+    .panel{background:#0a1622;border:1px solid var(--line);border-radius:15px;padding:13px}
+    label{display:block;color:#c9d7e2;font-size:11px;margin:10px 0 6px}
+    input,select,textarea{width:100%;padding:10px;border-radius:10px;border:1px solid var(--line);background:#07131e;color:var(--text);outline:none}
+    input:focus,select:focus,textarea:focus{border-color:var(--cyan);box-shadow:0 0 0 3px rgba(125,199,222,.10)}
+    textarea{min-height:78px;resize:vertical}
+    .row{display:grid;grid-template-columns:1fr 1fr;gap:8px}
+    .bracket-grid{display:grid;grid-template-columns:1fr 1fr;gap:8px;margin-top:9px}
+    .bracket{padding:10px;border:1px solid var(--line);border-radius:12px;background:#081520}
+    .bracket.stop{border-color:rgba(239,119,119,.28)}.bracket.target{border-color:rgba(102,209,158,.28)}
+    .bracket b{display:block;font-size:10px;margin-bottom:6px}.bracket.stop b{color:#f2a0a0}.bracket.target b{color:#91e4ba}
+    .stepper{display:grid;grid-template-columns:42px 1fr 42px;gap:5px}.stepper button{padding:8px;background:#17283b;color:#fff;border:1px solid var(--line)}
+    .presets{display:flex;gap:6px;flex-wrap:wrap;margin-top:8px}.presets button{padding:8px 9px;font-size:10px;background:#142437;color:#dce9f2;border:1px solid var(--line)}
+    .hint,.status{font-size:10px;color:var(--muted);line-height:1.45}
+    .status{margin-top:9px;padding:9px 10px;border-radius:10px;background:#081520;border:1px solid var(--line)}
+    .status.ok{color:var(--mint)}.status.bad{color:var(--danger)}
+    .trade-buttons{display:grid;grid-template-columns:1fr 1fr;gap:8px;margin-top:9px}
+    .position{display:grid;grid-template-columns:1fr 1fr;gap:8px;margin-top:8px}
+    .tile{padding:9px;border-radius:11px;background:#081520;border:1px solid var(--line)}
+    .tile b{display:block;font-size:9px;color:var(--muted);margin-bottom:4px}.tile span{font-size:11px;font-weight:800}
+    .score,.pro-review,.reviews{margin-top:12px;padding:12px;border-radius:14px;background:#081520;border:1px solid var(--line)}
+    .score-big{font-size:32px;font-weight:950}
+    .score ul{padding-left:18px;font-size:11px;color:#c6d4df;line-height:1.5}
+    .section{margin-top:11px;padding-top:10px;border-top:1px solid var(--line)}
+    .insight,.pro-item,.review{padding:9px;border-radius:11px;background:#07131e;border:1px solid var(--line);font-size:10px;line-height:1.45;color:#c6d4df;margin-top:7px}
+    .insight b,.pro-item b,.review b{color:#fff}
+    .pro-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:7px;margin-top:8px}
+    .pro-stat{padding:9px;border-radius:11px;background:#07131e;border:1px solid var(--line)}
+    .pro-stat b{display:block;font-size:9px;color:var(--muted);text-transform:uppercase;letter-spacing:.06em;margin-bottom:4px}
+    .pro-stat strong{display:block;font-size:19px}.pro-stat span{display:block;font-size:9px;color:var(--muted);margin-top:4px;line-height:1.4}
+    .footer{text-align:center;color:#6f8496;font-size:10px;margin-top:15px}
+    details{margin-top:8px}summary{cursor:pointer;color:#a9bdcc;font-size:10px}
+    @media(max-width:760px){
+      .timeline{grid-template-columns:1fr 1fr}.metrics{grid-template-columns:1fr 1fr}.layout{grid-template-columns:1fr}
+      .pro-grid{grid-template-columns:1fr}.row,.bracket-grid{grid-template-columns:1fr}canvas{height:350px}
+      .toolbar .tool,.zoombar .tool{flex:1 1 30%}
+    }
+  </style>
+</head>
+<body>
+<main class="shell">
+  <div class="brand">
+    <div class="mark">G+C</div>
+    <div><h1>GROW+CHANGE</h1><small>30-Minute Market Test</small></div>
+  </div>
+
+  <section class="card">
+    <div class="header">
+      <div>
+        <div class="badge">G+C • 30-Minute Market Test</div>
+        <h2>Bull-to-Bear Regime Shift</h2>
+        <p>Simulated MNQ session: repeated bullish trend legs and pullbacks through the first 15 minutes, followed by a decisive reversal and a faster, more volatile bearish second half.</p>
+      </div>
+      <div class="pill">TOTAL TIME • 30:00</div>
+    </div>
+
+    <div class="timeline">
+      <div><b>0:00–5:00</b>Bull run I → consolidation</div>
+      <div><b>5:00–10:00</b>Pullback → bull run II</div>
+      <div><b>10:00–15:00</b>Range → final bull surge</div>
+      <div><b>15:00–16:30</b>Reversal shock</div>
+      <div><b>16:30–21:00</b>Bear run I → consolidation</div>
+      <div><b>21:00–25:00</b>Bull bounce → bear run II</div>
+      <div><b>25:00–27:48</b>Consolidation → short bounce</div>
+      <div><b>27:48–30:00</b>Final bearish drive</div>
+    </div>
+
+    <div class="metrics">
+      <div class="metric"><b>Time left</b><strong id="timeLeft">30:00.0</strong></div>
+      <div class="metric"><b>MNQ price</b><strong id="currentPrice">20,000.00</strong></div>
+      <div class="metric"><b>Position</b><strong id="positionLabel">Flat</strong></div>
+      <div class="metric"><b>Unrealized P&amp;L</b><strong id="unrealizedPnl">$0.00</strong></div>
+      <div class="metric"><b>Realized P&amp;L</b><strong id="realizedPnl">$0.00</strong></div>
+    </div>
+
+    <div class="chart-wrap">
+      <canvas id="chart"></canvas>
+      <div class="chart-overlay">
+        <span id="phaseLabel">READY</span>
+        <span>OHLC candles • hidden future path</span>
+      </div>
+
+      <div id="orderPreview" class="preview hidden">
+        <div class="preview-top">
+          <strong id="previewSide">LONG PREVIEW</strong>
+          <span class="hint">Drag SL / TP on the chart, then confirm the order.</span>
+        </div>
+        <div class="preview-stats">
+          <span>Entry <b id="previewEntry">—</b></span>
+          <span>SL <b id="previewStop">—</b></span>
+          <span>TP <b id="previewTarget">—</b></span>
+          <span>R:R <b id="previewRR">—</b></span>
+        </div>
+        <div class="preview-actions">
+          <button id="confirmOrderBtn">Confirm order</button>
+          <button id="cancelPreviewBtn" class="secondary">Cancel</button>
+        </div>
+      </div>
+    </div>
+
+    <div class="zoombar">
+      <button id="zoomInBtn" class="tool">＋ Zoom in</button>
+      <button id="zoomOutBtn" class="tool">－ Zoom out</button>
+      <button id="panLeftBtn" class="tool">← Earlier</button>
+      <button id="panRightBtn" class="tool">Later →</button>
+      <button id="fitBtn" class="tool">Fit 30m</button>
+      <button id="followBtn" class="tool active">Follow: ON</button>
+    </div>
+
+    <div class="toolbar">
+      <button class="tool active" data-tool="cursor">◎ Inspect / SL-TP</button>
+      <button class="tool" data-tool="hline">━ Price level</button>
+      <button class="tool" data-tool="vline">┃ Time marker</button>
+      <button class="tool" data-tool="trend">╱ Trend line</button>
+      <button class="tool" data-tool="zone">▭ Zone</button>
+      <button class="tool" data-tool="eraser">⌫ Eraser</button>
+      <button id="undoBtn" class="tool">↶ Undo</button>
+      <button id="clearBtn" class="tool">Clear all</button>
+    </div>
+
+    <div class="chart-readout" id="readout">
+      <strong>OHLC</strong><span>Touch or move across the chart to inspect candles.</span><span id="viewLabel">View 0:00–30:00</span>
+    </div>
+
+    <div class="layout">
+      <div class="panel">
+        <h3>Order Controls</h3>
+        <div class="row">
+          <div>
+            <label for="qty">Contracts</label>
+            <select id="qty"><option>1</option><option>2</option><option>3</option><option>5</option></select>
+          </div>
+          <div>
+            <label for="candleSize">Candle size</label>
+            <select id="candleSize">
+              <option value="500">0.5 second</option>
+              <option value="1000">1 second</option>
+              <option value="2000">2 seconds</option>
+              <option value="3000">3 seconds</option>
+              <option value="5000">5 seconds</option>
+              <option value="10000">10 seconds</option>
+              <option value="15000">15 seconds</option>
+              <option value="30000" selected>30 seconds</option>
+              <option value="60000">1 minute</option>
+              <option value="120000">2 minutes</option>
+              <option value="180000">3 minutes</option>
+              <option value="300000">5 minutes</option>
+            </select>
+          </div>
+        </div>
+
+        <div class="bracket-grid">
+          <div class="bracket stop">
+            <b>STOP LOSS • points from entry</b>
+            <div class="stepper">
+              <button id="slMinus">−</button>
+              <input id="slPoints" inputmode="decimal" value="12">
+              <button id="slPlus">＋</button>
+            </div>
+            <div class="hint">SL price: <strong id="slPreview">set on entry</strong></div>
+          </div>
+
+          <div class="bracket target">
+            <b>TAKE PROFIT • points from entry</b>
+            <div class="stepper">
+              <button id="tpMinus">−</button>
+              <input id="tpPoints" inputmode="decimal" value="24">
+              <button id="tpPlus">＋</button>
+            </div>
+            <div class="hint">TP price: <strong id="tpPreview">set on entry</strong></div>
+          </div>
+        </div>
+
+        <div class="presets">
+          <button data-preset="8,16">8 / 16 pts</button>
+          <button data-preset="12,24">12 / 24 pts</button>
+          <button data-preset="20,40">20 / 40 pts</button>
+          <button id="noStopBtn">No SL</button>
+          <button id="noTargetBtn">No TP</button>
+        </div>
+
+        <div id="rrText" class="status">Planned risk/reward: 1 : 2.00</div>
+
+        <details>
+          <summary>Advanced: enter exact SL / TP prices</summary>
+          <div class="row">
+            <div><label for="exactStop">Exact stop price</label><input id="exactStop" inputmode="decimal" placeholder="optional"></div>
+            <div><label for="exactTarget">Exact target price</label><input id="exactTarget" inputmode="decimal" placeholder="optional"></div>
+          </div>
+        </details>
+
+        <div class="trade-buttons">
+          <button id="longBtn" class="buy" disabled>SET UP LONG</button>
+          <button id="shortBtn" class="sell" disabled>SET UP SHORT</button>
+        </div>
+        <button id="flattenBtn" class="secondary" style="width:100%;margin-top:8px" disabled>Flatten position</button>
+
+        <div class="position">
+          <div class="tile"><b>Entry</b><span id="entryPrice">—</span></div>
+          <div class="tile"><b>Exit reason</b><span id="exitReason">—</span></div>
+        </div>
+
+        <div class="hint" style="margin-top:8px">MNQ uses a 0.25-point tick and $0.50 per tick per contract. Brackets can be adjusted before entry and while the position is live.</div>
+      </div>
+
+      <div class="panel">
+        <h3>Test Control</h3>
+        <button id="startBtn" style="width:100%">Start 30-minute test</button>
+        <button id="resetBtn" class="secondary" style="width:100%;margin-top:8px">Reset test</button>
+        <div id="status" class="status">Ready. The market path stays hidden until the test starts.</div>
+
+        <div id="scoreBox" class="score hidden">
+          <div class="hint">Final session score</div>
+          <div id="finalScore" class="score-big">0 / 100</div>
+          <div id="scoreSummary" class="hint"></div>
+          <ul id="scoreList"></ul>
+
+          <div class="section">
+            <h4>Session mindset takeaway</h4>
+            <div id="mindsetSummary" class="insight"></div>
+          </div>
+        </div>
+
+        <div id="proReview" class="pro-review hidden">
+          <div class="badge">Pro+ Session Features</div>
+          <h3 style="margin-top:8px">Personalized Development Review</h3>
+
+          <div class="pro-grid">
+            <div class="pro-stat">
+              <b>Process Score</b><strong id="processScore">—</strong>
+              <span>Risk definition, stop discipline, timing, and consistency.</span>
+            </div>
+            <div class="pro-stat">
+              <b>Decision Quality</b><strong id="decisionQuality">—</strong>
+              <span>How closely decisions matched the trade plan regardless of P&amp;L.</span>
+            </div>
+            <div class="pro-stat">
+              <b>Trader DNA</b><strong id="traderDna" style="font-size:13px">Baseline pending</strong>
+              <span id="traderDnaCopy">Complete the session to generate a behavioral profile.</span>
+            </div>
+          </div>
+
+          <div class="section"><h4>Blind spots</h4><div id="blindSpots"></div></div>
+          <div class="section"><h4>Market Gym drill</h4><div id="marketGym"></div></div>
+          <div class="section"><h4>What to study next</h4><div id="studyNext"></div></div>
+          <div class="section"><h4>G+C Coach</h4><div id="coachNote" class="insight"></div></div>
+          <div class="section"><h4>Weekly development goal</h4><div id="weeklyGoal" class="insight"></div></div>
+          <div class="section"><h4>Improvement tracking</h4><div id="improvementTracking"></div></div>
+
+          <div class="section">
+            <h4>Automatic journal summary</h4>
+            <div id="journalSummary"></div>
+            <label for="reflection">Optional reflection</label>
+            <textarea id="reflection" maxlength="900" placeholder="What did you execute well? What should you change next session?"></textarea>
+            <button id="saveReflectionBtn" class="secondary" style="width:100%;margin-top:7px">Save reflection locally</button>
+            <div id="reflectionStatus" class="hint" style="margin-top:6px"></div>
+          </div>
+        </div>
+
+        <div id="reviewsBox" class="reviews hidden">
+          <h4>Trade-by-trade review</h4>
+          <div id="tradeReviews"></div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <div class="footer">Grow+Change • Simulated MNQ market test • Educational simulation only • No live brokerage orders are placed.</div>
+</main>
+
+<script>
+(() => {
+  "use strict";
+
+  const TEST_MS=1800000, TICK_MS=250, START_PRICE=20000, TICK=.25, TICK_VALUE=.50;
+  const $=id=>document.getElementById(id);
+  const clamp=(v,a,b)=>Math.max(a,Math.min(b,v));
+  const roundTick=v=>Math.round(v/TICK)*TICK;
+  const money=v=>`${v<0?"-":""}$${Math.abs(v).toFixed(2)}`;
+  const px=v=>Number(v).toLocaleString(undefined,{minimumFractionDigits:2,maximumFractionDigits:2});
+  const escapeHtml=s=>String(s??"").replace(/[&<>"']/g,c=>({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#39;"})[c]);
+  const timeText=ms=>{
+    const sec=Math.max(0,ms)/1000, m=Math.floor(sec/60), s=sec-m*60;
+    return `${m}:${s.toFixed(sec<60?1:0).padStart(sec<60?4:2,"0")}`;
+  };
+
+  const chart=$("chart"), ctx=chart.getContext("2d");
+  const els={
+    time:$("timeLeft"),price:$("currentPrice"),phase:$("phaseLabel"),position:$("positionLabel"),
+    unreal:$("unrealizedPnl"),realized:$("realizedPnl"),entry:$("entryPrice"),reason:$("exitReason"),
+    status:$("status"),start:$("startBtn"),reset:$("resetBtn"),long:$("longBtn"),short:$("shortBtn"),flatten:$("flattenBtn"),
+    qty:$("qty"),candle:$("candleSize"),slPts:$("slPoints"),tpPts:$("tpPoints"),exactSl:$("exactStop"),exactTp:$("exactTarget"),
+    slPrev:$("slPreview"),tpPrev:$("tpPreview"),rr:$("rrText"),preview:$("orderPreview"),previewSide:$("previewSide"),
+    previewEntry:$("previewEntry"),previewStop:$("previewStop"),previewTarget:$("previewTarget"),previewRR:$("previewRR"),
+    confirm:$("confirmOrderBtn"),cancel:$("cancelPreviewBtn"),scoreBox:$("scoreBox"),finalScore:$("finalScore"),
+    scoreSummary:$("scoreSummary"),scoreList:$("scoreList"),mindset:$("mindsetSummary"),pro:$("proReview"),
+    process:$("processScore"),decision:$("decisionQuality"),dna:$("traderDna"),dnaCopy:$("traderDnaCopy"),
+    blind:$("blindSpots"),gym:$("marketGym"),study:$("studyNext"),coach:$("coachNote"),goal:$("weeklyGoal"),
+    tracking:$("improvementTracking"),journal:$("journalSummary"),reviewsBox:$("reviewsBox"),reviews:$("tradeReviews"),
+    reflection:$("reflection"),reflectionStatus:$("reflectionStatus"),viewLabel:$("viewLabel"),readout:$("readout")
+  };
+
+  const phases=[
+    [0,210000,"BULL RUN 1"],[210000,300000,"CONSOLIDATION 1"],[300000,390000,"BEARISH PULLBACK 1"],
+    [390000,600000,"BULL RUN 2"],[600000,690000,"CONSOLIDATION 2"],[690000,780000,"BEARISH PULLBACK 2"],
+    [780000,900000,"FINAL BULL SURGE"],[900000,990000,"REVERSAL SHOCK"],[990000,1170000,"BEAR RUN 1"],
+    [1170000,1260000,"CONSOLIDATION 3"],[1260000,1332000,"BULL BOUNCE 1"],[1332000,1500000,"BEAR RUN 2"],
+    [1500000,1590000,"CONSOLIDATION 4"],[1590000,1668000,"BULL BOUNCE 2"],[1668000,1800000,"FINAL BEAR RUN"]
+  ];
+  const phaseFor=ms=>(phases.find(p=>ms>=p[0]&&ms<p[1])||[0,0,"FINISHED"])[2];
+
+  let running=false,timer=null,startedAt=0,elapsed=0,price=START_PRICE,points=[{ms:0,price:START_PRICE}];
+  let position=null,pending=null,realized=0,trades=[],maxOpenLoss=0;
+  let usedStop=false,usedTarget=false;
+  let drawings=[],draft=null,activeTool="cursor",hover=null,dragBracket=null,axisDrag=null;
+  let viewStart=0,viewEnd=TEST_MS,follow=true,priceScale=1,chartView=null;
+  const MIN_VIEW=8000;
+
+  // Controlled pseudo-random generator:
+  // every reset reproduces the same market path for fair beta testing.
+  const RNG_SEED=0x47C2026;
+  let rngState=RNG_SEED;
+  function rand(){
+    rngState=(Math.imul(rngState,1664525)+1013904223)>>>0;
+    return rngState/4294967296;
+  }
+
+  function marketMove(ms){
+    const p=phaseFor(ms), jitter=(amp,c=.5)=>(rand()-c)*amp;
+    let drift=0,noise=0,imp=0;
+    if(p==="BULL RUN 1"){drift=.38;noise=jitter(1.6,.47);if(rand()<.035)imp=1.5+rand()*2.5}
+    else if(p==="CONSOLIDATION 1"){drift=.02;noise=jitter(2.2)}
+    else if(p==="BEARISH PULLBACK 1"){drift=-.28;noise=jitter(2,.53)}
+    else if(p==="BULL RUN 2"){drift=.44;noise=jitter(1.8,.46);if(rand()<.04)imp=1.5+rand()*3}
+    else if(p==="CONSOLIDATION 2"){drift=.02;noise=jitter(2.4)}
+    else if(p==="BEARISH PULLBACK 2"){drift=-.32;noise=jitter(2.3,.53)}
+    else if(p==="FINAL BULL SURGE"){drift=.58;noise=jitter(2.6,.45);if(rand()<.055)imp=2+rand()*4}
+    else if(p==="REVERSAL SHOCK"){drift=-1.05;noise=jitter(4.2,.58);if(rand()<.11)imp=-(3+rand()*6)}
+    else if(p==="BEAR RUN 1"){drift=-.55;noise=jitter(2.7,.55);if(rand()<.055)imp=-(1.5+rand()*4)}
+    else if(p==="CONSOLIDATION 3"){drift=-.03;noise=jitter(3.3,.51)}
+    else if(p==="BULL BOUNCE 1"){drift=.45;noise=jitter(3,.44);if(rand()<.055)imp=1.5+rand()*4}
+    else if(p==="BEAR RUN 2"){drift=-.66;noise=jitter(3.2,.56);if(rand()<.065)imp=-(2+rand()*5)}
+    else if(p==="CONSOLIDATION 4"){drift=-.04;noise=jitter(3.5,.51)}
+    else if(p==="BULL BOUNCE 2"){drift=.50;noise=jitter(3.4,.43);if(rand()<.07)imp=2+rand()*5}
+    else if(p==="FINAL BEAR RUN"){drift=-.82;noise=jitter(4,.58);if(rand()<.085)imp=-(2.5+rand()*6)}
+    if(ms>=900000&&rand()<.035)imp+=(rand()<.68?-1:1)*(1.5+rand()*4.5);
+    return roundTick(price+(drift+noise+imp)*.42);
+  }
+
+  function currentPnl(){
+    if(!position)return 0;
+    const pointsMove=(position.side==="long"?price-position.entry:position.entry-price);
+    return pointsMove*(TICK_VALUE/TICK)*position.qty;
+  }
+
+  function parsePositive(input){
+    const v=Number(input.value);
+    return Number.isFinite(v)&&v>0?v:null;
+  }
+
+  function plannedBracket(side,entry){
+    const exactStop=parsePositive(els.exactSl), exactTarget=parsePositive(els.exactTp);
+    const slPts=parsePositive(els.slPts), tpPts=parsePositive(els.tpPts);
+    let stop=exactStop, target=exactTarget;
+    if(stop===null&&slPts!==null)stop=roundTick(side==="long"?entry-slPts:entry+slPts);
+    if(target===null&&tpPts!==null)target=roundTick(side==="long"?entry+tpPts:entry-tpPts);
+    return {stop,target};
+  }
+
+  function validLevel(kind,level,order){
+    if(level===null)return true;
+    if(kind==="stop")return order.side==="long"?level<order.entry:level>order.entry;
+    return order.side==="long"?level>order.entry:level<order.entry;
+  }
+
+  function rr(order){
+    if(!order||order.stop===null||order.target===null)return "—";
+    const risk=Math.abs(order.entry-order.stop), reward=Math.abs(order.target-order.entry);
+    return risk>0?(reward/risk).toFixed(2):"—";
+  }
+
+  function updateBracketUi(){
+    const order=position||pending;
+    if(order){
+      els.slPrev.textContent=order.stop===null?"none":px(order.stop);
+      els.tpPrev.textContent=order.target===null?"none":px(order.target);
+      els.rr.textContent=`Planned risk/reward: ${rr(order)==="—"?"—":`1 : ${rr(order)}`}`;
+    }else{
+      const s=parsePositive(els.slPts),t=parsePositive(els.tpPts);
+      els.slPrev.textContent="set on entry";els.tpPrev.textContent="set on entry";
+      els.rr.textContent=s&&t?`Planned risk/reward: 1 : ${(t/s).toFixed(2)}`:"Planned risk/reward: —";
+    }
+  }
+
+  function setBracket(kind,level){
+    const order=position||pending;
+    if(!order)return;
+    level=level===null?null:roundTick(level);
+    if(level!==null&&!validLevel(kind,level,order)){
+      setStatus(`${kind==="stop"?"Stop loss":"Take profit"} must stay on the correct side of entry.`,true);
+      return;
+    }
+    const old=order[kind];
+    order[kind]=level;
+    if(position&&old!==level){
+      position.bracketEdits=(position.bracketEdits||0)+1;
+      if(kind==="stop"&&old!==null&&level!==null){
+        const before=Math.abs(position.entry-old),after=Math.abs(position.entry-level);
+        if(after>before+TICK/2)position.riskExpanded=true;
+        if(after+TICK/2<before)position.riskReduced=true;
+      }
+    }
+    if(kind==="stop")usedStop=usedStop||level!==null; else usedTarget=usedTarget||level!==null;
+    updateBracketUi();updatePreviewUi();draw();
+  }
+
+  function setupOrder(side){
+    if(!running||position)return;
+    const b=plannedBracket(side,price);
+    pending={side,qty:Number(els.qty.value)||1,entry:price,stop:b.stop,target:b.target};
+    if(pending.stop!==null&&!validLevel("stop",pending.stop,pending))pending.stop=null;
+    if(pending.target!==null&&!validLevel("target",pending.target,pending))pending.target=null;
+    updatePreviewUi();els.preview.classList.remove("hidden");draw();
+  }
+
+  function updatePreviewUi(){
+    if(!pending){els.preview.classList.add("hidden");return}
+    els.previewSide.textContent=`${pending.side.toUpperCase()} PREVIEW`;
+    els.previewEntry.textContent=px(pending.entry);
+    els.previewStop.textContent=pending.stop===null?"none":px(pending.stop);
+    els.previewTarget.textContent=pending.target===null?"none":px(pending.target);
+    els.previewRR.textContent=rr(pending)==="—"?"—":`1 : ${rr(pending)}`;
+  }
+
+  function confirmOrder(){
+    if(!pending||!running||position)return;
+    position={
+      ...pending,openedMs:elapsed,initialStop:pending.stop,initialTarget:pending.target,
+      entryPhase:phaseFor(elapsed),bracketEdits:0,riskExpanded:false,riskReduced:false
+    };
+    pending=null;updatePreviewUi();
+    usedStop=usedStop||position.stop!==null;usedTarget=usedTarget||position.target!==null;
+    els.long.disabled=true;els.short.disabled=true;els.flatten.disabled=false;els.reason.textContent="Open";
+    setStatus(`${position.side.toUpperCase()} opened at ${px(position.entry)}.`,false);updateUi();
+  }
+
+  function closePosition(reason){
+    if(!position)return;
+    const pnl=currentPnl(), closed={...position,exit:price,closedMs:elapsed,pnl,reason};
+    const initialRisk=closed.initialStop===null?null:Math.abs(closed.entry-closed.initialStop)*(TICK_VALUE/TICK)*closed.qty;
+    closed.rMultiple=initialRisk&&initialRisk>0?pnl/initialRisk:null;
+    realized+=pnl;trades.push(closed);position=null;
+    els.reason.textContent=reason;els.long.disabled=!running;els.short.disabled=!running;els.flatten.disabled=true;
+    setStatus(`${reason}: ${money(pnl)}.`,false);updateUi();
+  }
+
+  function checkBrackets(){
+    if(!position)return;
+    const {side,stop,target}=position;
+    if(stop!==null){
+      if(side==="long"&&price<=stop)return closePosition("Stop loss");
+      if(side==="short"&&price>=stop)return closePosition("Stop loss");
+    }
+    if(target!==null){
+      if(side==="long"&&price>=target)return closePosition("Take profit");
+      if(side==="short"&&price<=target)return closePosition("Take profit");
+    }
+  }
+
+  function setStatus(msg,bad=false){els.status.textContent=msg;els.status.className=`status ${bad?"bad":"ok"}`}
+
+  function start(){
+    reset(false);running=true;startedAt=performance.now();els.start.disabled=true;els.long.disabled=false;els.short.disabled=false;
+    setStatus("Test running. Trade the chart; the future path is hidden.",false);
+    timer=setInterval(tick,TICK_MS);
+  }
+
+  function tick(){
+    elapsed=clamp(performance.now()-startedAt,0,TEST_MS);
+    price=marketMove(elapsed);points.push({ms:elapsed,price});
+    const u=currentPnl();if(u<maxOpenLoss)maxOpenLoss=u;
+    checkBrackets();
+    if(follow){
+      const span=viewEnd-viewStart;
+      const end=clamp(Math.max(span,elapsed),span,TEST_MS);
+      viewEnd=end;viewStart=end-span;
+    }
+    updateUi();
+    if(elapsed>=TEST_MS)finish();
+  }
+
+  function reset(update=true){
+    if(timer){clearInterval(timer);timer=null}
+    running=false;elapsed=0;price=START_PRICE;rngState=RNG_SEED;points=[{ms:0,price:START_PRICE}];
+    position=null;pending=null;realized=0;trades=[];maxOpenLoss=0;usedStop=false;usedTarget=false;
+    drawings=[];draft=null;activeTool="cursor";hover=null;dragBracket=null;axisDrag=null;
+    viewStart=0;viewEnd=TEST_MS;follow=true;priceScale=1;
+    els.start.disabled=false;els.long.disabled=true;els.short.disabled=true;els.flatten.disabled=true;
+    els.reason.textContent="—";els.entry.textContent="—";els.scoreBox.classList.add("hidden");els.pro.classList.add("hidden");els.reviewsBox.classList.add("hidden");
+    els.preview.classList.add("hidden");syncToolButtons();syncFollow();setStatus("Ready. The market path stays hidden until the test starts.",false);
+    if(update)updateUi();
+  }
+
+  function finish(){
+    if(timer){clearInterval(timer);timer=null}
+    if(position)closePosition("Session end");
+    running=false;els.start.disabled=false;els.long.disabled=true;els.short.disabled=true;els.flatten.disabled=true;
+    const score=scoreSession();
+    buildProReview(score);renderTradeReviews();setStatus("Session complete. Review your process and development feedback below.",false);updateUi();
+  }
+
+  function analyzeTrade(t,index){
+    let score=65,notes=[],mindset="";
+    if(t.initialStop!==null){score+=12;notes.push("Defined risk before entry.")}else{score-=15;notes.push("Entered without a predefined stop.")}
+    if(t.initialTarget!==null){score+=5;notes.push("Defined a planned target.")}
+    if(t.riskExpanded){score-=18;notes.push("Widened risk after entry.")}
+    if(t.riskReduced){score+=4;notes.push("Reduced open risk after entry.")}
+    if(t.entryPhase==="FINAL BULL SURGE"){score-=10;notes.push("Entered during the late bullish surge.")}
+    if(t.pnl>0)score+=4;
+    score=clamp(Math.round(score),0,100);
+    if(t.riskExpanded)mindset="Protect the original decision from emotional renegotiation once money is at risk.";
+    else if(t.entryPhase==="FINAL BULL SURGE")mindset="Momentum can feel urgent. Patience is part of execution quality.";
+    else if(t.pnl<0&&t.initialStop!==null)mindset="A planned loss can still be a disciplined trade when the process was followed.";
+    else mindset="Judge the trade by the quality of the decision first, then review the outcome.";
+    return {score,notes,mindset,index};
+  }
+
+  function scoreSession(){
+    let score=50,notes=[];
+    if(trades.length){score+=10;notes.push("You completed at least one trade.")}else{score-=20;notes.push("No completed trade was recorded.")}
+    if(usedStop){score+=15;notes.push("Stop-loss protection was used.")}else{score-=10;notes.push("No stop-loss protection was used.")}
+    if(usedTarget){score+=5;notes.push("Take-profit planning was used.")}
+    const widened=trades.filter(t=>t.riskExpanded).length;if(widened){score-=Math.min(20,widened*10);notes.push(`${widened} trade${widened===1?"":"s"} widened risk after entry.`)}
+    const chase=trades.filter(t=>t.entryPhase==="FINAL BULL SURGE").length;if(chase){score-=Math.min(15,chase*7);notes.push(`${chase} late-surge entr${chase===1?"y":"ies"} detected.`)}
+    let rapid=0,sizeUp=0;
+    for(let i=1;i<trades.length;i++){
+      if(trades[i-1].pnl<0&&trades[i].openedMs-trades[i-1].closedMs<5000)rapid++;
+      if(trades[i-1].pnl<0&&trades[i].qty>trades[i-1].qty)sizeUp++;
+    }
+    if(rapid){score-=Math.min(12,rapid*6);notes.push(`${rapid} rapid post-loss re-entry pattern${rapid===1?"":"s"} detected.`)}
+    if(sizeUp){score-=Math.min(16,sizeUp*8);notes.push(`${sizeUp} post-loss size increase${sizeUp===1?"":"s"} detected.`)}
+    if(maxOpenLoss>-150)score+=5;
+    score=clamp(Math.round(score),0,100);
+    els.finalScore.textContent=`${score} / 100`;
+    els.scoreSummary.textContent=score>=80?"Strong process baseline.":score>=65?"Solid foundation with specific behaviors to tighten.":"Prioritize risk discipline and deliberate decision-making before adding complexity.";
+    els.scoreList.innerHTML=notes.map(n=>`<li>${escapeHtml(n)}</li>`).join("");
+    els.mindset.textContent=score>=80?"Keep protecting the process. Consistency matters more than one strong result.":score>=65?"Your next improvement should be behavioral, not faster execution. Tighten one repeated mistake at a time.":"Slow the decision cycle down. Define risk first, then decide whether the trade deserves capital.";
+    els.scoreBox.classList.remove("hidden");
+    return score;
+  }
+
+  function buildProReview(processScore){
+    const analyses=trades.map(analyzeTrade);
+    const noStop=trades.filter(t=>t.initialStop===null).length;
+    const widened=trades.filter(t=>t.riskExpanded).length;
+    const chase=trades.filter(t=>t.entryPhase==="FINAL BULL SURGE").length;
+    let rapid=0,sizeUp=0;
+    for(let i=1;i<trades.length;i++){
+      if(trades[i-1].pnl<0&&trades[i].openedMs-trades[i-1].closedMs<5000)rapid++;
+      if(trades[i-1].pnl<0&&trades[i].qty>trades[i-1].qty)sizeUp++;
+    }
+    const defined=trades.length-noStop;
+    let decision=50+(trades.length?10:0)+Math.round((defined/Math.max(1,trades.length))*18)-noStop*8-widened*10-chase*6-rapid*6-sizeUp*8;
+    decision=clamp(Math.round(decision),0,100);
+    els.process.textContent=`${processScore}/100`;els.decision.textContent=`${decision}/100`;
+
+    let dna="Structured Planner",dnaCopy="Your latest session leaned toward predefined risk and controlled execution.";
+    if(widened||sizeUp){dna="Reactive Risk Manager";dnaCopy="Your risk changed after pressure entered the trade. Focus on keeping the original risk stable."}
+    else if(chase){dna="Momentum-Seeking Trader";dnaCopy="You respond strongly to acceleration. Focus on separating clean momentum from late extension."}
+    else if(rapid){dna="Fast-Reentry Trader";dnaCopy="You re-engage quickly after losses. Focus on making the next trade independent from the previous result."}
+    else if(!trades.length){dna="Baseline pending";dnaCopy="Complete at least one trade to establish a behavioral profile."}
+    els.dna.textContent=dna;els.dnaCopy.textContent=dnaCopy;
+
+    const blind=[],gym=[],study=[];
+    if(noStop){blind.push(["Undefined entry risk",`${noStop} trade${noStop===1?"":"s"} began without a predefined stop.`]);gym.push(["Risk-before-entry drill","Take five practice entries where the trade cannot be confirmed until the stop is defined."]);study.push(["Position risk & stop placement","Review where the trade is objectively invalidated before choosing size."])}
+    if(widened){blind.push(["Stop discipline",`Risk was widened after entry on ${widened} trade${widened===1?"":"s"}.`]);gym.push(["Fixed-risk drill","Run the next practice session with one rule: the stop may tighten, but never widen."]);study.push(["Execution discipline","Review the difference between new information and emotional resistance to taking a planned loss."])}
+    if(chase){blind.push(["Late-move chasing",`${chase} entr${chase===1?"y":"ies"} occurred during the final bullish surge.`]);gym.push(["Extension filter drill","Skip the final impulse of an extended move and wait for a fresh structure."]);study.push(["Trend extension & reversal risk","Study continuation quality versus late-stage momentum chasing."])}
+    if(rapid){blind.push(["Post-loss reset",`${rapid} rapid re-entry pattern${rapid===1?" was":"s were"} detected after a loss.`]);gym.push(["Reset drill","Require a fresh setup and short observation pause after every stop-out."]);study.push(["Post-loss psychology","Train the next decision to be independent from the previous P&L result."])}
+    if(sizeUp){blind.push(["Risk escalation",`Size increased after a loss on ${sizeUp} trade${sizeUp===1?"":"s"}.`]);gym.push(["Fixed-size recovery drill","Do not increase size after a losing trade."]);study.push(["Position sizing consistency","Review fixed-risk sizing and why the next trade should not be used to recover the previous one."])}
+    if(!blind.length){blind.push(["No major execution violation","This session showed controlled risk behavior. Future sessions should focus on setup quality and consistency."]);gym.push(["Precision-entry drill","Take fewer trades and require a clear structural reason before entry."]);study.push(["Advanced trade selection","Progress from basic risk control toward cleaner setup quality."])}
+
+    const render=(arr)=>arr.map(x=>`<div class="pro-item"><b>${escapeHtml(x[0])}</b><br>${escapeHtml(x[1])}</div>`).join("");
+    els.blind.innerHTML=render(blind);els.gym.innerHTML=render(gym);els.study.innerHTML=render(study);
+
+    let coach="Repeat what protected your risk, then train the first blind spot above before adding complexity.";
+    if(noStop)coach="For the next session, make predefined risk non-negotiable. Every entry should have a stop before confirmation.";
+    else if(widened)coach="Your priority is accepting the original trade risk. Tightening is allowed; widening is not.";
+    else if(chase)coach="Your next edge is patience. You do not need the final part of every move. Wait for new structure.";
+    else if(rapid)coach="Add a reset after losses. The next entry must qualify as a new setup rather than a reaction to the prior result.";
+    els.coach.textContent=coach;els.goal.textContent=`Next-session goal: ${gym[0][0]} — ${gym[0][1]}`;
+
+    const session={ts:Date.now(),processScore,decision,dna,trades:trades.length,realized};
+    const key="gc_market_test_history_v1";
+    let history=[];try{history=JSON.parse(localStorage.getItem(key)||"[]")}catch{}
+    history.push(session);history=history.slice(-8);try{localStorage.setItem(key,JSON.stringify(history))}catch{}
+    const prev=history.length>1?history[history.length-2]:null;
+    els.tracking.innerHTML=`<div class="pro-item"><b>Current session</b><br>Process ${processScore}/100 • Decision ${decision}/100 • ${trades.length} completed trade${trades.length===1?"":"s"}.</div>`+
+      (prev?`<div class="pro-item"><b>Change from prior session</b><br>Process ${processScore-prev.processScore>=0?"+":""}${processScore-prev.processScore} • Decision ${decision-prev.decision>=0?"+":""}${decision-prev.decision}.</div>`:"");
+
+    els.journal.innerHTML=trades.length?trades.map((t,i)=>{
+      const a=analyses[i];
+      return `<div class="pro-item"><b>Trade ${i+1} • ${escapeHtml(t.side.toUpperCase())} ${t.qty}</b><br>${px(t.entry)} → ${px(t.exit)} • ${escapeHtml(t.reason)} • ${money(t.pnl)} • Grade ${a.score}/100<br><span>${escapeHtml(a.mindset)}</span></div>`;
+    }).join(""):'<div class="pro-item">No completed trades were recorded.</div>';
+
+    els.pro.classList.remove("hidden");
+  }
+
+  function renderTradeReviews(){
+    if(!trades.length){els.reviewsBox.classList.add("hidden");return}
+    els.reviews.innerHTML=trades.map((t,i)=>{
+      const a=analyzeTrade(t,i);
+      return `<div class="review"><b>Trade ${i+1} • ${escapeHtml(t.side.toUpperCase())} ${t.qty} • Grade ${a.score}/100</b><br>
+        Entry ${px(t.entry)} → Exit ${px(t.exit)} • ${escapeHtml(t.reason)} • ${money(t.pnl)}<br>
+        ${a.notes.map(escapeHtml).join(" ")}<br><em>${escapeHtml(a.mindset)}</em></div>`;
+    }).join("");
+    els.reviewsBox.classList.remove("hidden");
+  }
+
+  function buildCandles(){
+    const ms=Number(els.candle.value)||30000, out=[];
+    for(const p of points){
+      const i=Math.floor(p.ms/ms),start=i*ms;
+      let c=out[out.length-1];
+      if(!c||c.i!==i){c={i,start,end:Math.min(TEST_MS,start+ms),open:p.price,high:p.price,low:p.price,close:p.price};out.push(c)}
+      else{c.high=Math.max(c.high,p.price);c.low=Math.min(c.low,p.price);c.close=p.price}
+    }
+    return out;
+  }
+
+  function collectPrices(){
+    const a=[];buildCandles().filter(c=>c.end>=viewStart&&c.start<=viewEnd).forEach(c=>a.push(c.high,c.low));
+    if(!a.length)a.push(price);
+    const order=position||pending;if(order){a.push(order.entry);if(order.stop!==null)a.push(order.stop);if(order.target!==null)a.push(order.target)}
+    drawings.forEach(d=>{if(d.type==="hline")a.push(d.price);if(d.p1)a.push(d.p1.price);if(d.p2)a.push(d.p2.price)});
+    return a;
+  }
+
+  function resize(){
+    const dpr=window.devicePixelRatio||1, r=chart.getBoundingClientRect();
+    chart.width=Math.max(1,Math.floor(r.width*dpr));chart.height=Math.max(1,Math.floor(r.height*dpr));
+    ctx.setTransform(dpr,0,0,dpr,0,0);draw();
+  }
+  window.addEventListener("resize",resize);
+
+  function ptToXY(p){
+    if(!chartView)return{x:0,y:0};
+    const {pad,cw,ch,min,range}=chartView,span=viewEnd-viewStart;
+    return{x:pad.l+((p.ms-viewStart)/span)*cw,y:pad.t+(1-(p.price-min)/range)*ch};
+  }
+  function yPrice(y){
+    const {pad,ch,min,range}=chartView;
+    return roundTick(min+(1-clamp((y-pad.t)/ch,0,1))*range);
+  }
+  function xTime(x){
+    const {pad,cw}=chartView;return clamp(viewStart+((x-pad.l)/cw)*(viewEnd-viewStart),0,TEST_MS);
+  }
+
+  function drawLinePrice(level,color,label,dash=false,width=1.5){
+    if(level===null||!chartView)return;
+    const {pad,w,min,range,ch}=chartView,y=pad.t+(1-(level-min)/range)*ch;
+    ctx.save();if(dash)ctx.setLineDash([6,5]);ctx.strokeStyle=color;ctx.lineWidth=width;
+    ctx.beginPath();ctx.moveTo(pad.l,y);ctx.lineTo(w-pad.r,y);ctx.stroke();ctx.setLineDash([]);
+    ctx.fillStyle=color;ctx.font="700 10px system-ui";ctx.textAlign="right";ctx.fillText(`${label} ${px(level)}`,w-pad.r-4,y-4);ctx.restore();
+  }
+
+  function draw(){
+    const w=chart.clientWidth,h=chart.clientHeight;ctx.clearRect(0,0,w,h);ctx.fillStyle="#07131e";ctx.fillRect(0,0,w,h);
+    const pad={l:68,r:18,t:38,b:34},cw=w-pad.l-pad.r,ch=h-pad.t-pad.b;
+    const vals=collectPrices(),rawMin=Math.min(...vals),rawMax=Math.max(...vals),spread=Math.max(8,rawMax-rawMin),margin=Math.max(5,spread*.09);
+    const center=(rawMin-margin+rawMax+margin)/2,range=Math.max(1,(rawMax-rawMin+margin*2)*priceScale),min=center-range/2,max=center+range/2;
+    chartView={pad,cw,ch,min,max,range,w,h};
+
+    ctx.strokeStyle="rgba(145,164,181,.13)";ctx.lineWidth=1;
+    for(let i=0;i<=6;i++){const y=pad.t+ch*i/6;ctx.beginPath();ctx.moveTo(pad.l,y);ctx.lineTo(w-pad.r,y);ctx.stroke()}
+    for(let i=0;i<=8;i++){const x=pad.l+cw*i/8;ctx.beginPath();ctx.moveTo(x,pad.t);ctx.lineTo(x,h-pad.b);ctx.stroke()}
+    ctx.fillStyle="#8095a6";ctx.font="10px system-ui";
+    ctx.textAlign="right";for(let i=0;i<=6;i++){ctx.fillText(px(max-range*i/6),pad.l-5,pad.t+ch*i/6+4)}
+    ctx.textAlign="center";for(let i=0;i<=8;i++){const ms=viewStart+(viewEnd-viewStart)*i/8;ctx.fillText(timeText(ms),pad.l+cw*i/8,h-8)}
+
+    drawings.forEach(d=>drawDrawing(d));if(draft)drawDrawing(draft,true);
+
+    const candles=buildCandles().filter(c=>c.end>=viewStart&&c.start<=viewEnd),candleMs=Number(els.candle.value)||30000;
+    const body=Math.max(3,Math.min(36,(candleMs/(viewEnd-viewStart))*cw*.72));
+    candles.forEach(c=>{
+      const x=ptToXY({ms:c.start+candleMs/2,price:c.close}).x,yh=ptToXY({ms:0,price:c.high}).y,yl=ptToXY({ms:0,price:c.low}).y,
+        yo=ptToXY({ms:0,price:c.open}).y,yc=ptToXY({ms:0,price:c.close}).y,up=c.close>=c.open,col=up?"#66d19e":"#ef7777";
+      ctx.strokeStyle=col;ctx.fillStyle=col;ctx.lineWidth=1.2;ctx.beginPath();ctx.moveTo(x,yh);ctx.lineTo(x,yl);ctx.stroke();
+      const top=Math.min(yo,yc),height=Math.max(2,Math.abs(yc-yo));
+      if(up){ctx.globalAlpha=.28;ctx.fillRect(x-body/2,top,body,height);ctx.globalAlpha=1;ctx.strokeRect(x-body/2,top,body,height)}
+      else ctx.fillRect(x-body/2,top,body,height);
+    });
+
+    trades.forEach(t=>{
+      const a=ptToXY({ms:t.openedMs,price:t.entry}),b=ptToXY({ms:t.closedMs,price:t.exit});
+      ctx.fillStyle=t.side==="long"?"#66d19e":"#ef7777";ctx.beginPath();ctx.arc(a.x,a.y,5,0,Math.PI*2);ctx.fill();
+      ctx.fillStyle="#eef4f8";ctx.beginPath();ctx.arc(b.x,b.y,4,0,Math.PI*2);ctx.fill();
+    });
+
+    drawLinePrice(price,"rgba(125,199,222,.85)","LAST",true,1);
+    const order=position||pending;if(order){
+      drawLinePrice(order.entry,"#d6c27a",pending?"PREVIEW ENTRY":"ENTRY",true,1.4);
+      if(order.stop!==null)drawLinePrice(order.stop,"#ef7777",pending?"PREVIEW SL":"SL",false,2.2);
+      if(order.target!==null)drawLinePrice(order.target,"#66d19e",pending?"PREVIEW TP":"TP",false,2.2);
+    }
+
+    if(hover&&activeTool==="cursor"){
+      ctx.save();ctx.strokeStyle="rgba(145,164,181,.42)";ctx.setLineDash([4,4]);ctx.beginPath();
+      ctx.moveTo(hover.x,pad.t);ctx.lineTo(hover.x,h-pad.b);ctx.moveTo(pad.l,hover.y);ctx.lineTo(w-pad.r,hover.y);ctx.stroke();ctx.restore();
+    }
+    updateReadout();
+  }
+
+  function drawDrawing(d,preview=false){
+    ctx.save();ctx.strokeStyle=preview?"#7dc7de":"rgba(198,212,223,.75)";ctx.fillStyle=preview?"rgba(125,199,222,.08)":"rgba(198,212,223,.06)";
+    ctx.lineWidth=1.4;if(preview)ctx.setLineDash([5,4]);
+    if(d.type==="hline"){const y=ptToXY({ms:0,price:d.price}).y;ctx.beginPath();ctx.moveTo(chartView.pad.l,y);ctx.lineTo(chartView.w-chartView.pad.r,y);ctx.stroke()}
+    else if(d.type==="vline"){const x=ptToXY({ms:d.ms,price:price}).x;ctx.beginPath();ctx.moveTo(x,chartView.pad.t);ctx.lineTo(x,chartView.h-chartView.pad.b);ctx.stroke()}
+    else if(d.type==="trend"){const a=ptToXY(d.p1),b=ptToXY(d.p2);ctx.beginPath();ctx.moveTo(a.x,a.y);ctx.lineTo(b.x,b.y);ctx.stroke()}
+    else if(d.type==="zone"){const a=ptToXY(d.p1),b=ptToXY(d.p2),x=Math.min(a.x,b.x),y=Math.min(a.y,b.y),rw=Math.abs(b.x-a.x),rh=Math.abs(b.y-a.y);ctx.fillRect(x,y,rw,rh);ctx.strokeRect(x,y,rw,rh)}
+    ctx.restore();
+  }
+
+  function updateReadout(){
+    els.viewLabel.textContent=`View ${timeText(viewStart)}–${timeText(viewEnd)}`;
+    if(!hover)return;
+    const ms=xTime(hover.x),c=buildCandles().find(c=>ms>=c.start&&ms<=c.end);
+    if(c)els.readout.innerHTML=`<strong>${timeText(c.start)} candle</strong><span>O ${px(c.open)}</span><span>H ${px(c.high)}</span><span>L ${px(c.low)}</span><span>C ${px(c.close)}</span><span id="viewLabel">View ${timeText(viewStart)}–${timeText(viewEnd)}</span>`;
+    els.viewLabel=$("viewLabel");
+  }
+
+  function updateUi(){
+    const remain=Math.max(0,TEST_MS-elapsed),sec=remain/1000;
+    els.time.textContent=`${String(Math.floor(sec/60)).padStart(2,"0")}:${(sec%60).toFixed(1).padStart(4,"0")}`;
+    els.price.textContent=px(price);els.phase.textContent=running?phaseFor(elapsed):"READY";
+    els.position.textContent=position?`${position.side.toUpperCase()} ${position.qty}`:"Flat";
+    els.entry.textContent=position?px(position.entry):"—";
+    const u=currentPnl();els.unreal.textContent=money(u);els.realized.textContent=money(realized);
+    els.unreal.className=u>0?"positive":u<0?"negative":"";els.realized.className=realized>0?"positive":realized<0?"negative":"";
+    updateBracketUi();draw();
+  }
+
+  function syncToolButtons(){document.querySelectorAll("[data-tool]").forEach(b=>b.classList.toggle("active",b.dataset.tool===activeTool))}
+  function syncFollow(){ $("followBtn").textContent=`Follow: ${follow?"ON":"OFF"}`;$("followBtn").classList.toggle("active",follow) }
+
+  document.querySelectorAll("[data-tool]").forEach(btn=>btn.addEventListener("click",()=>{activeTool=btn.dataset.tool;draft=null;syncToolButtons();draw()}));
+  function applyInputsToActiveOrder(){
+    const o=position||pending;
+    if(!o){updateBracketUi();return}
+    const exactStop=parsePositive(els.exactSl),exactTarget=parsePositive(els.exactTp);
+    const slPts=parsePositive(els.slPts),tpPts=parsePositive(els.tpPts);
+    const stop=exactStop!==null?roundTick(exactStop):(slPts!==null?roundTick(o.side==="long"?o.entry-slPts:o.entry+slPts):null);
+    const target=exactTarget!==null?roundTick(exactTarget):(tpPts!==null?roundTick(o.side==="long"?o.entry+tpPts:o.entry-tpPts):null);
+    setBracket("stop",stop);
+    setBracket("target",target);
+    updatePreviewUi();
+  }
+
+  document.querySelectorAll("[data-preset]").forEach(btn=>btn.addEventListener("click",()=>{
+    const[a,b]=btn.dataset.preset.split(",");
+    els.slPts.value=a;els.tpPts.value=b;els.exactSl.value="";els.exactTp.value="";
+    applyInputsToActiveOrder();
+  }));
+
+  els.start.addEventListener("click",start);els.reset.addEventListener("click",()=>reset(true));els.long.addEventListener("click",()=>setupOrder("long"));els.short.addEventListener("click",()=>setupOrder("short"));
+  els.confirm.addEventListener("click",confirmOrder);els.cancel.addEventListener("click",()=>{pending=null;updatePreviewUi();draw()});els.flatten.addEventListener("click",()=>closePosition("Manual flatten"));
+  $("slMinus").addEventListener("click",()=>{els.exactSl.value="";els.slPts.value=Math.max(.25,(parsePositive(els.slPts)||.25)-.25);applyInputsToActiveOrder()});
+  $("slPlus").addEventListener("click",()=>{els.exactSl.value="";els.slPts.value=(parsePositive(els.slPts)||0)+.25;applyInputsToActiveOrder()});
+  $("tpMinus").addEventListener("click",()=>{els.exactTp.value="";els.tpPts.value=Math.max(.25,(parsePositive(els.tpPts)||.25)-.25);applyInputsToActiveOrder()});
+  $("tpPlus").addEventListener("click",()=>{els.exactTp.value="";els.tpPts.value=(parsePositive(els.tpPts)||0)+.25;applyInputsToActiveOrder()});
+  $("noStopBtn").addEventListener("click",()=>{els.slPts.value="";els.exactSl.value="";if(position||pending)setBracket("stop",null);else updateBracketUi()});
+  $("noTargetBtn").addEventListener("click",()=>{els.tpPts.value="";els.exactTp.value="";if(position||pending)setBracket("target",null);else updateBracketUi()});
+  [els.slPts,els.tpPts,els.exactSl,els.exactTp].forEach(x=>x.addEventListener("change",applyInputsToActiveOrder));
+  els.candle.addEventListener("change",draw);
+
+  $("zoomInBtn").addEventListener("click",()=>{const mid=(viewStart+viewEnd)/2,span=Math.max(MIN_VIEW,(viewEnd-viewStart)*.65);viewStart=clamp(mid-span/2,0,TEST_MS-span);viewEnd=viewStart+span;follow=false;syncFollow();draw()});
+  $("zoomOutBtn").addEventListener("click",()=>{const mid=(viewStart+viewEnd)/2,span=Math.min(TEST_MS,(viewEnd-viewStart)*1.55);viewStart=clamp(mid-span/2,0,TEST_MS-span);viewEnd=viewStart+span;follow=false;syncFollow();draw()});
+  $("panLeftBtn").addEventListener("click",()=>{const span=viewEnd-viewStart,shift=span*.2;viewStart=clamp(viewStart-shift,0,TEST_MS-span);viewEnd=viewStart+span;follow=false;syncFollow();draw()});
+  $("panRightBtn").addEventListener("click",()=>{const span=viewEnd-viewStart,shift=span*.2;viewStart=clamp(viewStart+shift,0,TEST_MS-span);viewEnd=viewStart+span;follow=false;syncFollow();draw()});
+  $("fitBtn").addEventListener("click",()=>{viewStart=0;viewEnd=TEST_MS;follow=false;syncFollow();draw()});
+  $("followBtn").addEventListener("click",()=>{follow=!follow;syncFollow();draw()});
+  $("undoBtn").addEventListener("click",()=>{drawings.pop();draw()});$("clearBtn").addEventListener("click",()=>{drawings=[];draw()});
+
+  $("saveReflectionBtn").addEventListener("click",()=>{
+    const v=els.reflection.value.trim();if(!v){els.reflectionStatus.textContent="Write a reflection before saving.";return}
+    try{localStorage.setItem("gc_market_test_reflection_v1",JSON.stringify({text:v,ts:Date.now()}));els.reflectionStatus.textContent="Reflection saved in this browser."}
+    catch{els.reflectionStatus.textContent="This browser could not save the reflection."}
+  });
+
+  function canvasPoint(ev){const r=chart.getBoundingClientRect();return{x:ev.clientX-r.left,y:ev.clientY-r.top}}
+  function nearBracket(y){
+    const o=position||pending;if(!o||!chartView)return null;
+    const yFor=v=>chartView.pad.t+(1-(v-chartView.min)/chartView.range)*chartView.ch;
+    if(o.stop!==null&&Math.abs(y-yFor(o.stop))<16)return"stop";
+    if(o.target!==null&&Math.abs(y-yFor(o.target))<16)return"target";
+    return null;
+  }
+  function nearestDrawing(pt){
+    if(!drawings.length)return-1;
+    let best=-1,dist=Infinity;
+    drawings.forEach((d,i)=>{
+      let dd=999;
+      if(d.type==="hline")dd=Math.abs(pt.y-ptToXY({ms:0,price:d.price}).y);
+      else if(d.type==="vline")dd=Math.abs(pt.x-ptToXY({ms:d.ms,price:price}).x);
+      else{const a=ptToXY(d.p1),b=ptToXY(d.p2),cx=(a.x+b.x)/2,cy=(a.y+b.y)/2;dd=Math.hypot(pt.x-cx,pt.y-cy)}
+      if(dd<dist){dist=dd;best=i}
+    });
+    return dist<28?best:-1;
+  }
+
+  chart.addEventListener("pointerdown",ev=>{
+    if(!chartView)return;const pt=canvasPoint(ev),{pad,w,h}=chartView;
+    if(pt.x<=pad.l&&pt.y>=pad.t&&pt.y<=h-pad.b){axisDrag={kind:"price",y:pt.y,scale:priceScale};chart.setPointerCapture?.(ev.pointerId);return}
+    if(pt.y>=h-pad.b&&pt.x>=pad.l&&pt.x<=w-pad.r){axisDrag={kind:"time",x:pt.x,span:viewEnd-viewStart};follow=false;syncFollow();chart.setPointerCapture?.(ev.pointerId);return}
+    if(activeTool==="cursor"){
+      const k=nearBracket(pt.y);if(k){dragBracket=k;chart.setPointerCapture?.(ev.pointerId);return}
+      hover=pt;draw();return;
+    }
+    const data={ms:xTime(pt.x),price:yPrice(pt.y)};
+    if(activeTool==="hline"){drawings.push({type:"hline",price:data.price});draw()}
+    else if(activeTool==="vline"){drawings.push({type:"vline",ms:data.ms});draw()}
+    else if(activeTool==="trend"||activeTool==="zone"){draft={type:activeTool,p1:data,p2:data};chart.setPointerCapture?.(ev.pointerId);draw()}
+    else if(activeTool==="eraser"){const i=nearestDrawing(pt);if(i>=0)drawings.splice(i,1);draw()}
+  });
+  chart.addEventListener("pointermove",ev=>{
+    if(!chartView)return;const pt=canvasPoint(ev);
+    if(axisDrag){
+      if(axisDrag.kind==="price"){priceScale=clamp(axisDrag.scale*Math.exp((pt.y-axisDrag.y)*.009),.2,6)}
+      else{const factor=Math.exp(-(pt.x-axisDrag.x)*.008),span=clamp(axisDrag.span*factor,MIN_VIEW,TEST_MS),mid=(viewStart+viewEnd)/2;viewStart=clamp(mid-span/2,0,TEST_MS-span);viewEnd=viewStart+span}
+      draw();return;
+    }
+    if(dragBracket){setBracket(dragBracket,yPrice(pt.y));return}
+    if(draft){draft.p2={ms:xTime(pt.x),price:yPrice(pt.y)};draw();return}
+    hover=pt;draw();
+  });
+
+  function finishPointerInteraction(){
+    if(axisDrag){axisDrag=null;draw();return}
+    if(dragBracket){dragBracket=null;draw();return}
+    if(draft){drawings.push(draft);draft=null;draw()}
+  }
+
+  chart.addEventListener("pointerup",finishPointerInteraction);
+  chart.addEventListener("pointercancel",()=>{
+    axisDrag=null;
+    dragBracket=null;
+    draft=null;
+    hover=null;
+    draw();
+  });
+  chart.addEventListener("pointerleave",()=>{if(!dragBracket&&!draft){hover=null;draw()}});
+
+  resize();reset(true);
+})();
+</script>
+</body>
+</html>
