@@ -1373,5 +1373,1964 @@ setTimeout(()=>{
 },100);
 
 </script>
+<!-- =========================================================
+     BITMAP — COINBASE BTC/USD TRADING CHART
+     Paste directly before </body>
+     ========================================================= -->
+
+<style>
+/* =========================================================
+   BITMAP BTC CHART
+   ========================================================= */
+
+.bitmap-chart-panel{
+  background:#050505;
+  border:1px solid #5f4812;
+  border-radius:18px;
+  overflow:hidden;
+  box-shadow:0 18px 50px rgba(0,0,0,.72);
+}
+
+.bitmap-chart-header{
+  padding:14px;
+  border-bottom:1px solid #5f4812;
+  display:flex;
+  align-items:center;
+  justify-content:space-between;
+  gap:12px;
+  flex-wrap:wrap;
+  background:#070707;
+}
+
+.bitmap-chart-heading{
+  min-width:180px;
+}
+
+.bitmap-chart-heading .eyebrow{
+  color:#f2b93b;
+}
+
+.bitmap-chart-heading h3{
+  margin:4px 0 0;
+  color:#ffffff;
+}
+
+.bitmap-chart-market{
+  display:flex;
+  align-items:center;
+  gap:10px;
+  flex-wrap:wrap;
+}
+
+.bitmap-chart-symbol{
+  padding:7px 10px;
+  border:1px solid #6a5014;
+  border-radius:9px;
+  background:#000;
+  color:#ffffff;
+  font-size:11px;
+  font-weight:850;
+}
+
+.bitmap-chart-live{
+  display:flex;
+  align-items:center;
+  gap:6px;
+  color:#f2b93b;
+  font-size:10px;
+  font-weight:800;
+}
+
+.bitmap-live-dot{
+  width:7px;
+  height:7px;
+  border-radius:50%;
+  background:#f2b93b;
+  box-shadow:0 0 8px rgba(242,185,59,.85);
+}
+
+.bitmap-chart-price{
+  color:#ffffff;
+  font-size:20px;
+  font-weight:900;
+  letter-spacing:-.02em;
+}
+
+.bitmap-timeframes{
+  display:flex;
+  gap:6px;
+  flex-wrap:wrap;
+}
+
+.bitmap-timeframe-btn{
+  border:1px solid #5f4812;
+  background:#080808;
+  color:#ffffff;
+  padding:8px 11px;
+  border-radius:8px;
+  cursor:pointer;
+  font-size:11px;
+  font-weight:850;
+}
+
+.bitmap-timeframe-btn:hover{
+  border-color:#f2b93b;
+  color:#f2b93b;
+}
+
+.bitmap-timeframe-btn.active{
+  background:#241a06;
+  border-color:#f2b93b;
+  color:#f2b93b;
+  box-shadow:0 0 10px rgba(242,185,59,.10);
+}
+
+.bitmap-chart-info{
+  display:flex;
+  align-items:center;
+  justify-content:space-between;
+  gap:10px;
+  flex-wrap:wrap;
+  padding:9px 14px;
+  background:#020202;
+  border-bottom:1px solid #32270b;
+  font-size:10px;
+}
+
+.bitmap-ohlc{
+  display:flex;
+  gap:11px;
+  flex-wrap:wrap;
+}
+
+.bitmap-ohlc span{
+  color:#a8a8a8;
+}
+
+.bitmap-ohlc b{
+  color:#ffffff;
+  margin-left:3px;
+}
+
+.bitmap-chart-status{
+  display:flex;
+  gap:8px;
+  align-items:center;
+  color:#d3d3d3;
+}
+
+.bitmap-chart-status strong{
+  color:#f2b93b;
+}
+
+#bitmapCoinbaseChart{
+  width:100%;
+  height:570px;
+  background:#000000;
+}
+
+.bitmap-chart-footer{
+  padding:9px 14px;
+  border-top:1px solid #30250a;
+  color:#969696;
+  background:#030303;
+  display:flex;
+  justify-content:space-between;
+  gap:10px;
+  flex-wrap:wrap;
+  font-size:9px;
+}
+
+.bitmap-chart-footer strong{
+  color:#d9b65b;
+}
+
+.bitmap-chart-loading{
+  position:absolute;
+  inset:0;
+  display:grid;
+  place-items:center;
+  pointer-events:none;
+  color:#f2b93b;
+  font-size:11px;
+  font-weight:800;
+  letter-spacing:.08em;
+  text-transform:uppercase;
+  background:rgba(0,0,0,.50);
+  z-index:5;
+}
+
+.bitmap-chart-container{
+  position:relative;
+}
+
+.bitmap-chart-loading.hidden{
+  display:none;
+}
+
+@media(max-width:760px){
+
+  #bitmapCoinbaseChart{
+    height:500px;
+  }
+
+  .bitmap-chart-header{
+    align-items:flex-start;
+  }
+
+  .bitmap-chart-market{
+    width:100%;
+  }
+
+  .bitmap-timeframes{
+    width:100%;
+  }
+
+  .bitmap-timeframe-btn{
+    flex:1;
+    text-align:center;
+    min-width:48px;
+  }
+
+}
+
+@media(max-width:480px){
+
+  #bitmapCoinbaseChart{
+    height:455px;
+  }
+
+  .bitmap-chart-price{
+    font-size:18px;
+  }
+
+}
+</style>
+
+
+<script>
+/* =========================================================
+   BITMAP COINBASE BTC/USD CHART
+   ========================================================= */
+
+(function(){
+
+  const BITMAP_PRODUCT = 'BTC-USD';
+
+  const BITMAP_TIMEFRAMES = {
+
+    '1m':{
+      label:'1m',
+      coinbaseGranularity:60,
+      candleSeconds:60,
+      aggregate:false
+    },
+
+    '5m':{
+      label:'5m',
+      coinbaseGranularity:300,
+      candleSeconds:300,
+      aggregate:false
+    },
+
+    '15m':{
+      label:'15m',
+      coinbaseGranularity:900,
+      candleSeconds:900,
+      aggregate:false
+    },
+
+    /*
+      Coinbase does not expose native 30 minute candles.
+      We construct 30m candles from two consecutive
+      Coinbase 15 minute candles.
+    */
+
+    '30m':{
+      label:'30m',
+      coinbaseGranularity:900,
+      candleSeconds:1800,
+      aggregate:true
+    },
+
+    '1h':{
+      label:'1h',
+      coinbaseGranularity:3600,
+      candleSeconds:3600,
+      aggregate:false
+    }
+
+  };
+
+
+  let bitmapChart = null;
+  let bitmapCandleSeries = null;
+
+  let bitmapActiveTimeframe = '5m';
+
+  let bitmapCandles = [];
+
+  let bitmapSocket = null;
+
+  let bitmapSocketReconnect = null;
+
+  let bitmapChartInitialized = false;
+
+  let bitmapResizeObserver = null;
+
+
+  /* =========================================================
+     ADD BTC CHART NAV BUTTON
+     ========================================================= */
+
+  function addBitmapChartNavigation(){
+
+    const nav =
+      document.querySelector('.nav');
+
+    if(!nav) return;
+
+
+    let button =
+      nav.querySelector('[data-page="btcchart"]');
+
+
+    if(!button){
+
+      button =
+        document.createElement('button');
+
+      button.textContent =
+        'BTC Chart';
+
+      button.dataset.page =
+        'btcchart';
+
+
+      const analysisButton =
+        nav.querySelector(
+          '[data-page="analysis"]'
+        );
+
+
+      if(analysisButton){
+
+        analysisButton.after(button);
+
+      }else{
+
+        nav.appendChild(button);
+
+      }
+
+    }
+
+
+    button.addEventListener(
+      'click',
+      async ()=>{
+
+        document
+          .querySelectorAll('.nav button')
+          .forEach(btn=>{
+            btn.classList.remove('active');
+          });
+
+
+        document
+          .querySelectorAll('.page')
+          .forEach(page=>{
+            page.classList.remove('active');
+          });
+
+
+        button.classList.add('active');
+
+
+        const page =
+          document.getElementById(
+            'btcchart'
+          );
+
+
+        if(page){
+
+          page.classList.add('active');
+
+        }
+
+
+        window.scrollTo({
+          top:0,
+          behavior:'smooth'
+        });
+
+
+        await initializeBitmapChart();
+
+
+        setTimeout(()=>{
+
+          resizeBitmapChart();
+
+        },50);
+
+      }
+    );
+
+  }
+
+
+  /* =========================================================
+     CREATE BTC CHART PAGE
+     ========================================================= */
+
+  function addBitmapChartPage(){
+
+    if(
+      document.getElementById(
+        'btcchart'
+      )
+    ){
+      return;
+    }
+
+
+    const section =
+      document.createElement(
+        'section'
+      );
+
+
+    section.id =
+      'btcchart';
+
+
+    section.className =
+      'page';
+
+
+    section.innerHTML = `
+
+      <div class="bitmap-chart-panel">
+
+        <div class="bitmap-chart-header">
+
+          <div class="bitmap-chart-heading">
+
+            <div class="eyebrow">
+              BITMAP MARKET TERMINAL
+            </div>
+
+            <h3>
+              Coinbase BTC/USD Spot
+            </h3>
+
+          </div>
+
+
+          <div class="bitmap-chart-market">
+
+            <div class="bitmap-chart-symbol">
+              BTC / USD
+            </div>
+
+
+            <div>
+
+              <div
+                id="bitmapChartPrice"
+                class="bitmap-chart-price"
+              >
+                $--
+              </div>
+
+              <div class="bitmap-chart-live">
+
+                <span class="bitmap-live-dot"></span>
+
+                <span id="bitmapFeedStatus">
+                  CONNECTING
+                </span>
+
+              </div>
+
+            </div>
+
+          </div>
+
+
+          <div
+            id="bitmapTimeframes"
+            class="bitmap-timeframes"
+          >
+
+            <button
+              class="bitmap-timeframe-btn"
+              data-tf="1m"
+            >
+              1M
+            </button>
+
+            <button
+              class="bitmap-timeframe-btn active"
+              data-tf="5m"
+            >
+              5M
+            </button>
+
+            <button
+              class="bitmap-timeframe-btn"
+              data-tf="15m"
+            >
+              15M
+            </button>
+
+            <button
+              class="bitmap-timeframe-btn"
+              data-tf="30m"
+            >
+              30M
+            </button>
+
+            <button
+              class="bitmap-timeframe-btn"
+              data-tf="1h"
+            >
+              1H
+            </button>
+
+          </div>
+
+        </div>
+
+
+        <div class="bitmap-chart-info">
+
+          <div
+            class="bitmap-ohlc"
+            id="bitmapOHLC"
+          >
+
+            <span>
+              O
+              <b id="bitmapOpen">--</b>
+            </span>
+
+            <span>
+              H
+              <b id="bitmapHigh">--</b>
+            </span>
+
+            <span>
+              L
+              <b id="bitmapLow">--</b>
+            </span>
+
+            <span>
+              C
+              <b id="bitmapClose">--</b>
+            </span>
+
+          </div>
+
+
+          <div class="bitmap-chart-status">
+
+            <span>
+              Timeframe
+              <strong id="bitmapCurrentTF">
+                5M
+              </strong>
+            </span>
+
+            <span>
+              •
+            </span>
+
+            <span>
+              Source
+              <strong>
+                Coinbase
+              </strong>
+            </span>
+
+          </div>
+
+        </div>
+
+
+        <div class="bitmap-chart-container">
+
+          <div
+            id="bitmapChartLoading"
+            class="bitmap-chart-loading"
+          >
+            Loading Coinbase market data
+          </div>
+
+          <div id="bitmapCoinbaseChart"></div>
+
+        </div>
+
+
+        <div class="bitmap-chart-footer">
+
+          <span>
+            Live market:
+            <strong>
+              Coinbase BTC-USD Spot
+            </strong>
+          </span>
+
+          <span>
+            30M is aggregated from Coinbase 15M candles.
+          </span>
+
+        </div>
+
+      </div>
+
+    `;
+
+
+    const analysisPage =
+      document.getElementById(
+        'analysis'
+      );
+
+
+    if(analysisPage){
+
+      analysisPage.after(section);
+
+    }else{
+
+      document
+        .querySelector('.shell')
+        ?.appendChild(section);
+
+    }
+
+
+    section
+      .querySelectorAll(
+        '.bitmap-timeframe-btn'
+      )
+      .forEach(button=>{
+
+        button.addEventListener(
+          'click',
+          async ()=>{
+
+            const tf =
+              button.dataset.tf;
+
+
+            if(
+              !BITMAP_TIMEFRAMES[tf]
+            ){
+              return;
+            }
+
+
+            bitmapActiveTimeframe =
+              tf;
+
+
+            section
+              .querySelectorAll(
+                '.bitmap-timeframe-btn'
+              )
+              .forEach(btn=>{
+                btn.classList.remove(
+                  'active'
+                );
+              });
+
+
+            button.classList.add(
+              'active'
+            );
+
+
+            const label =
+              document.getElementById(
+                'bitmapCurrentTF'
+              );
+
+
+            if(label){
+
+              label.textContent =
+                tf.toUpperCase();
+
+            }
+
+
+            await loadBitmapTimeframe(
+              tf
+            );
+
+          }
+        );
+
+      });
+
+  }
+
+
+  /* =========================================================
+     LOAD LIGHTWEIGHT CHARTS
+     ========================================================= */
+
+  function loadBitmapChartLibrary(){
+
+    if(
+      window.LightweightCharts
+    ){
+
+      return Promise.resolve();
+
+    }
+
+
+    return new Promise(
+      (resolve,reject)=>{
+
+        const existing =
+          document.querySelector(
+            'script[data-bitmap-chart-library]'
+          );
+
+
+        if(existing){
+
+          existing.addEventListener(
+            'load',
+            resolve,
+            {once:true}
+          );
+
+          existing.addEventListener(
+            'error',
+            reject,
+            {once:true}
+          );
+
+          return;
+
+        }
+
+
+        const script =
+          document.createElement(
+            'script'
+          );
+
+
+        script.src =
+          'https://unpkg.com/lightweight-charts/dist/lightweight-charts.standalone.production.js';
+
+
+        script.async =
+          true;
+
+
+        script.dataset.bitmapChartLibrary =
+          'true';
+
+
+        script.onload =
+          resolve;
+
+
+        script.onerror =
+          reject;
+
+
+        document.head.appendChild(
+          script
+        );
+
+      }
+    );
+
+  }
+
+
+  /* =========================================================
+     FORMATTERS
+     ========================================================= */
+
+  function bitmapUSD(value){
+
+    const number =
+      Number(value);
+
+
+    if(
+      !Number.isFinite(number)
+    ){
+
+      return '--';
+
+    }
+
+
+    return number.toLocaleString(
+      'en-US',
+      {
+        style:'currency',
+        currency:'USD',
+        minimumFractionDigits:2,
+        maximumFractionDigits:2
+      }
+    );
+
+  }
+
+
+  function bitmapChartPriceFormat(
+    value
+  ){
+
+    const number =
+      Number(value);
+
+
+    if(
+      !Number.isFinite(number)
+    ){
+
+      return '';
+
+    }
+
+
+    return '$' +
+      number.toLocaleString(
+        'en-US',
+        {
+          maximumFractionDigits:2
+        }
+      );
+
+  }
+
+
+  /* =========================================================
+     CREATE CHART
+     ========================================================= */
+
+  function createBitmapChart(){
+
+    if(bitmapChart){
+
+      return;
+
+    }
+
+
+    const container =
+      document.getElementById(
+        'bitmapCoinbaseChart'
+      );
+
+
+    if(
+      !container ||
+      !window.LightweightCharts
+    ){
+
+      return;
+
+    }
+
+
+    bitmapChart =
+      LightweightCharts.createChart(
+        container,
+        {
+
+          width:
+            container.clientWidth,
+
+          height:
+            container.clientHeight || 570,
+
+
+          layout:{
+
+            background:{
+              type:'solid',
+              color:'#000000'
+            },
+
+            textColor:
+              '#ffffff',
+
+            fontFamily:
+              'Inter, system-ui, sans-serif',
+
+            fontSize:
+              11
+
+          },
+
+
+          grid:{
+
+            vertLines:{
+              color:
+                'rgba(242,185,59,.09)'
+            },
+
+            horzLines:{
+              color:
+                'rgba(242,185,59,.09)'
+            }
+
+          },
+
+
+          crosshair:{
+
+            mode:
+              LightweightCharts
+                .CrosshairMode
+                .Normal,
+
+            vertLine:{
+
+              color:
+                '#f2b93b',
+
+              width:
+                1,
+
+              style:
+                2,
+
+              labelBackgroundColor:
+                '#8b6517'
+
+            },
+
+            horzLine:{
+
+              color:
+                '#f2b93b',
+
+              width:
+                1,
+
+              style:
+                2,
+
+              labelBackgroundColor:
+                '#8b6517'
+
+            }
+
+          },
+
+
+          rightPriceScale:{
+
+            borderColor:
+              '#6c5116',
+
+            textColor:
+              '#ffffff',
+
+            scaleMargins:{
+              top:.08,
+              bottom:.10
+            }
+
+          },
+
+
+          timeScale:{
+
+            borderColor:
+              '#6c5116',
+
+            timeVisible:
+              true,
+
+            secondsVisible:
+              false,
+
+            rightOffset:
+              7,
+
+            barSpacing:
+              8,
+
+            minBarSpacing:
+              3
+
+          },
+
+
+          handleScroll:{
+            mouseWheel:true,
+            pressedMouseMove:true,
+            horzTouchDrag:true,
+            vertTouchDrag:false
+          },
+
+
+          handleScale:{
+            axisPressedMouseMove:true,
+            mouseWheel:true,
+            pinch:true
+          },
+
+
+          localization:{
+
+            priceFormatter:
+              bitmapChartPriceFormat
+
+          }
+
+        }
+      );
+
+
+    bitmapCandleSeries =
+      bitmapChart.addSeries(
+        LightweightCharts.CandlestickSeries,
+        {
+
+          upColor:
+            '#16c784',
+
+          downColor:
+            '#ea3943',
+
+          borderUpColor:
+            '#16c784',
+
+          borderDownColor:
+            '#ea3943',
+
+          wickUpColor:
+            '#16c784',
+
+          wickDownColor:
+            '#ea3943',
+
+          priceLineColor:
+            '#f2b93b',
+
+          priceLineWidth:
+            1,
+
+          lastValueVisible:
+            true,
+
+          priceLineVisible:
+            true
+
+        }
+      );
+
+
+    bitmapChart.subscribeCrosshairMove(
+      parameter=>{
+
+        if(
+          !parameter ||
+          !parameter.time
+        ){
+
+          updateBitmapOHLC(
+            bitmapCandles[
+              bitmapCandles.length - 1
+            ]
+          );
+
+          return;
+
+        }
+
+
+        const candle =
+          parameter.seriesData.get(
+            bitmapCandleSeries
+          );
+
+
+        if(candle){
+
+          updateBitmapOHLC(
+            candle
+          );
+
+        }
+
+      }
+    );
+
+
+    bitmapResizeObserver =
+      new ResizeObserver(
+        ()=>{
+          resizeBitmapChart();
+        }
+      );
+
+
+    bitmapResizeObserver.observe(
+      container
+    );
+
+  }
+
+
+  function resizeBitmapChart(){
+
+    if(!bitmapChart){
+
+      return;
+
+    }
+
+
+    const container =
+      document.getElementById(
+        'bitmapCoinbaseChart'
+      );
+
+
+    if(!container){
+
+      return;
+
+    }
+
+
+    bitmapChart.applyOptions({
+
+      width:
+        container.clientWidth,
+
+      height:
+        container.clientHeight
+
+    });
+
+  }
+
+
+  /* =========================================================
+     COINBASE HISTORICAL CANDLES
+     Coinbase response:
+     [
+       time,
+       low,
+       high,
+       open,
+       close,
+       volume
+     ]
+     ========================================================= */
+
+  async function fetchBitmapCoinbaseCandles(
+    granularity
+  ){
+
+    const url =
+      'https://api.exchange.coinbase.com/products/' +
+      BITMAP_PRODUCT +
+      '/candles?granularity=' +
+      granularity;
+
+
+    const response =
+      await fetch(
+        url,
+        {
+          cache:'no-store'
+        }
+      );
+
+
+    if(
+      !response.ok
+    ){
+
+      throw new Error(
+        'Coinbase candle request failed'
+      );
+
+    }
+
+
+    const raw =
+      await response.json();
+
+
+    if(
+      !Array.isArray(raw)
+    ){
+
+      throw new Error(
+        'Invalid Coinbase candle response'
+      );
+
+    }
+
+
+    return raw
+      .map(row=>({
+
+        time:
+          Number(row[0]),
+
+        low:
+          Number(row[1]),
+
+        high:
+          Number(row[2]),
+
+        open:
+          Number(row[3]),
+
+        close:
+          Number(row[4]),
+
+        volume:
+          Number(row[5])
+
+      }))
+      .filter(candle=>
+
+        Number.isFinite(candle.time) &&
+        Number.isFinite(candle.open) &&
+        Number.isFinite(candle.high) &&
+        Number.isFinite(candle.low) &&
+        Number.isFinite(candle.close)
+
+      )
+      .sort(
+        (a,b)=>
+          a.time - b.time
+      );
+
+  }
+
+
+  /* =========================================================
+     BUILD 30 MINUTE CANDLES
+     FROM COINBASE 15 MINUTE CANDLES
+     ========================================================= */
+
+  function aggregateBitmapCandles(
+    sourceCandles,
+    targetSeconds
+  ){
+
+    const buckets =
+      new Map();
+
+
+    sourceCandles.forEach(
+      candle=>{
+
+        const bucketTime =
+          Math.floor(
+            candle.time /
+            targetSeconds
+          ) *
+          targetSeconds;
+
+
+        if(
+          !buckets.has(bucketTime)
+        ){
+
+          buckets.set(
+            bucketTime,
+            {
+              time:bucketTime,
+              open:candle.open,
+              high:candle.high,
+              low:candle.low,
+              close:candle.close,
+              volume:candle.volume || 0
+            }
+          );
+
+          return;
+
+        }
+
+
+        const bucket =
+          buckets.get(
+            bucketTime
+          );
+
+
+        bucket.high =
+          Math.max(
+            bucket.high,
+            candle.high
+          );
+
+
+        bucket.low =
+          Math.min(
+            bucket.low,
+            candle.low
+          );
+
+
+        bucket.close =
+          candle.close;
+
+
+        bucket.volume +=
+          candle.volume || 0;
+
+      }
+    );
+
+
+    return Array
+      .from(
+        buckets.values()
+      )
+      .sort(
+        (a,b)=>
+          a.time - b.time
+      );
+
+  }
+
+
+  /* =========================================================
+     LOAD TIMEFRAME
+     ========================================================= */
+
+  async function loadBitmapTimeframe(
+    timeframe
+  ){
+
+    const config =
+      BITMAP_TIMEFRAMES[
+        timeframe
+      ];
+
+
+    if(
+      !config ||
+      !bitmapCandleSeries
+    ){
+
+      return;
+
+    }
+
+
+    const loading =
+      document.getElementById(
+        'bitmapChartLoading'
+      );
+
+
+    if(loading){
+
+      loading.classList.remove(
+        'hidden'
+      );
+
+      loading.textContent =
+        'Loading Coinbase ' +
+        timeframe.toUpperCase() +
+        ' candles';
+
+    }
+
+
+    try{
+
+      const source =
+        await fetchBitmapCoinbaseCandles(
+          config.coinbaseGranularity
+        );
+
+
+      bitmapCandles =
+        config.aggregate
+          ?
+        aggregateBitmapCandles(
+          source,
+          config.candleSeconds
+        )
+          :
+        source;
+
+
+      bitmapCandleSeries.setData(
+        bitmapCandles
+      );
+
+
+      bitmapChart
+        .timeScale()
+        .fitContent();
+
+
+      const latest =
+        bitmapCandles[
+          bitmapCandles.length - 1
+        ];
+
+
+      if(latest){
+
+        updateBitmapOHLC(
+          latest
+        );
+
+
+        updateBitmapChartPrice(
+          latest.close
+        );
+
+      }
+
+
+      if(loading){
+
+        loading.classList.add(
+          'hidden'
+        );
+
+      }
+
+    }
+    catch(error){
+
+      console.error(
+        'BITMAP Coinbase chart:',
+        error
+      );
+
+
+      if(loading){
+
+        loading.textContent =
+          'Coinbase candle feed unavailable';
+
+      }
+
+    }
+
+  }
+
+
+  /* =========================================================
+     REAL-TIME COINBASE WEBSOCKET
+     ========================================================= */
+
+  function connectBitmapCoinbaseSocket(){
+
+    if(bitmapSocket){
+
+      try{
+        bitmapSocket.close();
+      }
+      catch(e){}
+
+    }
+
+
+    const status =
+      document.getElementById(
+        'bitmapFeedStatus'
+      );
+
+
+    if(status){
+
+      status.textContent =
+        'CONNECTING';
+
+    }
+
+
+    bitmapSocket =
+      new WebSocket(
+        'wss://ws-feed.exchange.coinbase.com'
+      );
+
+
+    bitmapSocket.onopen =
+      ()=>{
+
+        if(status){
+
+          status.textContent =
+            'COINBASE LIVE';
+
+        }
+
+
+        bitmapSocket.send(
+          JSON.stringify({
+            type:'subscribe',
+            product_ids:[
+              BITMAP_PRODUCT
+            ],
+            channels:[
+              'ticker'
+            ]
+          })
+        );
+
+      };
+
+
+    bitmapSocket.onmessage =
+      event=>{
+
+        let message;
+
+
+        try{
+
+          message =
+            JSON.parse(
+              event.data
+            );
+
+        }
+        catch(error){
+
+          return;
+
+        }
+
+
+        if(
+          message.type !==
+          'ticker'
+        ){
+
+          return;
+
+        }
+
+
+        if(
+          message.product_id !==
+          BITMAP_PRODUCT
+        ){
+
+          return;
+
+        }
+
+
+        const price =
+          Number(
+            message.price
+          );
+
+
+        if(
+          !Number.isFinite(price)
+        ){
+
+          return;
+
+        }
+
+
+        const time =
+          message.time
+            ?
+          Math.floor(
+            new Date(
+              message.time
+            ).getTime() /
+            1000
+          )
+            :
+          Math.floor(
+            Date.now() /
+            1000
+          );
+
+
+        updateBitmapChartPrice(
+          price
+        );
+
+
+        updateBitmapLiveCandle(
+          price,
+          time
+        );
+
+      };
+
+
+    bitmapSocket.onerror =
+      ()=>{
+
+        if(status){
+
+          status.textContent =
+            'RECONNECTING';
+
+        }
+
+      };
+
+
+    bitmapSocket.onclose =
+      ()=>{
+
+        if(status){
+
+          status.textContent =
+            'RECONNECTING';
+
+        }
+
+
+        clearTimeout(
+          bitmapSocketReconnect
+        );
+
+
+        bitmapSocketReconnect =
+          setTimeout(
+            connectBitmapCoinbaseSocket,
+            2500
+          );
+
+      };
+
+  }
+
+
+  /* =========================================================
+     UPDATE CURRENT LIVE CANDLE
+     ========================================================= */
+
+  function updateBitmapLiveCandle(
+    price,
+    tickTime
+  ){
+
+    if(
+      !bitmapCandleSeries ||
+      !bitmapCandles.length
+    ){
+
+      return;
+
+    }
+
+
+    const config =
+      BITMAP_TIMEFRAMES[
+        bitmapActiveTimeframe
+      ];
+
+
+    const bucketTime =
+      Math.floor(
+        tickTime /
+        config.candleSeconds
+      ) *
+      config.candleSeconds;
+
+
+    let last =
+      bitmapCandles[
+        bitmapCandles.length - 1
+      ];
+
+
+    if(
+      bucketTime >
+      last.time
+    ){
+
+      const newCandle = {
+
+        time:
+          bucketTime,
+
+        open:
+          last.close,
+
+        high:
+          price,
+
+        low:
+          price,
+
+        close:
+          price,
+
+        volume:
+          0
+
+      };
+
+
+      bitmapCandles.push(
+        newCandle
+      );
+
+
+      bitmapCandleSeries.update(
+        newCandle
+      );
+
+
+      updateBitmapOHLC(
+        newCandle
+      );
+
+
+      return;
+
+    }
+
+
+    if(
+      bucketTime ===
+      last.time
+    ){
+
+      last = {
+
+        ...last,
+
+        high:
+          Math.max(
+            last.high,
+            price
+          ),
+
+        low:
+          Math.min(
+            last.low,
+            price
+          ),
+
+        close:
+          price
+
+      };
+
+
+      bitmapCandles[
+        bitmapCandles.length - 1
+      ] =
+        last;
+
+
+      bitmapCandleSeries.update(
+        last
+      );
+
+
+      updateBitmapOHLC(
+        last
+      );
+
+    }
+
+  }
+
+
+  /* =========================================================
+     PRICE + OHLC UI
+     ========================================================= */
+
+  function updateBitmapChartPrice(
+    price
+  ){
+
+    const element =
+      document.getElementById(
+        'bitmapChartPrice'
+      );
+
+
+    if(element){
+
+      element.textContent =
+        bitmapUSD(price);
+
+    }
+
+  }
+
+
+  function updateBitmapOHLC(
+    candle
+  ){
+
+    if(!candle){
+
+      return;
+
+    }
+
+
+    const open =
+      document.getElementById(
+        'bitmapOpen'
+      );
+
+    const high =
+      document.getElementById(
+        'bitmapHigh'
+      );
+
+    const low =
+      document.getElementById(
+        'bitmapLow'
+      );
+
+    const close =
+      document.getElementById(
+        'bitmapClose'
+      );
+
+
+    if(open){
+
+      open.textContent =
+        bitmapChartPriceFormat(
+          candle.open
+        );
+
+    }
+
+
+    if(high){
+
+      high.textContent =
+        bitmapChartPriceFormat(
+          candle.high
+        );
+
+    }
+
+
+    if(low){
+
+      low.textContent =
+        bitmapChartPriceFormat(
+          candle.low
+        );
+
+    }
+
+
+    if(close){
+
+      close.textContent =
+        bitmapChartPriceFormat(
+          candle.close
+        );
+
+    }
+
+  }
+
+
+  /* =========================================================
+     INITIALIZE
+     ========================================================= */
+
+  async function initializeBitmapChart(){
+
+    if(
+      bitmapChartInitialized
+    ){
+
+      resizeBitmapChart();
+      return;
+
+    }
+
+
+    bitmapChartInitialized =
+      true;
+
+
+    try{
+
+      await loadBitmapChartLibrary();
+
+
+      createBitmapChart();
+
+
+      await loadBitmapTimeframe(
+        bitmapActiveTimeframe
+      );
+
+
+      connectBitmapCoinbaseSocket();
+
+    }
+    catch(error){
+
+      console.error(
+        'BITMAP chart initialization:',
+        error
+      );
+
+
+      bitmapChartInitialized =
+        false;
+
+
+      const loading =
+        document.getElementById(
+          'bitmapChartLoading'
+        );
+
+
+      if(loading){
+
+        loading.textContent =
+          'Unable to initialize chart';
+
+      }
+
+    }
+
+  }
+
+
+  /* =========================================================
+     INSTALL INTO CURRENT BITMAP WEBSITE
+     ========================================================= */
+
+  addBitmapChartPage();
+
+  addBitmapChartNavigation();
+
+
+})();
+</script>
 </body>
 </html>
