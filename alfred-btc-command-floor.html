@@ -2845,6 +2845,591 @@ setInterval(
 );
 
 </script>
+<style>
+/* =========================================
+   BITMAP — BITCOIN BLACK / GOLD THEME
+   ========================================= */
 
+:root{
+  --bg:#000000 !important;
+  --bg2:#050505 !important;
+  --panel:#080808 !important;
+  --line:#5f4812 !important;
+  --ink:#ffffff !important;
+  --muted:#d6d6d6 !important;
+  --blue:#f2b93b !important;
+  --green:#f2b93b !important;
+  --red:#f2b93b !important;
+  --amber:#f2b93b !important;
+  --shadow:0 18px 48px rgba(0,0,0,.7) !important;
+}
+
+html,
+body{
+  background:#000000 !important;
+  color:#ffffff !important;
+}
+
+/* HEADER */
+
+.site-header{
+  background:rgba(0,0,0,.96) !important;
+  border-bottom:1px solid #6f5417 !important;
+}
+
+.logo{
+  background:linear-gradient(180deg,#302407,#120d02) !important;
+  border:1px solid #d09c27 !important;
+  color:#f2b93b !important;
+  box-shadow:
+    0 0 18px rgba(242,185,59,.18),
+    inset 0 0 14px rgba(242,185,59,.05) !important;
+}
+
+.brand h1{
+  color:#ffffff !important;
+}
+
+.brand p{
+  color:#f2b93b !important;
+}
+
+.nav button{
+  background:#080808 !important;
+  border:1px solid #5f4812 !important;
+  color:#ffffff !important;
+}
+
+.nav button:hover{
+  border-color:#f2b93b !important;
+  color:#f2b93b !important;
+}
+
+.nav button.active{
+  background:#211806 !important;
+  border-color:#f2b93b !important;
+  color:#f2b93b !important;
+  box-shadow:
+    0 0 12px rgba(242,185,59,.12),
+    inset 0 0 0 1px rgba(242,185,59,.15) !important;
+}
+
+/* MAIN PANELS */
+
+.panel,
+.section,
+.cam-shell,
+.modal-box{
+  background:
+    linear-gradient(
+      180deg,
+      #0c0c0c,
+      #050505
+    ) !important;
+
+  border:1px solid #5f4812 !important;
+  color:#ffffff !important;
+}
+
+.notice{
+  background:rgba(242,185,59,.07) !important;
+  border:1px solid rgba(242,185,59,.32) !important;
+  color:#ffffff !important;
+}
+
+.eyebrow,
+.section-head b,
+.floor-title{
+  color:#f2b93b !important;
+}
+
+.section-title,
+.hero h2,
+.cam-head h3,
+.alfred-suite h2{
+  color:#ffffff !important;
+}
+
+.hero p,
+.muted,
+.card p,
+.metric span,
+.feed-item p,
+.footer,
+.alfred-suite p{
+  color:#d6d6d6 !important;
+}
+
+/* CARDS */
+
+.metric,
+.card,
+.bot-card,
+.step,
+.feed-item{
+  background:#090909 !important;
+  border:1px solid #584311 !important;
+  color:#ffffff !important;
+}
+
+.metric small,
+.bot-card small,
+.step span{
+  color:#d2aa4a !important;
+}
+
+.metric strong,
+.bot-card b,
+.step b{
+  color:#ffffff !important;
+}
+
+.bot-card:hover{
+  border-color:#f2b93b !important;
+  box-shadow:0 0 16px rgba(242,185,59,.12) !important;
+}
+
+.chip,
+.cam-pill,
+.hud span{
+  background:#080808 !important;
+  border:1px solid #614b16 !important;
+  color:#fff2ca !important;
+}
+
+.decision{
+  color:#f2b93b !important;
+}
+
+/* CAMERA */
+
+.camera{
+  background:
+    radial-gradient(
+      circle at top,
+      rgba(242,185,59,.06),
+      transparent 32%
+    ),
+    linear-gradient(
+      180deg,
+      #050505,
+      #000000
+    ) !important;
+}
+
+.camera:before{
+  background:
+    repeating-linear-gradient(
+      to bottom,
+      rgba(255,255,255,.015) 0px,
+      rgba(255,255,255,.015) 1px,
+      transparent 2px,
+      transparent 5px
+    ) !important;
+}
+
+.camera:after{
+  box-shadow:
+    inset 0 0 160px rgba(0,0,0,.8) !important;
+}
+
+.rec{
+  background:#f2b93b !important;
+  box-shadow:0 0 10px rgba(242,185,59,.8) !important;
+}
+
+/* ALFRED EXECUTIVE SUITE */
+
+.alfred-suite{
+  background:
+    linear-gradient(
+      180deg,
+      #191205,
+      #080603
+    ) !important;
+
+  border:2px solid #9b761f !important;
+
+  box-shadow:
+    0 15px 35px rgba(0,0,0,.55),
+    0 0 18px rgba(242,185,59,.06) !important;
+}
+
+/* =========================================
+   TRADING ROOMS
+   ========================================= */
+
+.bot-room{
+  --wall1:#161616 !important;
+  --wall2:#0a0a0a !important;
+  --floor:#241a07 !important;
+  --accent:#f2b93b !important;
+
+  border:4px solid #80611a !important;
+
+  background:
+    linear-gradient(
+      var(--wall1) 0 18%,
+      var(--wall2) 18% 74%,
+      var(--floor) 74%
+    ) !important;
+
+  box-shadow:
+    0 12px 30px rgba(0,0,0,.65),
+    inset 0 0 20px rgba(242,185,59,.025) !important;
+}
+
+.bot-room:before{
+  background:
+    linear-gradient(
+      90deg,
+      rgba(242,185,59,.025),
+      transparent 25%,
+      rgba(0,0,0,.15) 72%
+    ) !important;
+}
+
+.room-name{
+  color:#ffffff !important;
+}
+
+.room-name b{
+  color:#ffffff !important;
+}
+
+.room-name .status{
+  color:#f2b93b !important;
+}
+
+.status-dot{
+  background:#f2b93b !important;
+  box-shadow:0 0 8px rgba(242,185,59,.9) !important;
+}
+
+/* LIVE BTC BOARD */
+
+.roof-ticker{
+  background:#050505 !important;
+  border:2px solid #f2b93b !important;
+
+  box-shadow:
+    0 0 12px rgba(242,185,59,.18),
+    inset 0 0 8px rgba(242,185,59,.04) !important;
+}
+
+.roof-ticker b{
+  color:#ffffff !important;
+}
+
+.roof-ticker span{
+  color:#f2b93b !important;
+  text-shadow:0 0 6px rgba(242,185,59,.35) !important;
+}
+
+/* LARGE WALL SCREENS */
+
+.big-screen,
+.side-screen,
+.monitor{
+  background:#060606 !important;
+  border-color:#c69422 !important;
+}
+
+.big-screen{
+  box-shadow:
+    0 0 12px rgba(242,185,59,.1),
+    inset 0 0 12px rgba(242,185,59,.04) !important;
+}
+
+.big-screen:before,
+.monitor:before{
+  background:
+    linear-gradient(
+      90deg,
+      transparent,
+      rgba(242,185,59,.28),
+      transparent
+    ) !important;
+}
+
+.big-screen:after{
+  background:#f2b93b !important;
+
+  box-shadow:
+    14px -8px 0 #ffffff,
+    28px -2px 0 #f2b93b !important;
+}
+
+.side-screen:after{
+  background:#f2b93b !important;
+}
+
+.screen-title{
+  color:#ffffff !important;
+}
+
+/* DESKS */
+
+.deskbar{
+  background:#251b07 !important;
+  border-top:3px solid #8f6c1a !important;
+  border-bottom:3px solid #151004 !important;
+}
+
+/* PHONES */
+
+.phone{
+  background:#0e0e0e !important;
+  border:1px solid #a98125 !important;
+}
+
+.phone:before{
+  background:#3b2d0d !important;
+}
+
+/* COFFEE */
+
+.coffee{
+  background:#ffffff !important;
+  border:1px solid #b8a271 !important;
+}
+
+.coffee:before{
+  background:#714f17 !important;
+}
+
+/* LAMPS */
+
+.lamp:before{
+  background:#e8d9ac !important;
+}
+
+.lamp:after{
+  background:#f2b93b !important;
+  box-shadow:0 0 6px rgba(242,185,59,.45) !important;
+}
+
+/* PLANTS */
+
+.plant:before{
+  background:#5b4516 !important;
+}
+
+.plant:after{
+  background:#b78d27 !important;
+}
+
+/* SHELVES */
+
+.shelf{
+  background:#281d08 !important;
+  border-color:#89671d !important;
+}
+
+.shelf:before,
+.shelf:after{
+  background:#d0a037 !important;
+}
+
+/* SERVER RACKS */
+
+.server{
+  background:#0b0b0b !important;
+  border-color:#8c702c !important;
+}
+
+.server:before,
+.server:after{
+  background:#f2b93b !important;
+
+  box-shadow:
+    0 0 5px rgba(242,185,59,.5) !important;
+}
+
+/* CABINETS */
+
+.cabinet{
+  background:#292313 !important;
+  border-color:#aa8c47 !important;
+}
+
+.cabinet:before{
+  background:#f1dfad !important;
+}
+
+/* =========================================
+   GOLD WORKER SILHOUETTES
+   ========================================= */
+
+.worker .head{
+  background:#f2b93b !important;
+  box-shadow:0 0 4px rgba(242,185,59,.3) !important;
+}
+
+.worker .body{
+  background:#dba328 !important;
+}
+
+.worker .arm{
+  background:#f2b93b !important;
+}
+
+.worker .leg{
+  background:#dba328 !important;
+}
+
+/* each worker becomes a consistent gold figure */
+.worker{
+  filter:
+    drop-shadow(
+      0 0 2px rgba(242,185,59,.15)
+    ) !important;
+}
+
+/* =========================================
+   ALFRED'S KNIGHTS
+   ========================================= */
+
+.patrol{
+  border:3px solid #735719 !important;
+
+  background:
+    linear-gradient(
+      #0c0c0c 0 50%,
+      #201806 50%
+    ) !important;
+}
+
+.patrol label{
+  color:#ffffff !important;
+}
+
+.knight .kh{
+  background:#f2b93b !important;
+}
+
+.knight .kb{
+  background:#dba328 !important;
+}
+
+.knight .ka{
+  background:#f2b93b !important;
+}
+
+.knight .kl{
+  border-left-color:#dba328 !important;
+  border-right-color:#dba328 !important;
+}
+
+.knight{
+  filter:
+    drop-shadow(
+      0 0 3px rgba(242,185,59,.2)
+    ) !important;
+}
+
+/* MODAL */
+
+.modal{
+  background:rgba(0,0,0,.86) !important;
+}
+
+.modal-head{
+  border-bottom:1px solid #5f4812 !important;
+}
+
+.modal-body{
+  color:#ffffff !important;
+}
+
+.modal-body p,
+.modal-body li{
+  color:#e8e8e8 !important;
+}
+
+.close{
+  background:#191205 !important;
+  border:1px solid #87661c !important;
+  color:#ffffff !important;
+}
+
+/* SCROLLBAR */
+
+::-webkit-scrollbar{
+  width:9px;
+  height:9px;
+}
+
+::-webkit-scrollbar-track{
+  background:#050505;
+}
+
+::-webkit-scrollbar-thumb{
+  background:#765919;
+  border-radius:999px;
+}
+
+::-webkit-scrollbar-thumb:hover{
+  background:#f2b93b;
+}
+</style>
+
+<script>
+/* =========================================
+   BITMAP BRANDING
+   Bitcoin Market Analysis Project
+   ========================================= */
+
+document.title =
+  'BITMAP — Bitcoin Market Analysis Project';
+
+const brandTitle =
+  document.querySelector('.brand h1');
+
+if(brandTitle){
+  brandTitle.textContent = 'BITMAP';
+}
+
+const brandSubtitle =
+  document.querySelector('.brand p');
+
+if(brandSubtitle){
+  brandSubtitle.textContent =
+    'Bitcoin Market Analysis Project';
+}
+
+const logo =
+  document.querySelector('.logo');
+
+if(logo){
+  logo.textContent = 'B';
+}
+
+/* Main hero eyebrow */
+
+const heroEyebrow =
+  document.querySelector('.hero .eyebrow');
+
+if(heroEyebrow){
+  heroEyebrow.textContent =
+    'BITMAP / Bitcoin Market Analysis Project';
+}
+
+/* Visual trading floor heading */
+
+const cameraHeading =
+  document.querySelector('.cam-head h3');
+
+if(cameraHeading){
+  cameraHeading.textContent =
+    'BITMAP — Trading Floor Camera';
+}
+
+/*
+Keep ALFRED as Bot #13 and keep
+"Alfred's Knights" unchanged.
+BITMAP is the overall project.
+*/
+</script>
 </body>
 </html> no
