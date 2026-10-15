@@ -1,1953 +1,2684 @@
 <!doctype html>
 <html lang="en">
 <head>
-  <meta charset="utf-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
-  <title>ALFRED Capital - BTC Command Floor</title>
-  <style>
-    :root{
-      --bg:#071018;
-      --panel:#0d1721;
-      --panel2:#111f2d;
-      --line:#1f3345;
-      --ink:#ecf3fa;
-      --muted:#93a5b8;
-      --blue:#4eb7ff;
-      --green:#36d489;
-      --amber:#f5b84d;
-      --red:#ff6b7d;
-      --shadow:0 12px 30px rgba(0,0,0,.32);
-    }
-
-    *{box-sizing:border-box}
-    html{scroll-behavior:smooth}
-
-    body{
-      margin:0;
-      background:radial-gradient(circle at top,#0c1823 0%,#071018 55%,#050c12 100%);
-      color:var(--ink);
-      font-family:Inter,ui-sans-serif,system-ui,-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,Arial,sans-serif;
-    }
-
-    button{font:inherit}
-
-    .site-header{
-      position:sticky;
-      top:0;
-      z-index:40;
-      backdrop-filter:blur(12px);
-      background:rgba(7,16,24,.88);
-      border-bottom:1px solid rgba(31,51,69,.95);
-    }
-
-    .site-header-inner{
-      max-width:1500px;
-      margin:0 auto;
-      padding:14px 16px;
-      display:flex;
-      align-items:center;
-      justify-content:space-between;
-      gap:14px;
-      flex-wrap:wrap;
-    }
-
-    .brand-wrap{display:flex;align-items:center;gap:12px}
-
-    .brand-mark{
-      width:44px;
-      height:44px;
-      border-radius:14px;
-      display:grid;
-      place-items:center;
-      background:linear-gradient(180deg,#1a3851,#102232);
-      border:1px solid #32506a;
-      box-shadow:var(--shadow);
-      font-weight:900;
-      color:#d9efff;
-    }
-
-    .brand-copy h1{margin:0;font-size:18px;line-height:1.1}
-    .brand-copy p{margin:3px 0 0;color:var(--muted);font-size:12px}
-
-    .nav-tabs{display:flex;gap:8px;flex-wrap:wrap}
-
-    .nav-tab{
-      border:1px solid #274053;
-      background:linear-gradient(180deg,#10202d,#0b151e);
-      color:#d9e8f4;
-      padding:10px 14px;
-      border-radius:12px;
-      cursor:pointer;
-      font-weight:700;
-      font-size:14px;
-      transition:.15s ease;
-    }
-
-    .nav-tab:hover{transform:translateY(-1px);border-color:#4b7396}
-
-    .nav-tab.active{
-      background:linear-gradient(180deg,#174064,#102a42);
-      border-color:#4ea7ef;
-      color:#fff;
-      box-shadow:0 0 0 1px rgba(78,183,255,.2) inset;
-    }
-
-    .shell{
-      max-width:1500px;
-      margin:0 auto;
-      padding:16px 16px 60px;
-    }
-
-    .hero{
-      display:grid;
-      grid-template-columns:1.3fr .9fr;
-      gap:14px;
-      margin-bottom:14px;
-    }
-
-    .panel{
-      background:linear-gradient(180deg,#101b27,#0b141d);
-      border:1px solid var(--line);
-      border-radius:22px;
-      padding:18px;
-      box-shadow:var(--shadow);
-    }
-
-    .hero-card h2{
-      margin:0;
-      font-size:clamp(26px,3vw,38px);
-      line-height:1.05;
-    }
-
-    .eyebrow{
-      font-size:12px;
-      letter-spacing:.16em;
-      text-transform:uppercase;
-      color:#84b3d2;
-      margin-bottom:8px;
-    }
-
-    .hero-card p{
-      margin:12px 0 0;
-      color:var(--muted);
-      line-height:1.55;
-      max-width:70ch;
-    }
-
-    .hero-stats{
-      display:grid;
-      grid-template-columns:repeat(2,minmax(0,1fr));
-      gap:10px;
-    }
-
-    .metric{
-      background:linear-gradient(180deg,#121f2b,#0c141d);
-      border:1px solid var(--line);
-      border-radius:18px;
-      padding:14px;
-    }
-
-    .metric .label{
-      font-size:11px;
-      letter-spacing:.1em;
-      color:#8eacc4;
-      text-transform:uppercase;
-    }
-
-    .metric .value{
-      font-size:20px;
-      font-weight:800;
-      margin-top:8px;
-    }
-
-    .metric .sub{
-      font-size:12px;
-      color:var(--muted);
-      margin-top:4px;
-    }
-
-    .notice{
-      background:rgba(78,183,255,.08);
-      border:1px solid rgba(78,183,255,.28);
-      color:#b8dbff;
-      padding:12px 14px;
-      border-radius:16px;
-      margin:0 0 16px;
-      line-height:1.5;
-    }
-
-    .page{display:none}
-    .page.active{display:block}
-
-    .section-title{margin:0 0 12px;font-size:20px}
-    .subtle{color:var(--muted);font-size:13px;line-height:1.5}
-
-    .overview-grid{
-      display:grid;
-      grid-template-columns:1.1fr .9fr;
-      gap:14px;
-    }
-
-    .mini-grid{
-      display:grid;
-      grid-template-columns:repeat(2,minmax(0,1fr));
-      gap:10px;
-      margin-top:12px;
-    }
-
-    .mini-card{
-      background:linear-gradient(180deg,#11202e,#0d1822);
-      border:1px solid #24384a;
-      border-radius:16px;
-      padding:14px;
-    }
-
-    .mini-card h4{margin:0 0 6px;font-size:14px;color:#d7e9f6}
-    .mini-card p{margin:0;color:var(--muted);font-size:13px;line-height:1.45}
-
-    .hq{
-      display:grid;
-      grid-template-columns:1.05fr 1.35fr .95fr;
-      gap:14px;
-      align-items:start;
-    }
-
-    .col{display:grid;gap:14px}
-
-    .room{
-      background:linear-gradient(180deg,var(--panel),#0a131c);
-      border:1px solid var(--line);
-      border-radius:18px;
-      box-shadow:var(--shadow);
-      overflow:hidden;
-    }
-
-    .room-header{
-      display:flex;
-      justify-content:space-between;
-      align-items:center;
-      gap:10px;
-      padding:14px 16px;
-      border-bottom:1px solid var(--line);
-    }
-
-    .room-title{
-      font-size:13px;
-      letter-spacing:.14em;
-      text-transform:uppercase;
-      color:#91b8d8;
-    }
-
-    .room-body{padding:14px}
-
-    .chip{
-      display:inline-flex;
-      align-items:center;
-      gap:7px;
-      padding:8px 10px;
-      border-radius:999px;
-      background:#0e1a24;
-      border:1px solid #233749;
-      font-size:12px;
-      color:#c3d8eb;
-      white-space:nowrap;
-    }
-
-    .dot{
-      width:8px;
-      height:8px;
-      border-radius:50%;
-      background:var(--green);
-      box-shadow:0 0 0 0 rgba(54,212,137,.55);
-      animation:pulse 1.7s infinite;
-    }
-
-    @keyframes pulse{
-      0%{box-shadow:0 0 0 0 rgba(54,212,137,.55)}
-      70%{box-shadow:0 0 0 10px rgba(54,212,137,0)}
-      100%{box-shadow:0 0 0 0 rgba(54,212,137,0)}
-    }
-
-    .subtitle{font-size:12px;color:var(--muted)}
-
-    .bot-grid{
-      display:grid;
-      grid-template-columns:repeat(2,minmax(0,1fr));
-      gap:10px;
-    }
-
-    .bot-card{
-      padding:14px;
-      border-radius:16px;
-      border:1px solid #24384a;
-      background:linear-gradient(180deg,#11202e,#0d1822);
-      color:var(--ink);
-      text-align:left;
-      width:100%;
-      appearance:none;
-      cursor:pointer;
-      transition:transform .15s ease,border-color .15s ease,box-shadow .15s ease;
-      min-height:120px;
-    }
-
-    .bot-card:hover{
-      transform:translateY(-2px);
-      border-color:#4a7496;
-      box-shadow:0 10px 24px rgba(0,0,0,.22);
-    }
-
-    .bot-top{
-      display:flex;
-      justify-content:space-between;
-      align-items:flex-start;
-      gap:10px;
-    }
-
-    .bot-id{
-      font-size:11px;
-      color:#7da1be;
-      letter-spacing:.1em;
-      text-transform:uppercase;
-    }
-
-    .bot-name{
-      font-size:17px;
-      font-weight:800;
-      margin-top:5px;
-    }
-
-    .bot-role{
-      font-size:12px;
-      color:var(--muted);
-      margin-top:4px;
-    }
-
-    .badge{
-      display:inline-flex;
-      align-items:center;
-      gap:6px;
-      padding:5px 9px;
-      border-radius:999px;
-      border:1px solid #2b4560;
-      background:#0c1720;
-      font-size:11px;
-      color:#b8d8f0;
-      white-space:nowrap;
-    }
-
-    .tier{
-      margin-top:12px;
-      display:flex;
-      justify-content:space-between;
-      gap:8px;
-      font-size:12px;
-      color:#9fb5c8;
-    }
-
-    .flow{
-      display:grid;
-      grid-template-columns:repeat(6,minmax(0,1fr));
-      gap:8px;
-    }
-
-    .desk{
-      padding:12px;
-      background:linear-gradient(180deg,#112130,#0c1721);
-      border:1px solid #21384a;
-      border-radius:14px;
-      text-align:center;
-    }
-
-    .desk strong{display:block;font-size:14px}
-    .desk span{display:block;font-size:11px;color:#91a7ba;margin-top:5px}
-
-    .decision{
-      display:grid;
-      grid-template-columns:1.2fr .8fr;
-      gap:14px;
-    }
-
-    .decision-box{
-      background:linear-gradient(180deg,#101b27,#0b141d);
-      border:1px solid #24384a;
-      border-radius:16px;
-      padding:18px;
-    }
-
-    .call{
-      font-size:12px;
-      letter-spacing:.15em;
-      text-transform:uppercase;
-      color:#85b4d6;
-    }
-
-    .call-value{
-      font-size:42px;
-      font-weight:900;
-      margin:8px 0 2px;
-      color:#ffd480;
-    }
-
-    .stats-row{
-      display:grid;
-      grid-template-columns:repeat(3,minmax(0,1fr));
-      gap:10px;
-      margin-top:14px;
-    }
-
-    .stat-mini{
-      padding:12px;
-      border-radius:14px;
-      border:1px solid #22384a;
-      background:#0d1822;
-    }
-
-    .stat-mini b{
-      display:block;
-      font-size:19px;
-      margin-top:6px;
-    }
-
-    .feed{display:grid;gap:10px}
-
-    .event{
-      padding:12px 13px;
-      border-radius:14px;
-      border:1px solid #203546;
-      background:linear-gradient(180deg,#0f1a24,#0b141c);
-    }
-
-    .event .row{
-      display:flex;
-      justify-content:space-between;
-      gap:8px;
-      align-items:center;
-    }
-
-    .event b{font-size:13px}
-    .event small{color:#8da6bb}
-
-    .event p{
-      margin:7px 0 0;
-      color:#c9d8e5;
-      font-size:13px;
-      line-height:1.45;
-    }
-
-    .tape{
-      display:flex;
-      overflow:auto;
-      gap:10px;
-      padding-bottom:4px;
-    }
-
-    .term{
-      min-width:112px;
-      padding:12px;
-      border-radius:14px;
-      background:linear-gradient(180deg,#11202e,#0d1822);
-      border:1px solid #24384a;
-    }
-
-    .term b{
-      display:block;
-      font-size:20px;
-      margin-top:7px;
-    }
-
-    .term span{
-      font-size:11px;
-      color:#8ea9bf;
-      letter-spacing:.08em;
-      text-transform:uppercase;
-    }
-
-    /* PIXEL VISUAL */
-
-    .pixel-shell{
-      background:linear-gradient(180deg,#0b141e,#060d14);
-      border:1px solid #203647;
-      border-radius:24px;
-      overflow:hidden;
-      box-shadow:var(--shadow);
-    }
-
-    .pixel-topbar{
-      padding:14px 16px;
-      display:flex;
-      justify-content:space-between;
-      align-items:center;
-      gap:12px;
-      border-bottom:1px solid #1c3141;
-      flex-wrap:wrap;
-      background:linear-gradient(180deg,#101c27,#0b131b);
-    }
-
-    .pixel-badges{display:flex;gap:8px;flex-wrap:wrap}
-
-    .pixel-badge{
-      display:inline-flex;
-      align-items:center;
-      gap:7px;
-      padding:7px 10px;
-      border-radius:999px;
-      border:1px solid #2c465a;
-      background:#0d1923;
-      font-size:11px;
-      color:#d2e4f1;
-    }
-
-    .record-dot{
-      width:8px;
-      height:8px;
-      border-radius:50%;
-      background:#ff5368;
-      box-shadow:0 0 10px rgba(255,83,104,.8);
-      animation:blink 1.2s infinite;
-    }
-
-    @keyframes blink{
-      0%,100%{opacity:1}
-      50%{opacity:.35}
-    }
-
-    .pixel-stage{
-      position:relative;
-      padding:18px;
-      background:
-        radial-gradient(circle at top,rgba(78,183,255,.06),transparent 28%),
-        linear-gradient(180deg,#0a1118,#071018 55%,#050a10 100%);
-      overflow:hidden;
-    }
-
-    .pixel-stage::before{
-      content:"";
-      position:absolute;
-      inset:0;
-      pointer-events:none;
-      background:repeating-linear-gradient(
-        to bottom,
-        rgba(255,255,255,.015) 0px,
-        rgba(255,255,255,.015) 1px,
-        transparent 2px,
-        transparent 5px
-      );
-      opacity:.32;
-    }
-
-    .pixel-stage::after{
-      content:"";
-      position:absolute;
-      inset:0;
-      pointer-events:none;
-      box-shadow:inset 0 0 120px rgba(0,0,0,.48);
-    }
-
-    .pixel-overlay{
-      position:absolute;
-      inset:14px;
-      pointer-events:none;
-      border:1px solid rgba(173,219,255,.18);
-      border-radius:18px;
-    }
-
-    .pixel-corner{
-      position:absolute;
-      width:22px;
-      height:22px;
-      border-color:#77c8ff;
-      opacity:.7;
-    }
-
-    .pc1{top:10px;left:10px;border-top:2px solid;border-left:2px solid}
-    .pc2{top:10px;right:10px;border-top:2px solid;border-right:2px solid}
-    .pc3{bottom:10px;left:10px;border-bottom:2px solid;border-left:2px solid}
-    .pc4{bottom:10px;right:10px;border-bottom:2px solid;border-right:2px solid}
-
-    .pixel-hud{
-      position:relative;
-      z-index:2;
-      display:flex;
-      justify-content:space-between;
-      gap:10px;
-      flex-wrap:wrap;
-      margin-bottom:16px;
-    }
-
-    .pixel-hud-group{
-      display:flex;
-      gap:8px;
-      flex-wrap:wrap;
-    }
-
-    .pixel-hud-pill{
-      display:inline-flex;
-      align-items:center;
-      gap:7px;
-      background:rgba(8,18,27,.72);
-      border:1px solid rgba(112,173,219,.35);
-      color:#d6ecfb;
-      font-size:11px;
-      padding:8px 10px;
-      border-radius:999px;
-      backdrop-filter:blur(6px);
-    }
-
-    .pixel-building{
-      position:relative;
-      z-index:1;
-      display:grid;
-      gap:18px;
-    }
-
-    .pixel-balcony{
-      width:min(100%,560px);
-      margin:0 auto 6px;
-      padding:18px;
-      border-radius:18px;
-      border:1px solid #3a5771;
-      background:
-        radial-gradient(circle at top right,rgba(78,183,255,.18),transparent 40%),
-        linear-gradient(180deg,#112334,#0a1520);
-      text-align:center;
-      box-shadow:0 18px 40px rgba(0,0,0,.35);
-    }
-
-    .pixel-balcony h2{margin:6px 0 8px;font-size:28px}
-    .pixel-balcony p{margin:0;color:#a8bfd2;line-height:1.5}
-
-    .floor-stack{display:grid;gap:16px}
-
-    .floor-row{
-      display:grid;
-      gap:14px;
-      grid-template-columns:repeat(3,minmax(0,1fr));
-    }
-
-    .office-room{
-      position:relative;
-      min-height:210px;
-      border-radius:8px;
-      border:4px solid #8ea2b6;
-      background:linear-gradient(180deg,#5d6d80 0%,#445365 16%,#2e3c4e 100%);
-      box-shadow:0 12px 28px rgba(0,0,0,.28);
-      overflow:hidden;
-    }
-
-    .office-room::before{
-      content:"";
-      position:absolute;
-      left:0;
-      right:0;
-      bottom:0;
-      height:32%;
-      background:linear-gradient(180deg,#7e5337,#62412c);
-    }
-
-    .office-room::after{
-      content:"";
-      position:absolute;
-      left:0;
-      right:0;
-      top:34px;
-      height:4px;
-      background:#c8d2dc;
-      opacity:.55;
-    }
-
-    .office-label{
-      position:absolute;
-      left:10px;
-      top:8px;
-      right:10px;
-      z-index:2;
-      display:flex;
-      justify-content:space-between;
-      align-items:center;
-      gap:8px;
-      font-size:10px;
-      letter-spacing:.08em;
-      text-transform:uppercase;
-      color:#eef7ff;
-    }
-
-    .office-label b{font-size:11px}
-
-    .office-status{
-      display:inline-flex;
-      align-items:center;
-      gap:5px;
-      font-size:10px;
-    }
-
-    .office-dot{
-      width:6px;
-      height:6px;
-      border-radius:50%;
-      background:#36d489;
-      box-shadow:0 0 8px rgba(54,212,137,.8);
-    }
-
-    .office-scene{
-      position:absolute;
-      inset:26px 8px 10px 8px;
-    }
-
-    .window-pixel{
-      position:absolute;
-      top:6px;
-      right:10px;
-      width:32px;
-      height:24px;
-      border:3px solid #99c9da;
-      background:linear-gradient(180deg,#91e7ff,#5aa9d8);
-      box-shadow:inset 0 0 0 2px rgba(255,255,255,.18);
-    }
-
-    .desk-pixel{
-      position:absolute;
-      left:18px;
-      right:18px;
-      bottom:20px;
-      height:18px;
-      background:#7d5236;
-      border-top:3px solid #9a6745;
-      border-bottom:3px solid #5b3b29;
-    }
-
-    .monitor-pixel{
-      position:absolute;
-      bottom:38px;
-      width:24px;
-      height:18px;
-      background:#163549;
-      border:2px solid #89c5df;
-      overflow:hidden;
-    }
-
-    .monitor-pixel::before{
-      content:"";
-      position:absolute;
-      inset:0;
-      background:linear-gradient(90deg,transparent,rgba(78,183,255,.25),transparent);
-      transform:translateX(-100%);
-      animation:pixelSweep 2.2s linear infinite;
-    }
-
-    @keyframes pixelSweep{
-      100%{transform:translateX(100%)}
-    }
-
-    .m1{left:22px}
-    .m2{left:52px}
-    .m3{left:82px}
-
-    .plant-pixel{
-      position:absolute;
-      left:10px;
-      top:18px;
-      width:16px;
-      height:24px;
-      background:transparent;
-    }
-
-    .plant-pixel::before{
-      content:"";
-      position:absolute;
-      bottom:0;
-      left:3px;
-      width:10px;
-      height:8px;
-      background:#6b4a34;
-    }
-
-    .plant-pixel::after{
-      content:"";
-      position:absolute;
-      left:0;
-      top:0;
-      width:16px;
-      height:16px;
-      background:#58a06d;
-      clip-path:polygon(50% 0%,65% 20%,85% 10%,75% 35%,100% 45%,78% 55%,88% 80%,60% 70%,50% 100%,40% 72%,12% 82%,22% 55%,0% 45%,24% 35%,14% 10%,35% 20%);
-    }
-
-    .shelf-pixel{
-      position:absolute;
-      right:10px;
-      top:28px;
-      width:36px;
-      height:44px;
-      background:#6d4a33;
-      border:2px solid #8d6646;
-    }
-
-    .shelf-pixel::before,
-    .shelf-pixel::after{
-      content:"";
-      position:absolute;
-      left:4px;
-      right:4px;
-      height:2px;
-      background:#b9865c;
-    }
-
-    .shelf-pixel::before{top:14px}
-    .shelf-pixel::after{top:28px}
-
-    .pixel-worker{
-      position:absolute;
-      bottom:28px;
-      width:22px;
-      height:44px;
-      animation:workerBob 1.9s ease-in-out infinite;
-    }
-
-    .pixel-worker.left{left:34px}
-    .pixel-worker.center{left:64px}
-    .pixel-worker.right{left:94px}
-
-    @keyframes workerBob{
-      0%,100%{transform:translateY(0)}
-      50%{transform:translateY(-1px)}
-    }
-
-    .pixel-worker .head{
-      position:absolute;
-      top:0;
-      left:50%;
-      width:12px;
-      height:12px;
-      transform:translateX(-50%);
-      background:#e4ecf5;
-      border-radius:2px;
-    }
-
-    .pixel-worker .body{
-      position:absolute;
-      top:12px;
-      left:50%;
-      width:14px;
-      height:14px;
-      transform:translateX(-50%);
-      background:#67b9ff;
-      border-radius:2px;
-    }
-
-    .pixel-worker .leg-left,
-    .pixel-worker .leg-right{
-      position:absolute;
-      bottom:0;
-      width:4px;
-      height:14px;
-      background:#c6d4df;
-    }
-
-    .pixel-worker .leg-left{left:6px}
-    .pixel-worker .leg-right{right:6px}
-
-    .pixel-worker .arm-left,
-    .pixel-worker .arm-right{
-      position:absolute;
-      top:16px;
-      width:10px;
-      height:3px;
-      background:#dfe9f2;
-    }
-
-    .pixel-worker .arm-left{
-      left:0;
-      transform-origin:right center;
-      animation:pixelTypingL 1.6s ease-in-out infinite;
-    }
-
-    .pixel-worker .arm-right{
-      right:0;
-      transform-origin:left center;
-      animation:pixelTypingR 1.6s ease-in-out infinite;
-      animation-delay:.3s;
-    }
-
-    .pixel-worker.phone .arm-right{
-      top:9px;
-      right:-1px;
-      height:3px;
-      width:10px;
-      transform-origin:left center;
-      animation:pixelPhone 1.5s ease-in-out infinite;
-    }
-
-    @keyframes pixelTypingL{
-      0%,100%{transform:rotate(18deg)}
-      50%{transform:rotate(0deg)}
-    }
-
-    @keyframes pixelTypingR{
-      0%,100%{transform:rotate(-18deg)}
-      50%{transform:rotate(0deg)}
-    }
-
-    @keyframes pixelPhone{
-      0%,100%{transform:rotate(-52deg)}
-      50%{transform:rotate(-28deg)}
-    }
-
-    .floor-walkway{
-      position:relative;
-      min-height:88px;
-      border-radius:10px;
-      border:4px solid #74889d;
-      background:linear-gradient(180deg,#5a6877,#435364);
-      overflow:hidden;
-    }
-
-    .floor-walkway::before{
-      content:"";
-      position:absolute;
-      inset:auto 0 0 0;
-      height:38px;
-      background:#7d5236;
-      border-top:3px solid #9b6645;
-    }
-
-    .walkway-label{
-      position:absolute;
-      top:8px;
-      left:10px;
-      font-size:11px;
-      text-transform:uppercase;
-      letter-spacing:.08em;
-      color:#eef7ff;
-    }
-
-    .pixel-knight{
-      position:absolute;
-      bottom:18px;
-      width:24px;
-      height:48px;
-      animation:patrol 14s linear infinite;
-    }
-
-    .pixel-knight.k2{animation-delay:2.5s}
-    .pixel-knight.k3{animation-delay:5s}
-    .pixel-knight.k4{animation-delay:7.5s}
-    .pixel-knight.k5{animation-delay:10s}
-
-    @keyframes patrol{
-      0%{left:-28px}
-      50%{left:calc(100% - 18px)}
-      100%{left:-28px}
-    }
-
-    .pixel-knight .k-head{
-      position:absolute;
-      top:0;
-      left:50%;
-      width:12px;
-      height:12px;
-      transform:translateX(-50%);
-      background:#eef5fb;
-      border-radius:2px;
-    }
-
-    .pixel-knight .k-body{
-      position:absolute;
-      top:12px;
-      left:50%;
-      width:14px;
-      height:18px;
-      transform:translateX(-50%);
-      background:#f2d35a;
-      border-radius:2px;
-    }
-
-    .pixel-knight .k-arm{
-      position:absolute;
-      top:17px;
-      left:3px;
-      right:3px;
-      height:3px;
-      background:#eef5fb;
-    }
-
-    .pixel-knight .k-legs{
-      position:absolute;
-      bottom:0;
-      left:50%;
-      width:10px;
-      height:15px;
-      transform:translateX(-50%);
-      border-left:3px solid #d5e3ef;
-      border-right:3px solid #d5e3ef;
-    }
-
-    .pixel-note{
-      margin-top:14px;
-      color:#8da6bb;
-      font-size:12px;
-      line-height:1.5;
-    }
-
-    .modal{
-      position:fixed;
-      inset:0;
-      background:rgba(3,10,16,.72);
-      display:none;
-      align-items:center;
-      justify-content:center;
-      padding:20px;
-      z-index:50;
-    }
-
-    .modal.show{display:flex}
-
-    .modal-card{
-      max-width:720px;
-      width:100%;
-      max-height:80vh;
-      overflow:auto;
-      background:linear-gradient(180deg,#101b27,#08131d);
-      border:1px solid #2a4357;
-      border-radius:20px;
-      box-shadow:0 30px 70px rgba(0,0,0,.45);
-    }
-
-    .modal-head{
-      display:flex;
-      justify-content:space-between;
-      gap:12px;
-      align-items:flex-start;
-      padding:18px 18px 12px;
-      border-bottom:1px solid #23384a;
-    }
-
-    .modal-head h3{margin:6px 0 0;font-size:28px}
-
-    .close{
-      border:0;
-      cursor:pointer;
-      border-radius:12px;
-      padding:10px 12px;
-      background:#132230;
-      color:#d5e6f5;
-    }
-
-    .modal-body{padding:16px 18px 18px}
-
-    .modal-body h4{
-      margin:16px 0 8px;
-      font-size:13px;
-      letter-spacing:.12em;
-      text-transform:uppercase;
-      color:#90b7d6;
-    }
-
-    .modal-body p,
-    .modal-body li{
-      color:#d8e4ee;
-      line-height:1.55;
-    }
-
-    .modal-body ul{
-      margin:8px 0 0 18px;
-      padding:0;
-    }
-
-    .footer-note{
-      margin-top:16px;
-      color:#8da6bb;
-      font-size:12px;
-      line-height:1.5;
-    }
-
-    @media (max-width:1200px){
-      .hero{grid-template-columns:1fr}
-      .overview-grid{grid-template-columns:1fr}
-      .hq{grid-template-columns:1fr}
-      .decision{grid-template-columns:1fr}
-      .flow{grid-template-columns:repeat(3,minmax(0,1fr))}
-      .floor-row{grid-template-columns:repeat(2,minmax(0,1fr))}
-    }
-
-    @media (max-width:760px){
-      .shell{padding:12px 12px 40px}
-      .site-header-inner{padding:12px}
-      .hero-stats{grid-template-columns:repeat(2,minmax(0,1fr))}
-      .mini-grid{grid-template-columns:1fr}
-      .bot-grid{grid-template-columns:1fr}
-      .flow{grid-template-columns:repeat(2,minmax(0,1fr))}
-      .floor-row{grid-template-columns:1fr}
-      .office-room{min-height:220px}
-    }
-
-    @media (max-width:520px){
-      .hero-stats{grid-template-columns:1fr}
-    }
-  </style>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover" />
+<title>ALFRED Capital — BTC Command Floor</title>
+
+<style>
+:root{
+  --bg:#071018;
+  --bg2:#0b151f;
+  --panel:#0d1823;
+  --line:#24394b;
+  --ink:#eef6fc;
+  --muted:#91a7ba;
+  --blue:#54bfff;
+  --green:#36d489;
+  --red:#ff5f74;
+  --amber:#f2c55d;
+  --shadow:0 18px 48px rgba(0,0,0,.36)
+}
+
+*{box-sizing:border-box}
+html{scroll-behavior:smooth}
+
+body{
+  margin:0;
+  background:radial-gradient(circle at top,#0d1924 0,#071018 55%,#040a0f 100%);
+  color:var(--ink);
+  font-family:Inter,ui-sans-serif,system-ui,-apple-system,BlinkMacSystemFont,"Segoe UI",Arial,sans-serif
+}
+
+button{font:inherit}
+
+.site-header{
+  position:sticky;
+  top:0;
+  z-index:50;
+  background:rgba(7,16,24,.9);
+  backdrop-filter:blur(12px);
+  border-bottom:1px solid var(--line)
+}
+
+.site-header-inner{
+  max-width:1500px;
+  margin:auto;
+  padding:13px 16px;
+  display:flex;
+  align-items:center;
+  justify-content:space-between;
+  gap:12px;
+  flex-wrap:wrap
+}
+
+.brand{
+  display:flex;
+  align-items:center;
+  gap:11px
+}
+
+.logo{
+  width:44px;
+  height:44px;
+  border-radius:12px;
+  display:grid;
+  place-items:center;
+  font-weight:900;
+  background:linear-gradient(#193751,#0f2232);
+  border:1px solid #36536b
+}
+
+.brand h1{
+  margin:0;
+  font-size:18px
+}
+
+.brand p{
+  margin:3px 0 0;
+  font-size:11px;
+  color:var(--muted)
+}
+
+.nav{
+  display:flex;
+  gap:7px;
+  flex-wrap:wrap
+}
+
+.nav button{
+  border:1px solid #294357;
+  background:#0e1a24;
+  color:#dceaf4;
+  padding:9px 12px;
+  border-radius:10px;
+  cursor:pointer;
+  font-weight:750
+}
+
+.nav button.active{
+  background:#143a59;
+  border-color:#54bfff
+}
+
+.shell{
+  max-width:1500px;
+  margin:auto;
+  padding:16px 16px 60px
+}
+
+.hero{
+  display:grid;
+  grid-template-columns:1.25fr .85fr;
+  gap:14px;
+  margin-bottom:14px
+}
+
+.panel{
+  background:linear-gradient(#101c28,#0b141d);
+  border:1px solid var(--line);
+  border-radius:20px;
+  padding:18px;
+  box-shadow:var(--shadow)
+}
+
+.eyebrow{
+  font-size:11px;
+  letter-spacing:.15em;
+  text-transform:uppercase;
+  color:#86b5d7
+}
+
+.hero h2{
+  font-size:clamp(28px,4vw,44px);
+  line-height:1;
+  margin:7px 0 10px
+}
+
+.hero p{
+  margin:0;
+  color:var(--muted);
+  line-height:1.55
+}
+
+.metrics{
+  display:grid;
+  grid-template-columns:repeat(2,minmax(0,1fr));
+  gap:10px
+}
+
+.metric{
+  background:#0c1721;
+  border:1px solid var(--line);
+  border-radius:15px;
+  padding:13px
+}
+
+.metric small{
+  display:block;
+  color:#89a7be;
+  text-transform:uppercase;
+  letter-spacing:.1em;
+  font-size:10px
+}
+
+.metric strong{
+  display:block;
+  font-size:20px;
+  margin-top:7px
+}
+
+.metric span{
+  display:block;
+  color:var(--muted);
+  font-size:11px;
+  margin-top:3px
+}
+
+.notice{
+  margin-bottom:15px;
+  border:1px solid rgba(84,191,255,.28);
+  background:rgba(84,191,255,.07);
+  color:#c2e3fb;
+  padding:11px 13px;
+  border-radius:13px;
+  font-size:13px;
+  line-height:1.5
+}
+
+.page{display:none}
+.page.active{display:block}
+
+.grid2{
+  display:grid;
+  grid-template-columns:repeat(2,minmax(0,1fr));
+  gap:14px
+}
+
+.cards{
+  display:grid;
+  grid-template-columns:repeat(2,minmax(0,1fr));
+  gap:10px
+}
+
+.card{
+  border:1px solid #243b4d;
+  background:linear-gradient(#11202d,#0b161f);
+  border-radius:14px;
+  padding:13px
+}
+
+.card h3,
+.card h4{
+  margin:0 0 6px
+}
+
+.card p{
+  margin:0;
+  color:var(--muted);
+  font-size:12px;
+  line-height:1.5
+}
+
+.section-title{
+  margin:0 0 12px;
+  font-size:19px
+}
+
+.muted{
+  color:var(--muted);
+  font-size:12px;
+  line-height:1.5
+}
+
+/* MARKET ANALYSIS */
+
+.analysis-grid{
+  display:grid;
+  grid-template-columns:1.1fr 1.2fr .9fr;
+  gap:14px
+}
+
+.section{
+  background:linear-gradient(#0f1b27,#09131c);
+  border:1px solid var(--line);
+  border-radius:16px;
+  overflow:hidden;
+  box-shadow:var(--shadow)
+}
+
+.section-head{
+  padding:12px 14px;
+  border-bottom:1px solid var(--line);
+  display:flex;
+  justify-content:space-between;
+  gap:8px;
+  align-items:center
+}
+
+.section-head b{
+  text-transform:uppercase;
+  letter-spacing:.12em;
+  font-size:11px;
+  color:#99c5e5
+}
+
+.section-body{
+  padding:12px
+}
+
+.chip{
+  font-size:10px;
+  border:1px solid #2b465c;
+  background:#0a151e;
+  border-radius:999px;
+  padding:6px 8px;
+  color:#bad4e7
+}
+
+.bot-list{
+  display:grid;
+  grid-template-columns:repeat(2,minmax(0,1fr));
+  gap:8px
+}
+
+.bot-card{
+  border:1px solid #253d50;
+  background:#0e1a24;
+  color:var(--ink);
+  border-radius:12px;
+  padding:11px;
+  text-align:left;
+  cursor:pointer
+}
+
+.bot-card small{
+  color:#789ab5
+}
+
+.bot-card b{
+  display:block;
+  margin:4px 0 3px;
+  font-size:14px
+}
+
+.bot-card span{
+  font-size:11px;
+  color:var(--muted)
+}
+
+.ladder{
+  display:grid;
+  grid-template-columns:repeat(6,minmax(0,1fr));
+  gap:7px
+}
+
+.step{
+  padding:10px 8px;
+  text-align:center;
+  background:#0e1a24;
+  border:1px solid #263e50;
+  border-radius:10px
+}
+
+.step b{
+  display:block;
+  font-size:13px
+}
+
+.step span{
+  display:block;
+  margin-top:4px;
+  font-size:9px;
+  color:var(--muted)
+}
+
+.decision{
+  font-size:42px;
+  font-weight:900;
+  color:#ffd47f;
+  margin:7px 0
+}
+
+.feed{
+  display:grid;
+  gap:8px
+}
+
+.feed-item{
+  padding:10px;
+  border:1px solid #233a4c;
+  background:#0d1822;
+  border-radius:11px
+}
+
+.feed-item b{
+  font-size:11px
+}
+
+.feed-item p{
+  font-size:11px;
+  color:#bcd0df;
+  margin:5px 0 0;
+  line-height:1.4
+}
+
+/* VISUAL FLOOR */
+
+.cam-shell{
+  background:#050b10;
+  border:1px solid #203547;
+  border-radius:20px;
+  overflow:hidden;
+  box-shadow:var(--shadow)
+}
+
+.cam-head{
+  padding:12px 14px;
+  display:flex;
+  justify-content:space-between;
+  align-items:center;
+  gap:10px;
+  flex-wrap:wrap;
+  border-bottom:1px solid #203547;
+  background:#0c151e
+}
+
+.cam-head h3{
+  margin:3px 0 0
+}
+
+.cam-badges{
+  display:flex;
+  gap:7px;
+  flex-wrap:wrap
+}
+
+.cam-pill{
+  font-size:10px;
+  border:1px solid #30495d;
+  background:#0d1923;
+  padding:6px 9px;
+  border-radius:999px;
+  color:#d5e8f5
+}
+
+.rec{
+  display:inline-block;
+  width:7px;
+  height:7px;
+  border-radius:50%;
+  background:var(--red);
+  box-shadow:0 0 9px rgba(255,95,116,.8);
+  margin-right:5px;
+  animation:blink 1.2s infinite
+}
+
+@keyframes blink{
+  50%{opacity:.3}
+}
+
+.camera{
+  position:relative;
+  padding:16px;
+  background:
+    radial-gradient(circle at top,rgba(84,191,255,.05),transparent 30%),
+    linear-gradient(#081018,#04090e);
+  overflow:hidden
+}
+
+.camera:before{
+  content:"";
+  position:absolute;
+  inset:0;
+  background:repeating-linear-gradient(
+    to bottom,
+    rgba(255,255,255,.016) 0 1px,
+    transparent 2px 5px
+  );
+  pointer-events:none
+}
+
+.camera:after{
+  content:"";
+  position:absolute;
+  inset:0;
+  box-shadow:inset 0 0 120px rgba(0,0,0,.55);
+  pointer-events:none
+}
+
+.hud{
+  position:relative;
+  z-index:3;
+  display:flex;
+  justify-content:space-between;
+  gap:8px;
+  flex-wrap:wrap;
+  margin-bottom:12px
+}
+
+.hud span{
+  font-size:10px;
+  padding:6px 8px;
+  border-radius:999px;
+  border:1px solid rgba(115,185,232,.3);
+  background:rgba(5,14,21,.75);
+  color:#d6edfb
+}
+
+.alfred-suite{
+  position:relative;
+  z-index:2;
+  width:min(620px,100%);
+  margin:0 auto 14px;
+  padding:14px;
+  text-align:center;
+  border:2px solid #49667f;
+  background:linear-gradient(#152a3d,#0c1722);
+  border-radius:12px
+}
+
+.alfred-suite h2{
+  margin:4px 0 5px
+}
+
+.alfred-suite p{
+  margin:0;
+  color:#a8bfd2;
+  font-size:11px;
+  line-height:1.45
+}
+
+.building{
+  position:relative;
+  z-index:2;
+  display:grid;
+  gap:12px
+}
+
+.floor-title{
+  font-size:10px;
+  color:#8eb6d4;
+  letter-spacing:.12em;
+  text-transform:uppercase;
+  margin-bottom:-4px
+}
+
+.room-row{
+  display:grid;
+  grid-template-columns:repeat(3,minmax(0,1fr));
+  gap:10px
+}
+
+.bot-room{
+  --wall1:#68798b;
+  --wall2:#45576a;
+  --floor:#795039;
+  --accent:#60c5ff;
+  position:relative;
+  min-height:260px;
+  border:4px solid #889daf;
+  border-radius:4px;
+  overflow:hidden;
+  background:
+    linear-gradient(
+      var(--wall1) 0 18%,
+      var(--wall2) 18% 74%,
+      var(--floor) 74%
+    );
+  box-shadow:0 10px 25px rgba(0,0,0,.32)
+}
+
+.bot-room:before{
+  content:"";
+  position:absolute;
+  inset:0;
+  background:
+    linear-gradient(
+      90deg,
+      rgba(255,255,255,.03),
+      transparent 25%,
+      rgba(0,0,0,.05) 72%
+    );
+  pointer-events:none
+}
+
+.room-name{
+  position:absolute;
+  top:5px;
+  left:7px;
+  right:7px;
+  z-index:6;
+  display:flex;
+  justify-content:space-between;
+  gap:7px;
+  align-items:center;
+  font-size:9px;
+  text-transform:uppercase;
+  letter-spacing:.06em
+}
+
+.room-name .status{
+  font-size:8px;
+  color:#d6f4e4
+}
+
+.status-dot{
+  display:inline-block;
+  width:5px;
+  height:5px;
+  border-radius:50%;
+  background:var(--green);
+  box-shadow:0 0 7px var(--green);
+  margin-right:4px
+}
+
+/* BTC PRICE BOARD NEAR CEILING */
+
+.roof-ticker{
+  position:absolute;
+  top:25px;
+  left:7px;
+  right:7px;
+  height:24px;
+  background:#0d202e;
+  border:2px solid #8dd7f8;
+  display:flex;
+  align-items:center;
+  justify-content:space-between;
+  padding:0 7px;
+  z-index:5;
+  box-shadow:0 0 8px rgba(84,191,255,.24)
+}
+
+.roof-ticker b{
+  font-size:8px;
+  letter-spacing:.08em;
+  text-transform:uppercase;
+  color:#c8ebff
+}
+
+.roof-ticker span{
+  font-size:10px;
+  font-weight:900;
+  color:#a0f0c1
+}
+
+/* LARGE ROOM SCREEN */
+
+.big-screen{
+  position:absolute;
+  top:57px;
+  left:50%;
+  transform:translateX(-50%);
+  width:46%;
+  height:52px;
+  background:#102c3e;
+  border:3px solid #9edaf0;
+  z-index:2;
+  overflow:hidden
+}
+
+.big-screen:before{
+  content:"";
+  position:absolute;
+  inset:0;
+  background:linear-gradient(
+    90deg,
+    transparent,
+    rgba(84,191,255,.24),
+    transparent
+  );
+  transform:translateX(-100%);
+  animation:sweep 2.3s linear infinite
+}
+
+.big-screen:after{
+  content:"";
+  position:absolute;
+  left:8%;
+  right:8%;
+  bottom:12px;
+  height:2px;
+  background:var(--green);
+  transform:skewX(-28deg);
+  box-shadow:
+    14px -8px 0 var(--blue),
+    28px -2px 0 var(--green)
+}
+
+@keyframes sweep{
+  100%{transform:translateX(100%)}
+}
+
+.screen-title{
+  position:absolute;
+  inset:auto 3px 3px;
+  text-align:center;
+  font-size:7px;
+  color:#d5f0ff;
+  text-transform:uppercase;
+  letter-spacing:.05em;
+  z-index:2
+}
+
+.side-screen{
+  position:absolute;
+  top:64px;
+  width:34px;
+  height:28px;
+  background:#102c3e;
+  border:2px solid #88c9e5;
+  z-index:2
+}
+
+.side-screen.left{left:8px}
+.side-screen.right{right:8px}
+
+.side-screen:after{
+  content:"";
+  position:absolute;
+  left:4px;
+  right:4px;
+  bottom:5px;
+  height:2px;
+  background:var(--accent);
+  transform:rotate(-10deg)
+}
+
+/* DESKS */
+
+.deskbar{
+  position:absolute;
+  left:8px;
+  right:8px;
+  bottom:22px;
+  height:22px;
+  background:#65422f;
+  border-top:3px solid #966647;
+  border-bottom:3px solid #4e3426;
+  z-index:2
+}
+
+.monitor{
+  position:absolute;
+  bottom:44px;
+  width:25px;
+  height:20px;
+  background:#123246;
+  border:2px solid #8fc8df;
+  z-index:4;
+  overflow:hidden
+}
+
+.monitor:before{
+  content:"";
+  position:absolute;
+  inset:0;
+  background:linear-gradient(
+    90deg,
+    transparent,
+    rgba(84,191,255,.25),
+    transparent
+  );
+  transform:translateX(-100%);
+  animation:sweep 1.8s linear infinite
+}
+
+.mon1{left:14px}
+.mon2{left:43px}
+.mon3{right:43px}
+.mon4{right:14px}
+
+/* PHONES */
+
+.phone{
+  position:absolute;
+  width:13px;
+  height:8px;
+  background:#18232c;
+  border:1px solid #71899c;
+  z-index:5
+}
+
+.phone:before{
+  content:"";
+  position:absolute;
+  left:2px;
+  top:-3px;
+  width:9px;
+  height:3px;
+  background:#2d414f
+}
+
+.phone.p1{
+  bottom:44px;
+  left:75px
+}
+
+.phone.p2{
+  bottom:44px;
+  right:75px
+}
+
+/* COFFEE */
+
+.coffee{
+  position:absolute;
+  width:8px;
+  height:12px;
+  background:#d5dde3;
+  border:1px solid #8f9aa2;
+  z-index:5;
+  bottom:43px
+}
+
+.coffee.c1{left:91px}
+.coffee.c2{right:91px}
+
+/* LAMPS */
+
+.lamp{
+  position:absolute;
+  width:10px;
+  height:20px;
+  bottom:43px;
+  z-index:5
+}
+
+.lamp:before{
+  content:"";
+  position:absolute;
+  width:2px;
+  height:12px;
+  background:#bccbd6;
+  left:4px;
+  bottom:0
+}
+
+.lamp:after{
+  content:"";
+  position:absolute;
+  width:10px;
+  height:8px;
+  background:#f2d26c;
+  top:0
+}
+
+.lamp.l1{left:7px}
+.lamp.l2{right:7px}
+
+/* PLANTS */
+
+.plant{
+  position:absolute;
+  width:18px;
+  height:26px;
+  z-index:4;
+  bottom:27px
+}
+
+.plant:before{
+  content:"";
+  position:absolute;
+  left:4px;
+  bottom:0;
+  width:10px;
+  height:8px;
+  background:#664631
+}
+
+.plant:after{
+  content:"";
+  position:absolute;
+  left:0;
+  top:0;
+  width:18px;
+  height:18px;
+  background:#58a66f;
+  clip-path:polygon(
+    50% 0,
+    65% 24%,
+    88% 8%,
+    78% 36%,
+    100% 50%,
+    74% 58%,
+    88% 82%,
+    60% 72%,
+    50% 100%,
+    39% 72%,
+    12% 82%,
+    26% 58%,
+    0 50%,
+    22% 36%,
+    12% 8%,
+    35% 24%
+  )
+}
+
+.plant.pl1{left:8px}
+.plant.pl2{right:8px}
+
+/* SHELVES */
+
+.shelf{
+  position:absolute;
+  width:34px;
+  height:43px;
+  border:2px solid #936b49;
+  background:#66462f;
+  top:112px;
+  z-index:2
+}
+
+.shelf:before,
+.shelf:after{
+  content:"";
+  position:absolute;
+  left:4px;
+  right:4px;
+  height:2px;
+  background:#c18e62
+}
+
+.shelf:before{top:13px}
+.shelf:after{top:27px}
+.shelf.sh1{left:8px}
+.shelf.sh2{right:8px}
+
+/* SERVER RACKS */
+
+.server{
+  position:absolute;
+  width:23px;
+  height:45px;
+  background:#223747;
+  border:2px solid #7691a4;
+  top:110px;
+  z-index:2
+}
+
+.server:before,
+.server:after{
+  content:"";
+  position:absolute;
+  left:4px;
+  right:4px;
+  height:3px;
+  background:#72d5ff
+}
+
+.server:before{top:9px}
+.server:after{top:22px}
+
+.server.sv1{left:9px}
+.server.sv2{right:9px}
+
+/* CABINETS */
+
+.cabinet{
+  position:absolute;
+  width:24px;
+  height:34px;
+  background:#758594;
+  border:2px solid #aab6bf;
+  top:118px;
+  z-index:2
+}
+
+.cabinet:before{
+  content:"";
+  position:absolute;
+  left:4px;
+  right:4px;
+  top:9px;
+  height:2px;
+  background:#d4dbe1
+}
+
+.cabinet.cb1{left:8px}
+.cabinet.cb2{right:8px}
+
+/* WORKERS */
+
+.worker{
+  position:absolute;
+  bottom:31px;
+  width:24px;
+  height:49px;
+  z-index:7;
+  animation:bob 1.7s ease-in-out infinite
+}
+
+.worker.w1{left:31%}
+.worker.w2{left:52%}
+.worker.w3{right:14%}
+
+@keyframes bob{
+  50%{transform:translateY(-1px)}
+}
+
+.worker .head{
+  position:absolute;
+  top:0;
+  left:6px;
+  width:12px;
+  height:12px;
+  background:#e5edf3;
+  border-radius:2px
+}
+
+.worker .body{
+  position:absolute;
+  top:12px;
+  left:5px;
+  width:14px;
+  height:16px;
+  background:var(--accent);
+  border-radius:2px
+}
+
+.worker .arm{
+  position:absolute;
+  top:17px;
+  width:10px;
+  height:3px;
+  background:#e5edf3;
+  transform-origin:center
+}
+
+.worker .arm.a1{
+  left:-2px;
+  animation:typeL 1.3s ease-in-out infinite
+}
+
+.worker .arm.a2{
+  right:-2px;
+  animation:typeR 1.3s ease-in-out infinite
+}
+
+.worker.phone-call .arm.a2{
+  top:8px;
+  right:0;
+  animation:call 1.4s ease-in-out infinite
+}
+
+.worker .leg{
+  position:absolute;
+  bottom:0;
+  width:4px;
+  height:15px;
+  background:#c3d0db
+}
+
+.worker .leg.l1{left:6px}
+.worker .leg.l2{right:6px}
+
+@keyframes typeL{
+  50%{transform:rotate(17deg)}
+}
+
+@keyframes typeR{
+  50%{transform:rotate(-17deg)}
+}
+
+@keyframes call{
+  0%,100%{transform:rotate(-55deg)}
+  50%{transform:rotate(-30deg)}
+}
+
+/* ALFRED'S KNIGHTS */
+
+.patrol{
+  position:relative;
+  height:78px;
+  border:3px solid #72889a;
+  background:linear-gradient(#4f6070 0 50%,#77503a 50%);
+  overflow:hidden
+}
+
+.patrol label{
+  position:absolute;
+  top:6px;
+  left:8px;
+  font-size:9px;
+  letter-spacing:.1em;
+  text-transform:uppercase;
+  color:#e5f0f7
+}
+
+.knight{
+  position:absolute;
+  bottom:10px;
+  width:24px;
+  height:48px;
+  animation:patrolMove 15s linear infinite
+}
+
+.knight.k2{animation-delay:3s}
+.knight.k3{animation-delay:6s}
+.knight.k4{animation-delay:9s}
+
+@keyframes patrolMove{
+  0%{left:-30px}
+  50%{left:calc(100% - 20px)}
+  100%{left:-30px}
+}
+
+.knight .kh{
+  position:absolute;
+  top:0;
+  left:6px;
+  width:12px;
+  height:12px;
+  background:#edf5fb;
+  border-radius:2px
+}
+
+.knight .kb{
+  position:absolute;
+  top:12px;
+  left:5px;
+  width:14px;
+  height:19px;
+  background:#f2d25c
+}
+
+.knight .ka{
+  position:absolute;
+  top:18px;
+  left:1px;
+  width:22px;
+  height:3px;
+  background:#edf5fb
+}
+
+.knight .kl{
+  position:absolute;
+  bottom:0;
+  left:6px;
+  width:12px;
+  height:15px;
+  border-left:3px solid #d5e3ed;
+  border-right:3px solid #d5e3ed
+}
+
+.directory{
+  display:grid;
+  grid-template-columns:repeat(3,minmax(0,1fr));
+  gap:10px
+}
+
+.footer{
+  margin-top:16px;
+  color:#8099ad;
+  font-size:11px
+}
+
+/* MODAL */
+
+.modal{
+  position:fixed;
+  inset:0;
+  background:rgba(1,8,13,.78);
+  display:none;
+  place-items:center;
+  padding:18px;
+  z-index:80
+}
+
+.modal.show{
+  display:grid
+}
+
+.modal-box{
+  width:min(680px,100%);
+  max-height:82vh;
+  overflow:auto;
+  background:#0c1721;
+  border:1px solid #31506a;
+  border-radius:16px
+}
+
+.modal-head{
+  padding:15px;
+  border-bottom:1px solid var(--line);
+  display:flex;
+  justify-content:space-between;
+  gap:10px
+}
+
+.modal-head h3{
+  margin:4px 0 0
+}
+
+.modal-body{
+  padding:15px;
+  color:#d9e5ee
+}
+
+.modal-body p,
+.modal-body li{
+  line-height:1.5;
+  font-size:13px
+}
+
+.close{
+  border:0;
+  border-radius:9px;
+  padding:8px 10px;
+  background:#162736;
+  color:white;
+  cursor:pointer
+}
+
+/* RESPONSIVE */
+
+@media(max-width:1150px){
+  .hero,
+  .analysis-grid{
+    grid-template-columns:1fr
+  }
+
+  .room-row{
+    grid-template-columns:repeat(2,minmax(0,1fr))
+  }
+
+  .ladder{
+    grid-template-columns:repeat(3,minmax(0,1fr))
+  }
+}
+
+@media(max-width:760px){
+  .grid2,
+  .cards,
+  .bot-list,
+  .directory,
+  .room-row{
+    grid-template-columns:1fr
+  }
+
+  .metrics{
+    grid-template-columns:repeat(2,minmax(0,1fr))
+  }
+
+  .bot-room{
+    min-height:275px
+  }
+
+  .shell{
+    padding:12px 12px 40px
+  }
+}
+
+@media(max-width:480px){
+  .metrics{
+    grid-template-columns:1fr
+  }
+}
+</style>
 </head>
 
 <body>
 
-  <header class="site-header">
-    <div class="site-header-inner">
+<header class="site-header">
+  <div class="site-header-inner">
 
-      <div class="brand-wrap">
-        <div class="brand-mark">A</div>
+    <div class="brand">
+      <div class="logo">A</div>
 
-        <div class="brand-copy">
-          <h1>ALFRED Capital</h1>
-          <p>Bitcoin Intelligence / Prop-Firm Command Floor</p>
-        </div>
+      <div>
+        <h1>ALFRED Capital</h1>
+        <p>Bitcoin Intelligence / Prop-Firm Command Floor</p>
       </div>
-
-      <nav class="nav-tabs">
-        <button class="nav-tab active" data-page="overviewPage">Overview</button>
-        <button class="nav-tab" data-page="analysisPage">Market Analysis</button>
-        <button class="nav-tab" data-page="visualPage">Visual Representation</button>
-        <button class="nav-tab" data-page="directoryPage">Bot Directory</button>
-      </nav>
-
-    </div>
-  </header>
-
-  <div class="shell">
-
-    <section class="hero">
-
-      <div class="panel hero-card">
-        <div class="eyebrow">ALFRED Capital / Bitcoin Intelligence Division</div>
-
-        <h2>BTC Command Floor</h2>
-
-        <p>
-          A website-style control center for your Bitcoin intelligence project.
-          The system is organized like a prop firm: workers, senior desks, executives,
-          verification, and Alfred’s Knights keeping order across the floor.
-        </p>
-      </div>
-
-      <div class="hero-stats">
-
-        <div class="metric">
-          <div class="label">System Bots</div>
-          <div class="value">21</div>
-          <div class="sub">Locked organization</div>
-        </div>
-
-        <div class="metric">
-          <div class="label">Master Bias</div>
-          <div class="value" style="color:#ffd480">SHADOW</div>
-          <div class="sub">No live signal yet</div>
-        </div>
-
-        <div class="metric">
-          <div class="label">BTC/USD</div>
-          <div class="value" id="btcPrice">Loading</div>
-          <div class="sub" id="btcSource">Attempting Coinbase spot</div>
-        </div>
-
-        <div class="metric">
-          <div class="label">Current Stage</div>
-          <div class="value">Phase 3A</div>
-          <div class="sub">Frontline contracts complete</div>
-        </div>
-
-      </div>
-
-    </section>
-
-    <div class="notice">
-      <strong>Prototype notice:</strong>
-      GitHub Pages serves the frontend. Supabase remains reserved for backend data, auth,
-      state, and future live bot infrastructure. The visual floor is a stylized simulation until the real engines are connected.
     </div>
 
-    <section id="overviewPage" class="page active">
+    <nav class="nav">
+      <button class="active" data-page="overview">Overview</button>
+      <button data-page="analysis">Market Analysis</button>
+      <button data-page="visual">Visual Representation</button>
+      <button data-page="directory">Bot Directory</button>
+    </nav>
 
-      <div class="overview-grid">
+  </div>
+</header>
 
-        <div class="panel">
-          <h3 class="section-title">Mission Overview</h3>
+<main class="shell">
 
-          <p class="subtle">
-            Build the most advanced, efficient, and reliable Bitcoin trade-analysis system practical for you.
-            The organization is designed around market structure, order flow, microstructure, leverage,
-            regime, volatility, verification, and disciplined oversight.
+<section class="hero">
+
+  <div class="panel">
+    <div class="eyebrow">
+      ALFRED Capital / Bitcoin Intelligence Division
+    </div>
+
+    <h2>BTC Command Floor</h2>
+
+    <p>
+      A website-style control center for the 21-bot Bitcoin
+      intelligence organization, including analytical desks,
+      verification, executive authority and Alfred's Knights.
+    </p>
+  </div>
+
+  <div class="metrics">
+
+    <div class="metric">
+      <small>System Bots</small>
+      <strong>21</strong>
+      <span>Locked organization</span>
+    </div>
+
+    <div class="metric">
+      <small>Master Bias</small>
+      <strong style="color:#ffd47f">SHADOW</strong>
+      <span>No production signal</span>
+    </div>
+
+    <div class="metric">
+      <small>BTC/USD</small>
+      <strong id="btcPrice">Loading</strong>
+      <span id="btcSource">Loading spot price</span>
+    </div>
+
+    <div class="metric">
+      <small>Current Stage</small>
+      <strong>Phase 3A</strong>
+      <span>Frontline contracts complete</span>
+    </div>
+
+  </div>
+
+</section>
+
+<div class="notice">
+  <b>Prototype:</b>
+  the building view is a visual simulation.
+  GitHub Pages serves this frontend; Supabase remains the backend
+  layer for future live state, telemetry and bot infrastructure.
+</div>
+
+<!-- OVERVIEW -->
+
+<section id="overview" class="page active">
+
+  <div class="grid2">
+
+    <div class="panel">
+      <h3 class="section-title">Mission Overview</h3>
+
+      <p class="muted">
+        Build the most advanced, efficient and reliable Bitcoin
+        trade-analysis system practical, prioritizing market structure,
+        order flow, microstructure, leverage, regime, volatility,
+        verification and disciplined risk.
+      </p>
+
+      <div class="cards" style="margin-top:12px">
+
+        <div class="card">
+          <h4>Frontline Intelligence</h4>
+          <p>Bots #1–6 analyze the raw market.</p>
+        </div>
+
+        <div class="card">
+          <h4>Senior Synthesis</h4>
+          <p>Bots #7–10 combine and challenge evidence.</p>
+        </div>
+
+        <div class="card">
+          <h4>Executive Authority</h4>
+          <p>Chief Alpha, Chief Risk and Alfred control escalation.</p>
+        </div>
+
+        <div class="card">
+          <h4>Oversight</h4>
+          <p>
+            Knights and verification offices audit the organization.
           </p>
-
-          <div class="mini-grid">
-
-            <div class="mini-card">
-              <h4>Frontline Intelligence</h4>
-              <p>Structure, Flow, Micro, Regime, Leverage, and Volatility form the first analytical layer.</p>
-            </div>
-
-            <div class="mini-card">
-              <h4>Senior Synthesis</h4>
-              <p>Market Fusion, Execution, Derivatives Intelligence, and Guardian refine and challenge raw evidence.</p>
-            </div>
-
-            <div class="mini-card">
-              <h4>Executive Authority</h4>
-              <p>Chief Alpha, Chief Risk, Alfred, and the Private Secretary govern opportunity, risk, and communication.</p>
-            </div>
-
-            <div class="mini-card">
-              <h4>Oversight & Verification</h4>
-              <p>Alfred’s Knights and the Verification Office keep the system accountable, calibrated, and honest.</p>
-            </div>
-
-          </div>
-        </div>
-
-        <div class="panel">
-
-          <h3 class="section-title">Website Sections</h3>
-
-          <div class="mini-grid">
-
-            <div class="mini-card">
-              <h4>Overview</h4>
-              <p>A clean entry page explaining the command-floor concept.</p>
-            </div>
-
-            <div class="mini-card">
-              <h4>Market Analysis</h4>
-              <p>The operational dashboard and reporting hierarchy.</p>
-            </div>
-
-            <div class="mini-card">
-              <h4>Visual Representation</h4>
-              <p>A 2D pixel-art cutaway of the prop-firm building with all 21 bots represented.</p>
-            </div>
-
-            <div class="mini-card">
-              <h4>Bot Directory</h4>
-              <p>A browsable directory of the full organization and each bot’s mission.</p>
-            </div>
-
-          </div>
-
         </div>
 
       </div>
+    </div>
 
-    </section>
+    <div class="panel">
+      <h3 class="section-title">Website Sections</h3>
 
-    <section id="analysisPage" class="page">
+      <div class="cards">
 
-      <div class="hq">
-
-        <div class="col">
-
-          <section class="room">
-
-            <div class="room-header">
-              <div class="room-title">Alfred's Knights</div>
-              <div class="chip"><span class="dot"></span> Shadow oversight</div>
-            </div>
-
-            <div class="room-body">
-              <div id="guard" class="bot-grid"></div>
-            </div>
-
-          </section>
-
-          <section class="room">
-
-            <div class="room-header">
-              <div class="room-title">Corporate Office</div>
-              <div class="chip"><span class="dot"></span> Shadow verification</div>
-            </div>
-
-            <div class="room-body">
-              <div id="corporate" class="bot-grid"></div>
-            </div>
-
-          </section>
-
-          <section class="room">
-
-            <div class="room-header">
-              <div class="room-title">Timeframe Terminals</div>
-              <div class="chip">1M to 4H</div>
-            </div>
-
-            <div class="room-body">
-              <div class="tape" id="timeframes"></div>
-            </div>
-
-          </section>
-
+        <div class="card">
+          <h4>Overview</h4>
+          <p>System mission and structure.</p>
         </div>
 
-        <div class="col">
-
-          <section class="room">
-
-            <div class="room-header">
-              <div class="room-title">Trading Floor</div>
-              <div class="chip"><span class="dot"></span> Shadow desks</div>
-            </div>
-
-            <div class="room-body">
-
-              <div class="subtitle" style="margin-bottom:10px">
-                Frontline desks #1-6
-              </div>
-
-              <div id="frontline" class="bot-grid" style="margin-bottom:14px"></div>
-
-              <div class="subtitle" style="margin-bottom:10px">
-                Senior desks #7-10
-              </div>
-
-              <div id="senior" class="bot-grid"></div>
-
-            </div>
-
-          </section>
-
-          <section class="room">
-
-            <div class="room-header">
-              <div class="room-title">Reporting Ladder</div>
-              <div class="chip">6 → 4 → 2 → Verify → Alfred</div>
-            </div>
-
-            <div class="room-body">
-
-              <div class="flow">
-
-                <div class="desk">
-                  <strong>#1-6</strong>
-                  <span>Frontline research desks</span>
-                </div>
-
-                <div class="desk">
-                  <strong>#7-10</strong>
-                  <span>Senior synthesis desks</span>
-                </div>
-
-                <div class="desk">
-                  <strong>#11-12</strong>
-                  <span>Chief Alpha & Chief Risk</span>
-                </div>
-
-                <div class="desk">
-                  <strong>#19-20</strong>
-                  <span>Verification office</span>
-                </div>
-
-                <div class="desk">
-                  <strong>#13</strong>
-                  <span>Alfred Master</span>
-                </div>
-
-                <div class="desk">
-                  <strong>#21</strong>
-                  <span>Secretary / Chief of Staff</span>
-                </div>
-
-              </div>
-
-            </div>
-
-          </section>
-
-          <section class="room">
-
-            <div class="room-header">
-              <div class="room-title">Decision Center</div>
-              <div class="chip"><span class="dot"></span> Prototype terminal</div>
-            </div>
-
-            <div class="room-body decision">
-
-              <div class="decision-box">
-
-                <div class="call">Master Decision</div>
-                <div class="call-value">WAIT</div>
-
-                <div class="subtitle">
-                  Production trading remains blocked until the analytical engine,
-                  verification system, and risk controls are connected and validated.
-                </div>
-
-                <div class="stats-row">
-
-                  <div class="stat-mini">
-                    <span class="label">Direction</span>
-                    <b>N/A</b>
-                    <span class="subtitle">Awaiting live engine</span>
-                  </div>
-
-                  <div class="stat-mini">
-                    <span class="label">Entry</span>
-                    <b>N/A</b>
-                    <span class="subtitle">Awaiting live engine</span>
-                  </div>
-
-                  <div class="stat-mini">
-                    <span class="label">Risk</span>
-                    <b>BLOCKED</b>
-                    <span class="subtitle">Prototype safeguard</span>
-                  </div>
-
-                </div>
-
-              </div>
-
-              <div class="decision-box">
-
-                <div class="call">Operational Focus</div>
-
-                <div style="margin-top:12px;display:grid;gap:10px">
-
-                  <div class="event">
-                    <div class="row">
-                      <b>Phase 1</b>
-                      <small>Locked</small>
-                    </div>
-                    <p>Signal & risk constitution approved.</p>
-                  </div>
-
-                  <div class="event">
-                    <div class="row">
-                      <b>Phase 2</b>
-                      <small>Locked</small>
-                    </div>
-                    <p>Data nervous system defined.</p>
-                  </div>
-
-                  <div class="event">
-                    <div class="row">
-                      <b>Phase 3A</b>
-                      <small>Active</small>
-                    </div>
-                    <p>Frontline contracts #1-6 complete.</p>
-                  </div>
-
-                </div>
-
-              </div>
-
-            </div>
-
-          </section>
-
+        <div class="card">
+          <h4>Market Analysis</h4>
+          <p>Operational hierarchy and decision center.</p>
         </div>
 
-        <div class="col">
+        <div class="card">
+          <h4>Visual Representation</h4>
+          <p>
+            Animated 2D cutaway of the 21-room trading firm.
+          </p>
+        </div>
 
-          <section class="room">
-
-            <div class="room-header">
-              <div class="room-title">Executive Offices</div>
-              <div class="chip"><span class="dot"></span> Top floor</div>
-            </div>
-
-            <div class="room-body">
-              <div id="executive" class="bot-grid"></div>
-            </div>
-
-          </section>
-
-          <section class="room">
-
-            <div class="room-header">
-              <div class="room-title">Operations Feed</div>
-              <div class="chip">Simulated activity</div>
-            </div>
-
-            <div class="room-body">
-              <div id="events" class="feed"></div>
-            </div>
-
-          </section>
-
+        <div class="card">
+          <h4>Bot Directory</h4>
+          <p>Mission details for every bot.</p>
         </div>
 
       </div>
+    </div>
 
-    </section>
+  </div>
 
-    <section id="visualPage" class="page">
+</section>
 
-      <div class="pixel-shell">
+<!-- MARKET ANALYSIS -->
 
-        <div class="pixel-topbar">
+<section id="analysis" class="page">
 
-          <div>
-            <div class="eyebrow" style="margin-bottom:4px">
-              Visual representation
-            </div>
+  <div class="analysis-grid">
 
-            <div style="font-size:20px;font-weight:800">
-              Pixel Trading Floor Camera
-            </div>
-          </div>
+    <div>
 
-          <div class="pixel-badges">
-            <div class="pixel-badge"><span class="record-dot"></span> REC</div>
-            <div class="pixel-badge">2D pixel cutaway</div>
-            <div class="pixel-badge">21 active desks</div>
-            <div class="pixel-badge">Knights patrolling</div>
-          </div>
-
+      <section class="section">
+        <div class="section-head">
+          <b>Alfred's Knights</b>
+          <span class="chip">Oversight</span>
         </div>
 
-        <div class="pixel-stage">
+        <div class="section-body">
+          <div id="guardCards" class="bot-list"></div>
+        </div>
+      </section>
 
-          <div class="pixel-overlay">
-            <div class="pixel-corner pc1"></div>
-            <div class="pixel-corner pc2"></div>
-            <div class="pixel-corner pc3"></div>
-            <div class="pixel-corner pc4"></div>
-          </div>
-
-          <div class="pixel-hud">
-
-            <div class="pixel-hud-group">
-              <div class="pixel-hud-pill">
-                <span class="record-dot"></span>
-                Camera 03 / Main Building
-              </div>
-              <div class="pixel-hud-pill">Observation Mode</div>
-            </div>
-
-            <div class="pixel-hud-group">
-              <div class="pixel-hud-pill" id="cameraClock">00:00:00</div>
-              <div class="pixel-hud-pill">Traffic: High</div>
-            </div>
-
-          </div>
-
-          <div class="pixel-building">
-
-            <div class="pixel-balcony">
-
-              <div class="eyebrow">Executive balcony</div>
-
-              <h2>ALFRED</h2>
-
-              <p>
-                Final authority above the floor. Every desk, patrol, and verification
-                chain routes upward through Alfred before reaching you.
-              </p>
-
-            </div>
-
-            <div class="floor-stack">
-
-              <div class="floor-row" id="pixelFloorRow1"></div>
-
-              <div class="floor-walkway">
-                <div class="walkway-label">Alfred’s Knights patrol route</div>
-
-                <div class="pixel-knight k1">
-                  <div class="k-head"></div>
-                  <div class="k-body"></div>
-                  <div class="k-arm"></div>
-                  <div class="k-legs"></div>
-                </div>
-
-                <div class="pixel-knight k2">
-                  <div class="k-head"></div>
-                  <div class="k-body"></div>
-                  <div class="k-arm"></div>
-                  <div class="k-legs"></div>
-                </div>
-
-                <div class="pixel-knight k3">
-                  <div class="k-head"></div>
-                  <div class="k-body"></div>
-                  <div class="k-arm"></div>
-                  <div class="k-legs"></div>
-                </div>
-
-              </div>
-
-              <div class="floor-row" id="pixelFloorRow2"></div>
-
-              <div class="floor-walkway">
-                <div class="walkway-label">Security patrol lane</div>
-
-                <div class="pixel-knight k1">
-                  <div class="k-head"></div>
-                  <div class="k-body"></div>
-                  <div class="k-arm"></div>
-                  <div class="k-legs"></div>
-                </div>
-
-                <div class="pixel-knight k4">
-                  <div class="k-head"></div>
-                  <div class="k-body"></div>
-                  <div class="k-arm"></div>
-                  <div class="k-legs"></div>
-                </div>
-
-                <div class="pixel-knight k5">
-                  <div class="k-head"></div>
-                  <div class="k-body"></div>
-                  <div class="k-arm"></div>
-                  <div class="k-legs"></div>
-                </div>
-
-              </div>
-
-              <div class="floor-row" id="pixelFloorRow3"></div>
-
-              <div class="floor-walkway">
-                <div class="walkway-label">Operations corridor</div>
-
-                <div class="pixel-knight k2">
-                  <div class="k-head"></div>
-                  <div class="k-body"></div>
-                  <div class="k-arm"></div>
-                  <div class="k-legs"></div>
-                </div>
-
-                <div class="pixel-knight k3">
-                  <div class="k-head"></div>
-                  <div class="k-body"></div>
-                  <div class="k-arm"></div>
-                  <div class="k-legs"></div>
-                </div>
-
-              </div>
-
-              <div class="floor-row" id="pixelFloorRow4"></div>
-              <div class="floor-row" id="pixelFloorRow5"></div>
-
-            </div>
-
-          </div>
-
+      <section class="section" style="margin-top:14px">
+        <div class="section-head">
+          <b>Corporate Office</b>
+          <span class="chip">Verification</span>
         </div>
 
-      </div>
+        <div class="section-body">
+          <div id="corporateCards" class="bot-list"></div>
+        </div>
+      </section>
 
-      <div class="pixel-note">
-        This page is a stylized 2D pixel-art cutaway of the ALFRED Capital trading floor.
-        Workers animate at desks and on phones, while Alfred’s Knights patrol the building.
-      </div>
+    </div>
 
-    </section>
+    <div>
 
-    <section id="directoryPage" class="page">
-
-      <section class="room">
-
-        <div class="room-header">
-          <div class="room-title">Bot Directory</div>
-          <div class="chip"><span class="dot"></span> Click any card</div>
+      <section class="section">
+        <div class="section-head">
+          <b>Trading Floor</b>
+          <span class="chip">Shadow desks</span>
         </div>
 
-        <div class="room-body">
-          <div id="directoryGrid" class="bot-grid"></div>
+        <div class="section-body">
+          <div id="tradingCards" class="bot-list"></div>
+        </div>
+      </section>
+
+      <section class="section" style="margin-top:14px">
+
+        <div class="section-head">
+          <b>Reporting Ladder</b>
+          <span class="chip">Controlled chain</span>
+        </div>
+
+        <div class="section-body">
+
+          <div class="ladder">
+
+            <div class="step">
+              <b>#1–6</b>
+              <span>Frontline</span>
+            </div>
+
+            <div class="step">
+              <b>#7–10</b>
+              <span>Senior</span>
+            </div>
+
+            <div class="step">
+              <b>#11–12</b>
+              <span>Chiefs</span>
+            </div>
+
+            <div class="step">
+              <b>#19–20</b>
+              <span>Verify</span>
+            </div>
+
+            <div class="step">
+              <b>#13</b>
+              <span>Alfred</span>
+            </div>
+
+            <div class="step">
+              <b>#21</b>
+              <span>Secretary</span>
+            </div>
+
+          </div>
+
         </div>
 
       </section>
 
-    </section>
+      <section class="section" style="margin-top:14px">
 
-    <div class="footer-note">
-      Objective: build the most advanced, efficient and reliable Bitcoin trade-analysis
-      system practical — prioritizing data integrity, calibrated confidence, continuous
-      learning, explainability, low-latency usefulness and disciplined risk.
-    </div>
-
-  </div>
-
-  <div id="modal" class="modal" aria-hidden="true">
-
-    <div class="modal-card">
-
-      <div class="modal-head">
-
-        <div>
-          <div class="eyebrow" id="mTier"></div>
-          <h3 id="mName"></h3>
-          <div class="subtitle" id="mRole"></div>
+        <div class="section-head">
+          <b>Decision Center</b>
+          <span class="chip">Prototype safeguard</span>
         </div>
 
-        <button class="close" id="closeBtn">Close</button>
+        <div class="section-body">
 
+          <div class="decision">WAIT</div>
+
+          <p class="muted">
+            Production execution remains blocked until the analytical
+            engine, verification system and risk controls are connected
+            and validated.
+          </p>
+
+        </div>
+
+      </section>
+
+    </div>
+
+    <div>
+
+      <section class="section">
+        <div class="section-head">
+          <b>Executive Offices</b>
+          <span class="chip">Top floor</span>
+        </div>
+
+        <div class="section-body">
+          <div id="executiveCards" class="bot-list"></div>
+        </div>
+      </section>
+
+      <section class="section" style="margin-top:14px">
+        <div class="section-head">
+          <b>Operations Feed</b>
+          <span class="chip">Simulated</span>
+        </div>
+
+        <div class="section-body">
+          <div id="feed" class="feed"></div>
+        </div>
+      </section>
+
+    </div>
+
+  </div>
+
+</section>
+
+<!-- VISUAL REPRESENTATION -->
+
+<section id="visual" class="page">
+
+  <div class="cam-shell">
+
+    <div class="cam-head">
+
+      <div>
+        <div class="eyebrow">Visual Representation</div>
+        <h3>ALFRED Capital — Trading Floor Camera</h3>
       </div>
 
-      <div class="modal-body">
+      <div class="cam-badges">
 
-        <h4>Mission</h4>
-        <p id="mMission"></p>
+        <span class="cam-pill">
+          <i class="rec"></i>
+          REC
+        </span>
 
-        <h4>Core Duties</h4>
-        <ul id="mDuties"></ul>
+        <span class="cam-pill">21 rooms</span>
+        <span class="cam-pill">Live BTC tickers</span>
+        <span class="cam-pill">Knights patrolling</span>
 
       </div>
 
     </div>
 
+    <div class="camera">
+
+      <div class="hud">
+
+        <div>
+          <span>CAM 03 / MAIN BUILDING</span>
+          <span>OBSERVATION MODE</span>
+        </div>
+
+        <div>
+          <span id="clock">00:00:00</span>
+          <span>FLOOR TRAFFIC: HIGH</span>
+        </div>
+
+      </div>
+
+      <div class="alfred-suite">
+
+        <div class="eyebrow">Executive Suite</div>
+
+        <h2>ALFRED</h2>
+
+        <p>
+          Final authority above the floor. Analytical packets,
+          verification and oversight ultimately route here before
+          reaching you.
+        </p>
+
+      </div>
+
+      <div id="building" class="building"></div>
+
+    </div>
+
   </div>
+
+  <div class="footer">
+    The visual floor is intentionally stylized. The live BTC display
+    is real-time market data; worker activity remains a visual
+    representation until backend bot telemetry is connected.
+  </div>
+
+</section>
+
+<!-- DIRECTORY -->
+
+<section id="directory" class="page">
+
+  <div class="panel">
+
+    <h3 class="section-title">Bot Directory</h3>
+
+    <div id="directoryGrid" class="directory"></div>
+
+  </div>
+
+</section>
+
+</main>
+
+<!-- BOT MODAL -->
+
+<div id="modal" class="modal">
+
+  <div class="modal-box">
+
+    <div class="modal-head">
+
+      <div>
+        <div id="modalTier" class="eyebrow"></div>
+        <h3 id="modalName"></h3>
+        <div id="modalRole" class="muted"></div>
+      </div>
+
+      <button id="closeModal" class="close">
+        Close
+      </button>
+
+    </div>
+
+    <div class="modal-body">
+
+      <h4>Mission</h4>
+      <p id="modalMission"></p>
+
+      <h4>Core Duties</h4>
+      <ul id="modalDuties"></ul>
+
+    </div>
+
+  </div>
+
+</div>
 
 <script>
 
 const bots = [
-  {id:1,name:'STRUCTURE',tier:'Frontline',role:'Price structure and liquidity specialist',mission:'Maps liquidity sweeps, BOS, CHoCH, fair-value gaps, invalidation, and structural context across all required timeframes.',duties:['Identify liquidity sweeps and structural shifts','Track support, resistance, and session highs/lows','Grade continuation versus reversal structure']},
-  {id:2,name:'FLOW',tier:'Frontline',role:'Order-flow specialist',mission:'Measures actual buying and selling pressure through trades, delta, CVD, absorption, exhaustion, and participation.',duties:['Track CVD and volume delta','Detect buyer or seller exhaustion','Confirm or challenge price-action moves']},
-  {id:3,name:'MICRO',tier:'Frontline',role:'Order-book and execution specialist',mission:'Reads depth, spread, imbalance, microprice, liquidity pullbacks, replenishment, and short-horizon execution quality.',duties:['Estimate execution pressure','Monitor liquidity walls and replenishment','Improve 1M and 5M entry timing']},
-  {id:4,name:'REGIME',tier:'Frontline',role:'Market environment specialist',mission:'Determines whether BTC is trending, ranging, compressing, expanding, reversing, or transitioning across timeframes.',duties:['Classify the current market regime','Measure multi-timeframe alignment','Prevent good setups from being used in bad environments']},
-  {id:5,name:'LEVERAGE',tier:'Frontline',role:'Futures / perpetuals specialist',mission:'Tracks open interest, funding, basis, squeezes, cascades, liquidations, and leverage-driven vulnerability.',duties:['Measure liquidation risk','Flag leverage-heavy breakouts','Monitor spot versus perpetual behaviour']},
-  {id:6,name:'VOLATILITY',tier:'Frontline',role:'Volatility and macro specialist',mission:'Evaluates realized and implied volatility, options context, major macro events, and changing cross-market influence.',duties:['Measure event risk','Track volatility regime','Adjust macro weight when correlations change']},
-  {id:7,name:'MARKET FUSION',tier:'Senior',role:'Structure + flow synthesis',mission:'Combines price structure and order-flow evidence into a unified assessment of breakout, continuation, or reversal quality.',duties:['Compare structure with actual participation','Score breakout quality','Escalate high-quality aligned setups']},
-  {id:8,name:'EXECUTION',tier:'Senior',role:'Entry and timing authority',mission:'Optimizes exact entry timing, structural invalidation, stop placement, target logic, and execution quality.',duties:['Determine whether timing is ready','Refine entry and invalidation zones','Reduce poor entries and unnecessary slippage']},
-  {id:9,name:'DERIVATIVES INTEL',tier:'Senior',role:'Derivatives synthesis',mission:'Merges leverage, volatility, futures, perpetual, and positioning information into actionable risk intelligence.',duties:['Flag crowded positioning','Identify squeeze and cascade risk','Send derivatives warnings to Chief Risk']},
-  {id:10,name:'GUARDIAN',tier:'Senior',role:'Adversarial risk critic',mission:'Actively searches for reasons a proposed trade thesis may be wrong before Alfred ever sees it.',duties:['Challenge weak evidence','Detect fragile assumptions','Recommend veto, remediation, or further evidence']},
-  {id:11,name:'CHIEF ALPHA',tier:'Executive',role:'Opportunity authority',mission:'Converts senior-desk intelligence into ranked trade opportunities and expected-value judgments.',duties:['Rank opportunity quality','Measure expected value','Forward only qualified setups for review']},
-  {id:12,name:'CHIEF RISK',tier:'Executive',role:'Risk authority',mission:'Assesses failure risk, event risk, disagreement, model uncertainty, and whether a trade is safe enough to advance.',duties:['Approve or reject risk','Adjust risk multipliers','Block dangerous setups']},
-  {id:13,name:'ALFRED',tier:'Executive',role:'Master intelligence / final authority',mission:'Receives verified analytical packets and makes the final BUY, SHORT, WAIT, or BLOCKED decision.',duties:['Make the final judgment','Override consensus only when justified','Report the final intelligence clearly to Sir Philip']},
-  {id:14,name:'WATCHTOWER',tier:'Guard',role:'Systems & data auditor',mission:'Monitors uptime, feed freshness, latency, timestamp health, and infrastructure integrity across the organization.',duties:['Track stale data and feed outages','Alert on degraded system health','Reduce trust when infrastructure degrades']},
-  {id:15,name:'EXAMINER',tier:'Guard',role:'Performance auditor',mission:'Measures whether every bot is actually good at its assigned role using calibration, expectancy, accuracy, and error rates.',duties:['Audit confidence calibration','Track false positives and false negatives','Trigger discipline for repeated preventable underperformance']},
-  {id:16,name:'WARDEN',tier:'Guard',role:'Learning integrity auditor',mission:'Guards against drift, overfitting, contamination, look-ahead bias, unsafe learning, and bad model promotion.',duties:['Block overfit models','Require replay and retraining','Protect production from unsafe learning']},
-  {id:17,name:'MARSHAL',tier:'Guard',role:'Productivity auditor',mission:'Ensures every bot performs maximum useful work without idle behaviour, duplicated work, or wasted computation.',duties:['Audit task completion','Measure useful workload','Restrict wasteful resource usage']},
-  {id:18,name:'SENTINEL',tier:'Guard',role:'Coordination auditor',mission:'Ensures the organization maintains coverage, independence, communication quality, and protection against groupthink.',duties:['Detect overlap and blind spots','Monitor for groupthink','Escalate communication failures']},
-  {id:19,name:'CHIEF VERIFICATION',tier:'Corporate',role:'First verification office',mission:'Independently recomputes and verifies the analytical package before Alfred can review it.',duties:['Reproduce key calculations','Check evidence provenance','Pass, conditionally pass, reject, or return packets for rework']},
-  {id:20,name:'EXECUTIVE VERIFICATION',tier:'Corporate',role:'Verify-the-verifier office',mission:'Audits Bot #19 and the complete analytical chain before the packet reaches Alfred.',duties:['Inspect verification completeness','Catch missed contradictions','Approve or return analysis for rework']},
-  {id:21,name:'PRIVATE SECRETARY',tier:'Executive',role:'Chief of staff / executive assistant',mission:'Organizes reports, alerts, decision logs, assignments, briefings, and follow-ups so Alfred can focus on final judgment.',duties:['Prepare executive briefings','Maintain audit trails','Route priorities and follow-ups']}
+
+{
+  id:1,
+  name:'STRUCTURE',
+  tier:'Frontline',
+  role:'Price structure and liquidity specialist',
+  mission:'Maps liquidity sweeps, BOS, CHoCH, fair-value gaps, invalidation and structural context.',
+  duties:[
+    'Identify liquidity sweeps and structural shifts',
+    'Track support, resistance and session highs/lows',
+    'Grade continuation versus reversal structure'
+  ]
+},
+
+{
+  id:2,
+  name:'FLOW',
+  tier:'Frontline',
+  role:'Order-flow specialist',
+  mission:'Measures buying and selling pressure through trades, delta, CVD, absorption and exhaustion.',
+  duties:[
+    'Track CVD and volume delta',
+    'Detect buyer or seller exhaustion',
+    'Confirm or challenge price-action moves'
+  ]
+},
+
+{
+  id:3,
+  name:'MICRO',
+  tier:'Frontline',
+  role:'Order-book and execution specialist',
+  mission:'Reads depth, spread, imbalance, microprice, replenishment and short-horizon execution quality.',
+  duties:[
+    'Estimate execution pressure',
+    'Monitor liquidity walls and replenishment',
+    'Improve 1M and 5M entry timing'
+  ]
+},
+
+{
+  id:4,
+  name:'REGIME',
+  tier:'Frontline',
+  role:'Market environment specialist',
+  mission:'Classifies trend, range, compression, expansion and transition across timeframes.',
+  duties:[
+    'Classify current regime',
+    'Measure multi-timeframe alignment',
+    'Prevent good setups in bad environments'
+  ]
+},
+
+{
+  id:5,
+  name:'LEVERAGE',
+  tier:'Frontline',
+  role:'Futures / perpetuals specialist',
+  mission:'Tracks open interest, funding, basis, squeezes, cascades and liquidations.',
+  duties:[
+    'Measure liquidation risk',
+    'Flag leverage-heavy breakouts',
+    'Monitor spot versus perpetual behavior'
+  ]
+},
+
+{
+  id:6,
+  name:'VOLATILITY',
+  tier:'Frontline',
+  role:'Volatility and macro specialist',
+  mission:'Evaluates volatility, options context, macro events and cross-market influence.',
+  duties:[
+    'Measure event risk',
+    'Track volatility regime',
+    'Adjust macro weight as correlations change'
+  ]
+},
+
+{
+  id:7,
+  name:'MARKET FUSION',
+  tier:'Senior',
+  role:'Structure + flow synthesis',
+  mission:'Combines structure and order flow into a unified assessment of breakout, continuation or reversal quality.',
+  duties:[
+    'Compare structure with participation',
+    'Score breakout quality',
+    'Escalate aligned setups'
+  ]
+},
+
+{
+  id:8,
+  name:'EXECUTION',
+  tier:'Senior',
+  role:'Entry and timing authority',
+  mission:'Optimizes entry timing, structural invalidation, stops, targets and execution quality.',
+  duties:[
+    'Determine timing readiness',
+    'Refine entry and invalidation zones',
+    'Reduce poor entries and slippage'
+  ]
+},
+
+{
+  id:9,
+  name:'DERIVATIVES INTEL',
+  tier:'Senior',
+  role:'Derivatives synthesis',
+  mission:'Merges leverage, volatility, futures, perpetual and positioning information.',
+  duties:[
+    'Flag crowded positioning',
+    'Identify squeeze and cascade risk',
+    'Send derivatives warnings to Chief Risk'
+  ]
+},
+
+{
+  id:10,
+  name:'GUARDIAN',
+  tier:'Senior',
+  role:'Adversarial risk critic',
+  mission:'Searches for reasons a proposed trade thesis may be wrong before Alfred sees it.',
+  duties:[
+    'Challenge weak evidence',
+    'Detect fragile assumptions',
+    'Recommend veto or more evidence'
+  ]
+},
+
+{
+  id:11,
+  name:'CHIEF ALPHA',
+  tier:'Executive',
+  role:'Opportunity authority',
+  mission:'Converts senior-desk intelligence into ranked opportunities and expected-value judgments.',
+  duties:[
+    'Rank opportunity quality',
+    'Measure expected value',
+    'Forward only qualified setups'
+  ]
+},
+
+{
+  id:12,
+  name:'CHIEF RISK',
+  tier:'Executive',
+  role:'Risk authority',
+  mission:'Assesses failure risk, event risk, disagreement and model uncertainty.',
+  duties:[
+    'Approve or reject risk',
+    'Adjust risk multipliers',
+    'Block dangerous setups'
+  ]
+},
+
+{
+  id:13,
+  name:'ALFRED',
+  tier:'Executive',
+  role:'Master intelligence / final authority',
+  mission:'Receives verified packets and makes the final BUY, SHORT, WAIT or BLOCKED decision.',
+  duties:[
+    'Make the final judgment',
+    'Override consensus only when justified',
+    'Report final intelligence clearly'
+  ]
+},
+
+{
+  id:14,
+  name:'WATCHTOWER',
+  tier:'Guard',
+  role:'Systems & data auditor',
+  mission:'Monitors uptime, feed freshness, latency, timestamps and infrastructure integrity.',
+  duties:[
+    'Track stale data and outages',
+    'Alert on degraded system health',
+    'Reduce trust when infrastructure degrades'
+  ]
+},
+
+{
+  id:15,
+  name:'EXAMINER',
+  tier:'Guard',
+  role:'Performance auditor',
+  mission:'Measures calibration, expectancy, accuracy and error rates.',
+  duties:[
+    'Audit confidence calibration',
+    'Track false positives and negatives',
+    'Trigger remediation for repeated preventable errors'
+  ]
+},
+
+{
+  id:16,
+  name:'WARDEN',
+  tier:'Guard',
+  role:'Learning integrity auditor',
+  mission:'Guards against drift, overfitting, look-ahead bias and unsafe model promotion.',
+  duties:[
+    'Block overfit models',
+    'Require replay and retraining',
+    'Protect production from unsafe learning'
+  ]
+},
+
+{
+  id:17,
+  name:'MARSHAL',
+  tier:'Guard',
+  role:'Productivity auditor',
+  mission:'Ensures useful work without duplicated effort or wasted computation.',
+  duties:[
+    'Audit task completion',
+    'Measure useful workload',
+    'Restrict wasteful resource usage'
+  ]
+},
+
+{
+  id:18,
+  name:'SENTINEL',
+  tier:'Guard',
+  role:'Coordination auditor',
+  mission:'Protects coverage, independence, communication quality and resistance to groupthink.',
+  duties:[
+    'Detect overlap and blind spots',
+    'Monitor groupthink',
+    'Escalate communication failures'
+  ]
+},
+
+{
+  id:19,
+  name:'CHIEF VERIFICATION',
+  tier:'Corporate',
+  role:'First verification office',
+  mission:'Independently recomputes and verifies the analytical package.',
+  duties:[
+    'Reproduce key calculations',
+    'Check evidence provenance',
+    'Pass, condition or return packets'
+  ]
+},
+
+{
+  id:20,
+  name:'EXECUTIVE VERIFICATION',
+  tier:'Corporate',
+  role:'Verify-the-verifier office',
+  mission:'Audits Bot #19 and the complete analytical chain before Alfred.',
+  duties:[
+    'Inspect verification completeness',
+    'Catch missed contradictions',
+    'Approve or return analysis'
+  ]
+},
+
+{
+  id:21,
+  name:'PRIVATE SECRETARY',
+  tier:'Executive',
+  role:'Chief of staff / executive assistant',
+  mission:'Organizes reports, alerts, decision logs, briefings and follow-ups.',
+  duties:[
+    'Prepare executive briefings',
+    'Maintain audit trails',
+    'Route priorities and follow-ups'
+  ]
+}
+
 ];
 
-function card(bot){
+/*
+Each bot gets a different room design.
+
+Array:
+[
+  wall color 1,
+  wall color 2,
+  floor color,
+  worker / screen accent,
+  main screen title,
+  decor items
+]
+*/
+
+const variants = [
+
+[
+  '#65788d',
+  '#334457',
+  '#745039',
+  '#67b9ff',
+  'Execution Grid',
+  ['plant','phone','coffee','lamp']
+],
+
+[
+  '#6c7488',
+  '#3c465a',
+  '#6d4935',
+  '#8fd2ff',
+  'Structure Map',
+  ['shelf','chart','plant','phone']
+],
+
+[
+  '#607183',
+  '#304455',
+  '#7b5238',
+  '#59d7c2',
+  'Order Book',
+  ['server','phone','coffee','chart']
+],
+
+[
+  '#687083',
+  '#3c4253',
+  '#694638',
+  '#f3b45c',
+  'Regime Map',
+  ['cabinet','chart','lamp','plant']
+],
+
+[
+  '#5e7480',
+  '#314954',
+  '#74503a',
+  '#7ec8ff',
+  'Leverage Grid',
+  ['server','phone','shelf','coffee']
+],
+
+[
+  '#6e6d84',
+  '#424054',
+  '#704b38',
+  '#d6a5ff',
+  'Volatility Surface',
+  ['chart','lamp','shelf','plant']
+],
+
+[
+  '#657586',
+  '#35485a',
+  '#6d4835',
+  '#62d7b0',
+  'Fusion Map',
+  ['server','chart','phone','coffee']
+],
+
+[
+  '#5d7082',
+  '#304252',
+  '#7c563c',
+  '#53d8c3',
+  'Execution Matrix',
+  ['phone','lamp','chart','server']
+],
+
+[
+  '#6c7084',
+  '#3d4257',
+  '#6b4736',
+  '#98b8ff',
+  'Derivatives Feed',
+  ['server','server','phone','chart']
+],
+
+[
+  '#716b7b',
+  '#453c4f',
+  '#6b4736',
+  '#f0b961',
+  'Risk Challenge',
+  ['cabinet','phone','chart','lamp']
+],
+
+[
+  '#6c7088',
+  '#423f58',
+  '#765039',
+  '#d0a0ff',
+  'Alpha Board',
+  ['plant','phone','coffee','chart']
+],
+
+[
+  '#726d80',
+  '#484252',
+  '#684534',
+  '#f3c365',
+  'Risk Matrix',
+  ['cabinet','phone','server','chart']
+],
+
+[
+  '#756b8c',
+  '#443b59',
+  '#714b38',
+  '#d7a6ff',
+  'MASTER BTC',
+  ['plant','shelf','coffee','lamp']
+],
+
+[
+  '#617b79',
+  '#354d4a',
+  '#6f4a37',
+  '#8ae08d',
+  'System Health',
+  ['server','server','phone','cabinet']
+],
+
+[
+  '#667b78',
+  '#3a4c4a',
+  '#75503a',
+  '#8ee6a2',
+  'Performance Audit',
+  ['chart','cabinet','phone','coffee']
+],
+
+[
+  '#6d7776',
+  '#3c494a',
+  '#694638',
+  '#9bdd9b',
+  'Learning Integrity',
+  ['server','chart','cabinet','phone']
+],
+
+[
+  '#687a77',
+  '#374b48',
+  '#754d38',
+  '#8bd69b',
+  'Workload Board',
+  ['chart','phone','coffee','shelf']
+],
+
+[
+  '#647673',
+  '#354845',
+  '#704b37',
+  '#8adca0',
+  'Coordination Map',
+  ['server','phone','chart','plant']
+],
+
+[
+  '#667889',
+  '#364858',
+  '#6e4937',
+  '#a3b7ff',
+  'Verification Feed',
+  ['server','chart','cabinet','phone']
+],
+
+[
+  '#647687',
+  '#354757',
+  '#724d38',
+  '#aabfff',
+  'Executive Check',
+  ['server','phone','chart','shelf']
+],
+
+[
+  '#736c88',
+  '#453f58',
+  '#754f3a',
+  '#d4a4ff',
+  'Briefing Board',
+  ['shelf','phone','coffee','plant']
+]
+
+];
+
+const phoneBots = new Set([
+  2,
+  5,
+  8,
+  11,
+  12,
+  19,
+  21
+]);
+
+function decor(type,slot){
+
+  if(type === 'plant'){
+    return `
+      <div class="plant ${slot === 'a' ? 'pl1' : 'pl2'}"></div>
+    `;
+  }
+
+  if(type === 'shelf'){
+    return `
+      <div class="shelf ${slot === 'a' ? 'sh1' : 'sh2'}"></div>
+    `;
+  }
+
+  if(type === 'server'){
+    return `
+      <div class="server ${slot === 'a' ? 'sv1' : 'sv2'}"></div>
+    `;
+  }
+
+  if(type === 'cabinet'){
+    return `
+      <div class="cabinet ${slot === 'a' ? 'cb1' : 'cb2'}"></div>
+    `;
+  }
+
+  if(type === 'chart'){
+    return `
+      <div class="side-screen ${slot === 'a' ? 'left' : 'right'}"></div>
+    `;
+  }
+
+  if(type === 'phone'){
+    return `
+      <div class="phone ${slot === 'a' ? 'p1' : 'p2'}"></div>
+    `;
+  }
+
+  if(type === 'coffee'){
+    return `
+      <div class="coffee ${slot === 'a' ? 'c1' : 'c2'}"></div>
+    `;
+  }
+
+  if(type === 'lamp'){
+    return `
+      <div class="lamp ${slot === 'a' ? 'l1' : 'l2'}"></div>
+    `;
+  }
+
+  return '';
+
+}
+
+function roomHTML(bot){
+
+  const v = variants[bot.id - 1];
+
+  const [
+    wall1,
+    wall2,
+    floor,
+    accent,
+    screen,
+    items
+  ] = v;
+
   return `
-    <button class="bot-card" onclick="openBot(${bot.id})">
+    <div
+      class="bot-room"
+      style="
+        --wall1:${wall1};
+        --wall2:${wall2};
+        --floor:${floor};
+        --accent:${accent}
+      "
+    >
 
-      <div class="bot-top">
+      <div class="room-name">
 
-        <div>
-          <div class="bot-id">Bot #${bot.id}</div>
-          <div class="bot-name">${bot.name}</div>
-          <div class="bot-role">${bot.role}</div>
-        </div>
+        <b>
+          #${bot.id}
+          ${bot.name}
+        </b>
 
-        <div class="badge">
-          <span class="dot"></span>
-          Shadow
-        </div>
+        <span class="status">
+          <i class="status-dot"></i>
+          ACTIVE
+        </span>
 
       </div>
 
-      <div class="tier">
-        <span>${bot.tier}</span>
-        <span>View brief</span>
+      <div class="roof-ticker">
+
+        <b>BTC/USD</b>
+
+        <span class="btc-room-price">
+          Loading
+        </span>
+
       </div>
+
+      <div class="big-screen">
+        <div class="screen-title">
+          ${screen}
+        </div>
+      </div>
+
+      <div class="side-screen left"></div>
+      <div class="side-screen right"></div>
+
+      ${decor(items[0],'a')}
+      ${decor(items[1],'b')}
+      ${decor(items[2],'a')}
+      ${decor(items[3],'b')}
+
+      <div class="monitor mon1"></div>
+      <div class="monitor mon2"></div>
+      <div class="monitor mon3"></div>
+      <div class="monitor mon4"></div>
+
+      <div class="phone p1"></div>
+      <div class="phone p2"></div>
+
+      <div class="deskbar"></div>
+
+      <div
+        class="worker w1 ${phoneBots.has(bot.id) ? 'phone-call' : ''}"
+      >
+        <div class="head"></div>
+        <div class="body"></div>
+        <div class="arm a1"></div>
+        <div class="arm a2"></div>
+        <div class="leg l1"></div>
+        <div class="leg l2"></div>
+      </div>
+
+      <div class="worker w2">
+        <div class="head"></div>
+        <div class="body"></div>
+        <div class="arm a1"></div>
+        <div class="arm a2"></div>
+        <div class="leg l1"></div>
+        <div class="leg l2"></div>
+      </div>
+
+    </div>
+  `;
+
+}
+
+function knight(i){
+
+  return `
+    <div class="knight k${i}">
+      <div class="kh"></div>
+      <div class="kb"></div>
+      <div class="ka"></div>
+      <div class="kl"></div>
+    </div>
+  `;
+
+}
+
+function buildBuilding(){
+
+  const floors = [
+
+    [
+      0,
+      3,
+      'Frontline — Structure / Flow / Micro'
+    ],
+
+    [
+      3,
+      6,
+      'Frontline — Regime / Leverage / Volatility'
+    ],
+
+    [
+      6,
+      9,
+      'Senior — Fusion / Execution / Derivatives'
+    ],
+
+    [
+      9,
+      12,
+      'Senior & Chiefs — Guardian / Alpha / Risk'
+    ],
+
+    [
+      12,
+      15,
+      'Executive & Guard — Alfred / Watchtower / Examiner'
+    ],
+
+    [
+      15,
+      18,
+      'Guard Wing — Warden / Marshal / Sentinel'
+    ],
+
+    [
+      18,
+      21,
+      'Corporate & Administration — Verification / Secretary'
+    ]
+
+  ];
+
+  document
+    .getElementById('building')
+    .innerHTML = floors
+      .map(
+        (f,i) => `
+
+          <div>
+
+            <div class="floor-title">
+              ${f[2]}
+            </div>
+
+            <div class="room-row">
+
+              ${bots
+                .slice(f[0],f[1])
+                .map(roomHTML)
+                .join('')}
+
+            </div>
+
+          </div>
+
+          ${
+            i < 6
+              ? `
+                <div class="patrol">
+
+                  <label>
+                    Alfred's Knights — patrol corridor
+                  </label>
+
+                  ${knight(1)}
+                  ${knight(2)}
+                  ${i % 2 ? knight(3) : knight(4)}
+
+                </div>
+              `
+              : ''
+          }
+
+        `
+      )
+      .join('');
+
+}
+
+function botCard(bot){
+
+  return `
+    <button
+      class="bot-card"
+      onclick="openBot(${bot.id})"
+    >
+
+      <small>
+        Bot #${bot.id} / ${bot.tier}
+      </small>
+
+      <b>
+        ${bot.name}
+      </b>
+
+      <span>
+        ${bot.role}
+      </span>
 
     </button>
   `;
+
 }
 
-function fill(id,list){
-  const el=document.getElementById(id);
-  if(el) el.innerHTML=list.map(card).join('');
+function fillCards(){
+
+  document
+    .getElementById('guardCards')
+    .innerHTML = bots
+      .filter(
+        b => b.tier === 'Guard'
+      )
+      .map(botCard)
+      .join('');
+
+  document
+    .getElementById('corporateCards')
+    .innerHTML = bots
+      .filter(
+        b => b.tier === 'Corporate'
+      )
+      .map(botCard)
+      .join('');
+
+  document
+    .getElementById('executiveCards')
+    .innerHTML = bots
+      .filter(
+        b => b.tier === 'Executive'
+      )
+      .map(botCard)
+      .join('');
+
+  document
+    .getElementById('tradingCards')
+    .innerHTML = bots
+      .filter(
+        b =>
+          b.tier === 'Frontline' ||
+          b.tier === 'Senior'
+      )
+      .map(botCard)
+      .join('');
+
+  document
+    .getElementById('directoryGrid')
+    .innerHTML = bots
+      .map(botCard)
+      .join('');
+
 }
 
-fill('frontline',bots.filter(bot=>bot.tier==='Frontline'));
-fill('senior',bots.filter(bot=>bot.tier==='Senior'));
-fill('guard',bots.filter(bot=>bot.tier==='Guard'));
-fill('corporate',bots.filter(bot=>bot.tier==='Corporate'));
-fill('executive',bots.filter(bot=>bot.tier==='Executive'));
-fill('directoryGrid',bots);
+const modal =
+  document.getElementById('modal');
 
-const timeframes=[
-  ['1M','Execution'],
-  ['5M','Confirmation'],
-  ['15M','Intraday'],
-  ['30M','Bias'],
-  ['1H','Session'],
-  ['4H','Regime']
-];
+const modalTier =
+  document.getElementById('modalTier');
 
-document.getElementById('timeframes').innerHTML=
-  timeframes.map(([timeframe,role])=>`
-    <div class="term">
-      <span>${role}</span>
-      <b>${timeframe}</b>
-      <div class="subtitle" style="margin-top:6px">
-        State: Shadow
-      </div>
-    </div>
-  `).join('');
+const modalName =
+  document.getElementById('modalName');
 
-const logEvents=[
-  ['WATCHTOWER','Prototype heartbeat active. Live feed auditing will activate when backend data services are connected.'],
-  ['EXAMINER','Calibration panel ready for live and shadow performance metrics.'],
-  ['MARSHAL','Workload monitoring ready. Awaiting live bot telemetry.'],
-  ['CHIEF ALPHA','Opportunity desk online in shadow mode. No production thesis issued.'],
-  ['CHIEF RISK','Production execution intentionally blocked while analytics remain in prototype mode.'],
-  ['PRIVATE SECRETARY','Compiling the current prototype briefing for Alfred.']
-];
+const modalRole =
+  document.getElementById('modalRole');
 
-function renderEvents(){
+const modalMission =
+  document.getElementById('modalMission');
 
-  const now=new Date();
-
-  document.getElementById('events').innerHTML=
-    logEvents.map((event,index)=>{
-
-      const time=
-        new Date(
-          now.getTime()-(index*60000)
-        ).toLocaleTimeString(
-          [],
-          {
-            hour:'2-digit',
-            minute:'2-digit'
-          }
-        );
-
-      return `
-        <div class="event">
-
-          <div class="row">
-            <b>${event[0]}</b>
-            <small>${time}</small>
-          </div>
-
-          <p>${event[1]}</p>
-
-        </div>
-      `;
-
-    }).join('');
-}
-
-renderEvents();
-setInterval(renderEvents,30000);
+const modalDuties =
+  document.getElementById('modalDuties');
 
 function openBot(id){
 
-  const bot=
+  const b =
     bots.find(
-      item=>item.id===id
+      x => x.id === id
     );
 
-  if(!bot) return;
+  if(!b){
+    return;
+  }
 
-  document.getElementById('mTier').textContent=
-    `Bot #${bot.id} / ${bot.tier}`;
+  modalTier.textContent =
+    `Bot #${b.id} / ${b.tier}`;
 
-  document.getElementById('mName').textContent=
-    bot.name;
+  modalName.textContent =
+    b.name;
 
-  document.getElementById('mRole').textContent=
-    bot.role;
+  modalRole.textContent =
+    b.role;
 
-  document.getElementById('mMission').textContent=
-    bot.mission;
+  modalMission.textContent =
+    b.mission;
 
-  document.getElementById('mDuties').innerHTML=
-    bot.duties.map(
-      duty=>`<li>${duty}</li>`
-    ).join('');
-
-  const modal=
-    document.getElementById('modal');
+  modalDuties.innerHTML =
+    b.duties
+      .map(
+        x => `<li>${x}</li>`
+      )
+      .join('');
 
   modal.classList.add('show');
 
-  modal.setAttribute(
-    'aria-hidden',
-    'false'
-  );
-
 }
 
-window.openBot=openBot;
-
-function closeModal(){
-
-  const modal=
-    document.getElementById('modal');
-
-  modal.classList.remove('show');
-
-  modal.setAttribute(
-    'aria-hidden',
-    'true'
-  );
-
-}
+window.openBot = openBot;
 
 document
-  .getElementById('closeBtn')
-  .addEventListener(
-    'click',
-    closeModal
-  );
+  .getElementById('closeModal')
+  .onclick = () => {
 
-document
-  .getElementById('modal')
-  .addEventListener(
-    'click',
-    event=>{
+    modal
+      .classList
+      .remove('show');
 
-      if(event.target.id==='modal'){
-        closeModal();
-      }
+  };
 
-    }
-  );
+modal.onclick = e => {
 
-document.addEventListener(
-  'keydown',
-  event=>{
+  if(e.target === modal){
 
-    if(event.key==='Escape'){
-      closeModal();
-    }
+    modal
+      .classList
+      .remove('show');
 
   }
-);
+
+};
 
 document
-  .querySelectorAll('.nav-tab')
+  .querySelectorAll('.nav button')
   .forEach(
-    button=>{
+    btn => {
 
-      button.addEventListener(
-        'click',
-        ()=>{
+      btn.onclick = () => {
 
-          document
-            .querySelectorAll('.nav-tab')
-            .forEach(
-              b=>b.classList.remove('active')
-            );
+        document
+          .querySelectorAll('.nav button')
+          .forEach(
+            x =>
+              x.classList.remove('active')
+          );
 
-          document
-            .querySelectorAll('.page')
-            .forEach(
-              page=>page.classList.remove('active')
-            );
+        document
+          .querySelectorAll('.page')
+          .forEach(
+            x =>
+              x.classList.remove('active')
+          );
 
-          button.classList.add('active');
+        btn
+          .classList
+          .add('active');
 
-          document
-            .getElementById(button.dataset.page)
-            .classList.add('active');
+        document
+          .getElementById(
+            btn.dataset.page
+          )
+          .classList
+          .add('active');
 
-          window.scrollTo({
-            top:0,
-            behavior:'smooth'
-          });
+        window.scrollTo({
+          top:0,
+          behavior:'smooth'
+        });
 
-        }
-      );
+      };
 
     }
   );
 
-async function loadCoinbasePrice(){
+const feedItems = [
 
-  const response=
+[
+  'WATCHTOWER',
+  'Data and infrastructure audit channel standing by.'
+],
+
+[
+  'EXAMINER',
+  'Performance calibration channel standing by.'
+],
+
+[
+  'MARSHAL',
+  'Workload monitoring channel standing by.'
+],
+
+[
+  'CHIEF ALPHA',
+  'Opportunity desk remains in shadow mode.'
+],
+
+[
+  'CHIEF RISK',
+  'Production execution remains blocked during prototype stage.'
+],
+
+[
+  'PRIVATE SECRETARY',
+  'Executive briefing channel standing by.'
+]
+
+];
+
+function renderFeed(){
+
+  document
+    .getElementById('feed')
+    .innerHTML = feedItems
+      .map(
+        (x,i) => `
+
+          <div class="feed-item">
+
+            <b>
+              ${x[0]}
+              ·
+              ${
+                new Date(
+                  Date.now() - i * 60000
+                )
+                .toLocaleTimeString(
+                  [],
+                  {
+                    hour:'2-digit',
+                    minute:'2-digit'
+                  }
+                )
+              }
+            </b>
+
+            <p>
+              ${x[1]}
+            </p>
+
+          </div>
+
+        `
+      )
+      .join('');
+
+}
+
+function updatePriceDisplays(v){
+
+  document
+    .getElementById('btcPrice')
+    .textContent = v;
+
+  document
+    .querySelectorAll('.btc-room-price')
+    .forEach(
+      x =>
+        x.textContent = v
+    );
+
+}
+
+async function getCoinbase(){
+
+  const r =
     await fetch(
       'https://api.coinbase.com/v2/prices/BTC-USD/spot',
       {
@@ -1955,29 +2686,22 @@ async function loadCoinbasePrice(){
       }
     );
 
-  if(!response.ok){
-    throw new Error('Coinbase request failed');
+  if(!r.ok){
+    throw 0;
   }
 
-  const json=
-    await response.json();
+  const j =
+    await r.json();
 
-  const amount=
-    Number(
-      json?.data?.amount||0
-    );
-
-  if(!amount){
-    throw new Error('Coinbase price missing');
-  }
-
-  return amount;
+  return Number(
+    j?.data?.amount || 0
+  );
 
 }
 
-async function loadKrakenPrice(){
+async function getKraken(){
 
-  const response=
+  const r =
     await fetch(
       'https://api.kraken.com/0/public/Ticker?pair=XBTUSD',
       {
@@ -1985,37 +2709,29 @@ async function loadKrakenPrice(){
       }
     );
 
-  if(!response.ok){
-    throw new Error('Kraken request failed');
+  if(!r.ok){
+    throw 0;
   }
 
-  const json=
-    await response.json();
+  const j =
+    await r.json();
 
-  const result=
-    json?.result||{};
+  const k =
+    Object.keys(
+      j?.result || {}
+    )[0];
 
-  const firstKey=
-    Object.keys(result)[0];
-
-  const amount=
-    Number(
-      firstKey
-        ? result[firstKey]?.c?.[0]
-        : 0
-    );
-
-  if(!amount){
-    throw new Error('Kraken price missing');
-  }
-
-  return amount;
+  return Number(
+    k
+      ? j.result[k]?.c?.[0]
+      : 0
+  );
 
 }
 
-function formatUSD(amount){
+function usd(n){
 
-  return amount.toLocaleString(
+  return n.toLocaleString(
     'en-US',
     {
       style:'currency',
@@ -2028,47 +2744,55 @@ function formatUSD(amount){
 
 async function loadPrice(){
 
-  const priceElement=
-    document.getElementById('btcPrice');
-
-  const sourceElement=
+  const btcSource =
     document.getElementById('btcSource');
 
   try{
 
-    const amount=
-      await loadCoinbasePrice();
+    const n =
+      await getCoinbase();
 
-    priceElement.textContent=
-      formatUSD(amount);
+    if(!n){
+      throw 0;
+    }
 
-    sourceElement.textContent=
+    updatePriceDisplays(
+      usd(n)
+    );
+
+    btcSource.textContent =
       'Source: Coinbase spot';
 
-    return;
+  }
 
-  }catch(error){
+  catch(e){
 
     try{
 
-      const amount=
-        await loadKrakenPrice();
+      const n =
+        await getKraken();
 
-      priceElement.textContent=
-        formatUSD(amount);
+      if(!n){
+        throw 0;
+      }
 
-      sourceElement.textContent=
+      updatePriceDisplays(
+        usd(n)
+      );
+
+      btcSource.textContent =
         'Source: Kraken spot fallback';
 
-      return;
+    }
 
-    }catch(secondError){
+    catch(e2){
 
-      priceElement.textContent=
-        '$--';
+      updatePriceDisplays(
+        '$--'
+      );
 
-      sourceElement.textContent=
-        'Live price source unavailable';
+      btcSource.textContent =
+        'Live price unavailable';
 
     }
 
@@ -2076,161 +2800,51 @@ async function loadPrice(){
 
 }
 
+function tickClock(){
+
+  document
+    .getElementById('clock')
+    .textContent =
+      new Date()
+        .toLocaleTimeString(
+          [],
+          {
+            hour:'2-digit',
+            minute:'2-digit',
+            second:'2-digit'
+          }
+        );
+
+}
+
+/* START EVERYTHING */
+
+buildBuilding();
+
+fillCards();
+
+renderFeed();
+
 loadPrice();
+
+tickClock();
 
 setInterval(
   loadPrice,
   20000
 );
 
-function makePixelRoom(bot,index){
-
-  const phoneBots=
-    new Set(
-      [2,5,8,11,19,21]
-    );
-
-  const workerClass=
-    phoneBots.has(bot.id)
-      ? 'phone'
-      : '';
-
-  const positions=
-    ['left','center','right'];
-
-  const workerPos=
-    positions[
-      index%positions.length
-    ];
-
-  return `
-    <div class="office-room">
-
-      <div class="office-label">
-
-        <span>
-          <b>#${bot.id}</b>
-          ${bot.name}
-        </span>
-
-        <span class="office-status">
-          <span class="office-dot"></span>
-          Active
-        </span>
-
-      </div>
-
-      <div class="office-scene">
-
-        <div class="window-pixel"></div>
-        <div class="plant-pixel"></div>
-        <div class="shelf-pixel"></div>
-
-        <div class="monitor-pixel m1"></div>
-        <div class="monitor-pixel m2"></div>
-        <div class="monitor-pixel m3"></div>
-
-        <div class="desk-pixel"></div>
-
-        <div class="pixel-worker ${workerPos} ${workerClass}">
-
-          <div class="head"></div>
-          <div class="body"></div>
-          <div class="arm-left"></div>
-          <div class="arm-right"></div>
-          <div class="leg-left"></div>
-          <div class="leg-right"></div>
-
-        </div>
-
-      </div>
-
-    </div>
-  `;
-
-}
-
-function buildVisualFloor(){
-
-  const rows=[
-    document.getElementById('pixelFloorRow1'),
-    document.getElementById('pixelFloorRow2'),
-    document.getElementById('pixelFloorRow3'),
-    document.getElementById('pixelFloorRow4'),
-    document.getElementById('pixelFloorRow5')
-  ];
-
-  if(
-    rows.some(
-      row=>!row
-    )
-  ){
-    return;
-  }
-
-  const groups=[
-    bots.slice(0,3),
-    bots.slice(3,6),
-    bots.slice(6,9),
-    bots.slice(9,15),
-    bots.slice(15,21)
-  ];
-
-  rows.forEach(
-    (row,rowIndex)=>{
-
-      row.innerHTML=
-        groups[rowIndex]
-          .map(
-            (bot,idx)=>
-              makePixelRoom(
-                bot,
-                idx
-              )
-          )
-          .join('');
-
-    }
-  );
-
-}
-
-buildVisualFloor();
-
-function updateCameraClock(){
-
-  const el=
-    document.getElementById(
-      'cameraClock'
-    );
-
-  if(!el){
-    return;
-  }
-
-  const now=
-    new Date();
-
-  el.textContent=
-    now.toLocaleTimeString(
-      [],
-      {
-        hour:'2-digit',
-        minute:'2-digit',
-        second:'2-digit'
-      }
-    );
-
-}
-
-updateCameraClock();
+setInterval(
+  tickClock,
+  1000
+);
 
 setInterval(
-  updateCameraClock,
-  1000
+  renderFeed,
+  30000
 );
 
 </script>
 
 </body>
-</html>
+</html> no
