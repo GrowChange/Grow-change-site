@@ -1034,5 +1034,344 @@ setInterval(loadPrice,20000);
 setInterval(tickClock,1000);
 setInterval(renderFeed,30000);
 </script>
+<script>
+/* =========================================================
+   BITMAP PERSONNEL REBRAND
+   - fictional personnel names
+   - removes historical-codename notices
+   - renames ALFRED to BIMO
+   ========================================================= */
+
+const fictionalPersonnelNames = [
+  'Ethan Mercer',        // 1
+  'Julian Cross',        // 2
+  'Marcus Vale',         // 3
+  'Nolan Price',         // 4
+  'Adrian Locke',        // 5
+  'Grant Holloway',      // 6
+  'Theo Bennett',        // 7
+  'Mason Reed',          // 8
+  'Caleb Hart',          // 9
+  'Dominic Shaw',        // 10
+  'Harrison Cole',       // 11
+  'Victor Kane',         // 12
+  'Bimo',                // 13
+  'Owen Sterling',       // 14
+  'Liam Crawford',       // 15
+  'Everett Sloan',       // 16
+  'Miles Barrett',       // 17
+  'Graham Pierce',       // 18
+  'Nathan Whitaker',     // 19
+  'Simon Blackwell',     // 20
+  'Arthur Wells'         // 21
+];
+
+/* Update all 21 personnel records */
+
+people.forEach((person,index)=>{
+  person.name = fictionalPersonnelNames[index];
+});
+
+/* BIMO — final authority */
+
+const bimo = people.find(person=>person.id===13);
+
+if(bimo){
+  bimo.name = 'Bimo';
+
+  bimo.title =
+    'Chief Investment Officer / Final Trade Authority';
+
+  bimo.department =
+    'Executive Trading & Risk';
+
+  bimo.desk =
+    'BIMO AUTHORITY';
+
+  bimo.mission =
+    'Serves as BITMAP’s Chief Investment Officer and final analytical authority. Bimo receives independently verified market intelligence and issues the final BUY, SHORT, WAIT, or BLOCKED decision.';
+
+  bimo.duties = [
+    'Review the completed verified analytical packet',
+    'Resolve conflicts between strategy and risk',
+    'Approve BUY, SHORT, WAIT, or BLOCKED decisions',
+    'Require additional analysis when evidence is insufficient',
+    'Maintain final accountability for BITMAP trade intelligence'
+  ];
+}
+
+
+/* =========================================================
+   REMOVE HISTORICAL / NON-ENDORSEMENT LANGUAGE
+   ========================================================= */
+
+document.querySelectorAll('.notice').forEach(notice=>{
+  const text = notice.textContent.toLowerCase();
+
+  if(
+    text.includes('historical codename') ||
+    text.includes('stratton oakmont') ||
+    text.includes('endorsement')
+  ){
+    notice.remove();
+  }
+});
+
+
+/* Replace footer disclaimer */
+
+document.querySelectorAll('.footer').forEach(footer=>{
+  footer.innerHTML = `
+    BITMAP is currently operating in shadow-analysis mode.
+    Performance statistics remain simulated until timestamped
+    analytical recommendations and verified outcomes are connected
+    to the production performance ledger.
+  `;
+});
+
+
+/* =========================================================
+   NEW PERSONNEL CARDS
+   ========================================================= */
+
+personCard = function(p){
+  return `
+    <button class="bot-card" onclick="openPerson(${p.id})">
+
+      <div class="topline">
+
+        <div>
+
+          <small>
+            ${p.desk}
+          </small>
+
+          <b>
+            ${p.name}
+          </b>
+
+          <span class="role">
+            ${p.title}
+          </span>
+
+        </div>
+
+        <span class="tag">
+          SHADOW
+        </span>
+
+      </div>
+
+      <div class="ids">
+
+        <span>
+          ${p.bitmap}
+        </span>
+
+        <span>
+          ${p.assn}
+        </span>
+
+      </div>
+
+    </button>
+  `;
+};
+
+
+/* =========================================================
+   NEW DIRECTORY CARD
+   ========================================================= */
+
+directoryCard = function(p){
+  return `
+    <div
+      class="directory-card"
+      onclick="openPerson(${p.id})"
+    >
+
+      <div class="eyebrow">
+        ${p.department}
+      </div>
+
+      <h3>
+        ${p.name}
+      </h3>
+
+      <div class="title">
+        ${p.title}
+      </div>
+
+      <div class="desk">
+        ${p.desk}
+      </div>
+
+      <div class="idline">
+
+        <div class="idbox">
+
+          <small>
+            BITMAP ID
+          </small>
+
+          <b>
+            ${p.bitmap}
+          </b>
+
+        </div>
+
+        <div class="idbox">
+
+          <small>
+            ASSN
+          </small>
+
+          <b>
+            ${p.assn}
+          </b>
+
+        </div>
+
+      </div>
+
+    </div>
+  `;
+};
+
+
+/* =========================================================
+   PERSONNEL PROFILE MODAL
+   ========================================================= */
+
+openPerson = function(id){
+
+  const p = people.find(person=>person.id===id);
+
+  if(!p) return;
+
+  document.getElementById('modalDept').textContent =
+    p.department;
+
+  document.getElementById('modalName').textContent =
+    p.name;
+
+  document.getElementById('modalTitle').textContent =
+    p.title;
+
+  document.getElementById('modalBitmap').textContent =
+    p.bitmap;
+
+  document.getElementById('modalAssn').textContent =
+    p.assn;
+
+  document.getElementById('modalDesk').textContent =
+    p.desk;
+
+  document.getElementById('modalMission').textContent =
+    p.mission;
+
+  document.getElementById('modalDuties').innerHTML =
+    p.duties
+      .map(duty=>`<li>${duty}</li>`)
+      .join('');
+
+  document.getElementById('modalPerformance').textContent =
+    `Attributed Alpha ${money(p.performance.alpha)} · ` +
+    `Shadow P&L ${money(p.performance.shadow)} · ` +
+    `Entry Improvement ${money(p.performance.entry)} · ` +
+    `Avoided Loss ${money(p.performance.avoided)}.`;
+
+  modal.classList.add('show');
+};
+
+window.openPerson = openPerson;
+
+
+/* =========================================================
+   CHANGE ALL VISIBLE ALFRED REFERENCES TO BIMO
+   ========================================================= */
+
+function replaceAlfredWithBimo(){
+
+  const walker =
+    document.createTreeWalker(
+      document.body,
+      NodeFilter.SHOW_TEXT
+    );
+
+  const textNodes = [];
+
+  while(walker.nextNode()){
+    textNodes.push(walker.currentNode);
+  }
+
+  textNodes.forEach(node=>{
+
+    if(
+      node.parentElement &&
+      !['SCRIPT','STYLE'].includes(
+        node.parentElement.tagName
+      )
+    ){
+
+      node.nodeValue =
+        node.nodeValue
+          .replace(/ALFRED/g,'BIMO')
+          .replace(/Alfred/g,'Bimo')
+          .replace(/alfred/g,'bimo');
+
+    }
+
+  });
+
+}
+
+
+/* =========================================================
+   CIO SUITE
+   ========================================================= */
+
+const cioHeading =
+  document.querySelector('.cio-suite h2');
+
+if(cioHeading){
+  cioHeading.textContent =
+    'BIMO — FINAL TRADE AUTHORITY';
+}
+
+
+const cioDescription =
+  document.querySelector('.cio-suite p');
+
+if(cioDescription){
+
+  cioDescription.textContent =
+    'Bimo serves as BITMAP’s Chief Investment Officer and final analytical authority. Verified intelligence from strategy, risk, surveillance, and trade verification is escalated here for the final BUY, SHORT, WAIT, or BLOCKED decision.';
+
+}
+
+
+/* =========================================================
+   REBUILD WEBSITE WITH NEW IDENTITIES
+   ========================================================= */
+
+replaceAlfredWithBimo();
+
+fillCards();
+
+buildBuilding();
+
+renderPerformance();
+
+
+/* Re-run after the dynamic sections finish rendering */
+
+setTimeout(()=>{
+
+  replaceAlfredWithBimo();
+
+},100);
+
+</script>
 </body>
 </html>
