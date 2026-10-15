@@ -6,8 +6,17 @@
   <title>ALFRED Capital - BTC Command Floor</title>
   <style>
     :root{
-      --bg:#071018; --panel:#0d1721; --panel2:#111f2d; --line:#1f3345; --ink:#ecf3fa;
-      --muted:#93a5b8; --blue:#4eb7ff; --green:#36d489; --amber:#f5b84d; --red:#ff6b7d; --purple:#8b7cf6;
+      --bg:#071018;
+      --panel:#0d1721;
+      --panel2:#111f2d;
+      --line:#1f3345;
+      --ink:#ecf3fa;
+      --muted:#93a5b8;
+      --blue:#4eb7ff;
+      --green:#36d489;
+      --amber:#f5b84d;
+      --red:#ff6b7d;
+      --purple:#8b7cf6;
       --shadow:0 12px 30px rgba(0,0,0,.32);
       --radius:18px;
     }
@@ -20,8 +29,6 @@
       color:var(--ink);
       font-family:Inter,ui-sans-serif,system-ui,-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,Arial,sans-serif;
     }
-
-    a{color:inherit}
 
     .shell{
       max-width:1480px;
@@ -111,6 +118,35 @@
       margin:0 0 14px;
     }
 
+    .tabs{
+      display:flex;
+      gap:10px;
+      margin:0 0 14px;
+      flex-wrap:wrap;
+    }
+
+    .tab-btn{
+      border:1px solid #294257;
+      background:linear-gradient(180deg,#10202d,#0b151e);
+      color:#d9e8f4;
+      padding:12px 16px;
+      border-radius:14px;
+      font:inherit;
+      cursor:pointer;
+      font-weight:700;
+      letter-spacing:.03em;
+    }
+
+    .tab-btn.active{
+      background:linear-gradient(180deg,#174064,#102a42);
+      border-color:#4ea7ef;
+      color:white;
+      box-shadow:0 0 0 1px rgba(78,183,255,.2) inset;
+    }
+
+    .tab-panel{display:none}
+    .tab-panel.active{display:block}
+
     .hq{
       display:grid;
       grid-template-columns:1.1fr 1.4fr .95fr;
@@ -170,7 +206,6 @@
       font:inherit;
       text-align:left;
       width:100%;
-      -webkit-appearance:none;
       appearance:none;
       cursor:pointer;
       transition:transform .15s ease,border-color .15s ease,box-shadow .15s ease;
@@ -272,17 +307,8 @@
       text-align:center;
     }
 
-    .desk strong{
-      display:block;
-      font-size:14px;
-    }
-
-    .desk span{
-      display:block;
-      font-size:11px;
-      color:#91a7ba;
-      margin-top:5px;
-    }
+    .desk strong{display:block;font-size:14px}
+    .desk span{display:block;font-size:11px;color:#91a7ba;margin-top:5px}
 
     .decision{
       display:grid;
@@ -352,15 +378,8 @@
     }
 
     .event b{font-size:13px}
-
     .event small{color:#8da6bb}
-
-    .event p{
-      margin:7px 0 0;
-      color:#c9d8e5;
-      font-size:13px;
-      line-height:1.45;
-    }
+    .event p{margin:7px 0 0;color:#c9d8e5;font-size:13px;line-height:1.45}
 
     .tape{
       display:flex;
@@ -456,8 +475,7 @@
       color:#90b7d6;
     }
 
-    .modal-body p,
-    .modal-body li{
+    .modal-body p,.modal-body li{
       color:#d8e4ee;
       line-height:1.55;
     }
@@ -467,11 +485,306 @@
       padding:0;
     }
 
+    /* Visual representation tab */
+    .cinema{
+      background:
+        radial-gradient(circle at top, rgba(78,183,255,.12), transparent 35%),
+        linear-gradient(180deg,#0c1723,#050b11);
+      border:1px solid var(--line);
+      border-radius:22px;
+      overflow:hidden;
+      box-shadow:var(--shadow);
+    }
+
+    .cinema-head{
+      padding:14px 16px;
+      border-bottom:1px solid #1d3346;
+      display:flex;
+      justify-content:space-between;
+      align-items:center;
+      gap:10px;
+      flex-wrap:wrap;
+    }
+
+    .cinema-title{
+      font-size:13px;
+      letter-spacing:.14em;
+      text-transform:uppercase;
+      color:#91b8d8;
+    }
+
+    .camera-badges{
+      display:flex;
+      gap:8px;
+      flex-wrap:wrap;
+    }
+
+    .camera-badge{
+      display:inline-flex;
+      align-items:center;
+      gap:7px;
+      padding:7px 10px;
+      border-radius:999px;
+      border:1px solid #284054;
+      background:#0d1821;
+      font-size:11px;
+      color:#d0e1ef;
+    }
+
+    .record-dot{
+      width:8px;
+      height:8px;
+      border-radius:50%;
+      background:#ff4d62;
+      box-shadow:0 0 12px rgba(255,77,98,.8);
+      animation:blink 1.2s infinite;
+    }
+
+    @keyframes blink{
+      0%,100%{opacity:1}
+      50%{opacity:.35}
+    }
+
+    .ticker-wrap{
+      overflow:hidden;
+      border-top:1px solid #16293b;
+      border-bottom:1px solid #16293b;
+      background:#08111a;
+      white-space:nowrap;
+    }
+
+    .ticker-track{
+      display:inline-block;
+      padding:10px 0;
+      animation:scrollTicker 28s linear infinite;
+      color:#8cc9ff;
+      font-size:12px;
+      letter-spacing:.08em;
+      text-transform:uppercase;
+    }
+
+    @keyframes scrollTicker{
+      from{transform:translateX(0)}
+      to{transform:translateX(-50%)}
+    }
+
+    .floor-scene{
+      position:relative;
+      min-height:820px;
+      padding:26px 18px 18px;
+      background:
+        radial-gradient(circle at 50% 0%, rgba(78,183,255,.10), transparent 35%),
+        linear-gradient(180deg,#0a121a 0%, #081119 30%, #050b11 100%);
+      overflow:hidden;
+    }
+
+    .scanlines::before{
+      content:"";
+      position:absolute;
+      inset:0;
+      pointer-events:none;
+      background:repeating-linear-gradient(
+        to bottom,
+        rgba(255,255,255,.02) 0px,
+        rgba(255,255,255,.02) 1px,
+        transparent 2px,
+        transparent 4px
+      );
+      mix-blend-mode:soft-light;
+      opacity:.3;
+    }
+
+    .executive-balcony{
+      display:flex;
+      justify-content:center;
+      margin-bottom:30px;
+    }
+
+    .alfred-office{
+      width:min(100%,520px);
+      padding:18px;
+      border-radius:18px;
+      border:1px solid #375472;
+      background:
+        radial-gradient(circle at top right, rgba(78,183,255,.18), transparent 40%),
+        linear-gradient(180deg,#112334,#0a1520);
+      text-align:center;
+      box-shadow:0 18px 40px rgba(0,0,0,.35);
+    }
+
+    .alfred-office h2{
+      margin:6px 0 8px;
+      font-size:28px;
+    }
+
+    .alfred-office p{
+      margin:0;
+      color:#a8bfd2;
+      line-height:1.5;
+    }
+
+    .office-row{
+      display:grid;
+      grid-template-columns:repeat(3,minmax(0,1fr));
+      gap:14px;
+      align-items:start;
+      margin-top:10px;
+    }
+
+    .office-box{
+      padding:14px;
+      border-radius:16px;
+      border:1px solid #22394d;
+      background:linear-gradient(180deg,#0f1d2a,#0a131c);
+      min-height:136px;
+    }
+
+    .office-box h4{
+      margin:0 0 8px;
+      font-size:13px;
+      color:#9ed0f4;
+      letter-spacing:.08em;
+      text-transform:uppercase;
+    }
+
+    .office-box p{
+      margin:0;
+      color:#aac0d1;
+      font-size:13px;
+      line-height:1.45;
+    }
+
+    .trading-pit{
+      margin-top:26px;
+      display:grid;
+      grid-template-columns:repeat(4,minmax(0,1fr));
+      gap:16px;
+    }
+
+    .floor-bot{
+      position:relative;
+      padding:14px 14px 12px;
+      border-radius:18px;
+      border:1px solid #263f52;
+      background:
+        radial-gradient(circle at top, rgba(78,183,255,.10), transparent 34%),
+        linear-gradient(180deg,#10202e,#0b141d);
+      min-height:138px;
+      overflow:hidden;
+      box-shadow:0 10px 30px rgba(0,0,0,.22);
+      animation:deskGlow 3.4s ease-in-out infinite;
+    }
+
+    .floor-bot:nth-child(2n){animation-delay:.4s}
+    .floor-bot:nth-child(3n){animation-delay:.9s}
+    .floor-bot:nth-child(4n){animation-delay:1.3s}
+
+    @keyframes deskGlow{
+      0%,100%{transform:translateY(0); box-shadow:0 10px 30px rgba(0,0,0,.20)}
+      50%{transform:translateY(-2px); box-shadow:0 12px 36px rgba(78,183,255,.12)}
+    }
+
+    .floor-bot::after{
+      content:"";
+      position:absolute;
+      inset:auto -20% -40% -20%;
+      height:80px;
+      background:radial-gradient(circle, rgba(78,183,255,.12), transparent 60%);
+      animation:sweep 4.8s linear infinite;
+    }
+
+    @keyframes sweep{
+      0%{transform:translateX(-20%)}
+      100%{transform:translateX(20%)}
+    }
+
+    .floor-bot .cam-status{
+      display:inline-flex;
+      align-items:center;
+      gap:6px;
+      font-size:10px;
+      color:#b9d8ef;
+      text-transform:uppercase;
+      letter-spacing:.08em;
+      margin-bottom:10px;
+    }
+
+    .live-led{
+      width:8px;
+      height:8px;
+      border-radius:50%;
+      background:#39d78f;
+      box-shadow:0 0 10px rgba(57,215,143,.9);
+      animation:blink 1.4s infinite;
+    }
+
+    .floor-bot h3{
+      margin:0;
+      font-size:16px;
+      line-height:1.2;
+    }
+
+    .floor-bot .floor-role{
+      margin-top:4px;
+      color:#8fb0c6;
+      font-size:12px;
+      min-height:30px;
+    }
+
+    .monitor-strip{
+      display:flex;
+      gap:7px;
+      margin-top:12px;
+    }
+
+    .monitor{
+      flex:1;
+      min-height:28px;
+      border-radius:8px;
+      border:1px solid #264357;
+      background:
+        linear-gradient(180deg,#132839,#0f1b27);
+      position:relative;
+      overflow:hidden;
+    }
+
+    .monitor::before{
+      content:"";
+      position:absolute;
+      inset:0;
+      background:linear-gradient(90deg, transparent, rgba(78,183,255,.22), transparent);
+      transform:translateX(-100%);
+      animation:monitorSweep 2.4s linear infinite;
+    }
+
+    @keyframes monitorSweep{
+      100%{transform:translateX(100%)}
+    }
+
+    .desk-footer{
+      margin-top:10px;
+      display:flex;
+      justify-content:space-between;
+      gap:8px;
+      font-size:11px;
+      color:#a8c4d9;
+    }
+
+    .representation-note{
+      margin-top:18px;
+      color:#89a1b5;
+      font-size:12px;
+      line-height:1.55;
+      text-align:center;
+    }
+
     @media (max-width:1180px){
       .hq{grid-template-columns:1fr}
       .meta-grid{grid-template-columns:repeat(2,minmax(120px,1fr))}
       .decision{grid-template-columns:1fr}
       .flow{grid-template-columns:repeat(3,minmax(0,1fr))}
+      .trading-pit{grid-template-columns:repeat(3,minmax(0,1fr))}
+      .office-row{grid-template-columns:1fr}
     }
 
     @media (max-width:720px){
@@ -481,16 +794,16 @@
       .meta-grid{grid-template-columns:repeat(2,minmax(0,1fr))}
       .brand{min-width:100%}
       .call-value{font-size:34px}
+      .trading-pit{grid-template-columns:repeat(2,minmax(0,1fr))}
+      .floor-scene{min-height:auto}
     }
   </style>
 </head>
 
 <body>
-
   <div class="shell">
 
     <div class="topbar">
-
       <section class="brand">
         <div class="eyebrow">ALFRED Capital / Bitcoin Intelligence Division</div>
         <h1>BTC Command Floor</h1>
@@ -502,7 +815,6 @@
       </section>
 
       <section class="meta-grid">
-
         <div class="metric">
           <div class="label">System Bots</div>
           <div class="value">21</div>
@@ -532,9 +844,7 @@
           <div class="value">Phase 3A</div>
           <div class="sub">Contracts 1-6</div>
         </div>
-
       </section>
-
     </div>
 
     <div class="notice">
@@ -544,230 +854,224 @@
       live engines are connected and validated.
     </div>
 
-    <div class="hq">
-
-      <div class="col">
-
-        <section class="room">
-          <div class="room-header">
-            <div class="room-title">Alfred's Guard Wing</div>
-            <div class="chip"><span class="dot"></span> Shadow oversight</div>
-          </div>
-          <div class="room-body">
-            <div id="guard" class="bot-grid"></div>
-          </div>
-        </section>
-
-        <section class="room">
-          <div class="room-header">
-            <div class="room-title">Corporate Office</div>
-            <div class="chip"><span class="dot"></span> Shadow verification</div>
-          </div>
-          <div class="room-body">
-            <div id="corporate" class="bot-grid"></div>
-          </div>
-        </section>
-
-        <section class="room">
-          <div class="room-header">
-            <div class="room-title">Timeframe Terminals</div>
-            <div class="chip">1M to 4H</div>
-          </div>
-          <div class="room-body">
-            <div class="tape" id="timeframes"></div>
-          </div>
-        </section>
-
-      </div>
-
-      <div class="col">
-
-        <section class="room">
-          <div class="room-header">
-            <div class="room-title">Trading Floor</div>
-            <div class="chip"><span class="dot"></span> Shadow desks</div>
-          </div>
-          <div class="room-body">
-
-            <div class="subtitle" style="margin-bottom:10px">
-              Frontline desks #1-6
-            </div>
-
-            <div id="frontline" class="bot-grid" style="margin-bottom:14px"></div>
-
-            <div class="subtitle" style="margin-bottom:10px">
-              Senior desks #7-10
-            </div>
-
-            <div id="senior" class="bot-grid"></div>
-
-          </div>
-        </section>
-
-        <section class="room">
-
-          <div class="room-header">
-            <div class="room-title">Reporting Ladder</div>
-            <div class="chip">6 → 4 → 2 → Verify → Alfred</div>
-          </div>
-
-          <div class="room-body">
-
-            <div class="flow">
-
-              <div class="desk">
-                <strong>#1-6</strong>
-                <span>Frontline research desks</span>
-              </div>
-
-              <div class="desk">
-                <strong>#7-10</strong>
-                <span>Senior synthesis desks</span>
-              </div>
-
-              <div class="desk">
-                <strong>#11-12</strong>
-                <span>Chief Alpha & Chief Risk</span>
-              </div>
-
-              <div class="desk">
-                <strong>#19-20</strong>
-                <span>Verification office</span>
-              </div>
-
-              <div class="desk">
-                <strong>#13</strong>
-                <span>Alfred Master</span>
-              </div>
-
-              <div class="desk">
-                <strong>#21</strong>
-                <span>Secretary / Chief of Staff</span>
-              </div>
-
-            </div>
-
-          </div>
-
-        </section>
-
-        <section class="room">
-
-          <div class="room-header">
-            <div class="room-title">Decision Center</div>
-            <div class="chip"><span class="dot"></span> Prototype terminal</div>
-          </div>
-
-          <div class="room-body decision">
-
-            <div class="decision-box">
-
-              <div class="call">Master Decision</div>
-
-              <div class="call-value wait" id="masterDecision">
-                WAIT
-              </div>
-
-              <div class="subtitle">
-                Production trading remains blocked until the analytical engine,
-                verification system, and risk controls are connected and validated.
-              </div>
-
-              <div class="stats-row">
-
-                <div class="stat-mini">
-                  <span class="label">Direction</span>
-                  <b>N/A</b>
-                  <span class="subtitle">Awaiting live engine</span>
-                </div>
-
-                <div class="stat-mini">
-                  <span class="label">Entry</span>
-                  <b>N/A</b>
-                  <span class="subtitle">Awaiting live engine</span>
-                </div>
-
-                <div class="stat-mini">
-                  <span class="label">Risk</span>
-                  <b>BLOCKED</b>
-                  <span class="subtitle">Prototype safeguard</span>
-                </div>
-
-              </div>
-
-            </div>
-
-            <div class="decision-box">
-
-              <div class="call">Operational Focus</div>
-
-              <div style="margin-top:12px;display:grid;gap:10px">
-
-                <div class="event">
-                  <div class="row">
-                    <b>Phase 1</b>
-                    <small>Locked</small>
-                  </div>
-                  <p>Signal & risk constitution approved.</p>
-                </div>
-
-                <div class="event">
-                  <div class="row">
-                    <b>Phase 2</b>
-                    <small>Locked</small>
-                  </div>
-                  <p>Data nervous system defined.</p>
-                </div>
-
-                <div class="event">
-                  <div class="row">
-                    <b>Phase 3A</b>
-                    <small>Active</small>
-                  </div>
-                  <p>Frontline contracts #1-6 complete.</p>
-                </div>
-
-              </div>
-
-            </div>
-
-          </div>
-
-        </section>
-
-      </div>
-
-      <div class="col">
-
-        <section class="room">
-
-          <div class="room-header">
-            <div class="room-title">Executive Offices</div>
-            <div class="chip"><span class="dot"></span> Top floor</div>
-          </div>
-
-          <div class="room-body">
-            <div id="executive" class="bot-grid"></div>
-          </div>
-
-        </section>
-
-        <section class="room">
-
-          <div class="room-header">
-            <div class="room-title">Operations Feed</div>
-            <div class="chip">Simulated activity</div>
-          </div>
-
-          <div class="room-body">
-            <div id="events" class="feed"></div>
-          </div>
-
-        </section>
-
-      </div>
-
+    <div class="tabs">
+      <button class="tab-btn active" data-tab="analysisTab">Market Analysis</button>
+      <button class="tab-btn" data-tab="representationTab">Visual Representation</button>
     </div>
+
+    <!-- MARKET ANALYSIS TAB -->
+    <section id="analysisTab" class="tab-panel active">
+      <div class="hq">
+
+        <div class="col">
+
+          <section class="room">
+            <div class="room-header">
+              <div class="room-title">Alfred's Guard Wing</div>
+              <div class="chip"><span class="dot"></span> Shadow oversight</div>
+            </div>
+            <div class="room-body">
+              <div id="guard" class="bot-grid"></div>
+            </div>
+          </section>
+
+          <section class="room">
+            <div class="room-header">
+              <div class="room-title">Corporate Office</div>
+              <div class="chip"><span class="dot"></span> Shadow verification</div>
+            </div>
+            <div class="room-body">
+              <div id="corporate" class="bot-grid"></div>
+            </div>
+          </section>
+
+          <section class="room">
+            <div class="room-header">
+              <div class="room-title">Timeframe Terminals</div>
+              <div class="chip">1M to 4H</div>
+            </div>
+            <div class="room-body">
+              <div class="tape" id="timeframes"></div>
+            </div>
+          </section>
+
+        </div>
+
+        <div class="col">
+
+          <section class="room">
+            <div class="room-header">
+              <div class="room-title">Trading Floor</div>
+              <div class="chip"><span class="dot"></span> Shadow desks</div>
+            </div>
+            <div class="room-body">
+              <div class="subtitle" style="margin-bottom:10px">Frontline desks #1-6</div>
+              <div id="frontline" class="bot-grid" style="margin-bottom:14px"></div>
+
+              <div class="subtitle" style="margin-bottom:10px">Senior desks #7-10</div>
+              <div id="senior" class="bot-grid"></div>
+            </div>
+          </section>
+
+          <section class="room">
+            <div class="room-header">
+              <div class="room-title">Reporting Ladder</div>
+              <div class="chip">6 → 4 → 2 → Verify → Alfred</div>
+            </div>
+            <div class="room-body">
+              <div class="flow">
+                <div class="desk"><strong>#1-6</strong><span>Frontline research desks</span></div>
+                <div class="desk"><strong>#7-10</strong><span>Senior synthesis desks</span></div>
+                <div class="desk"><strong>#11-12</strong><span>Chief Alpha & Chief Risk</span></div>
+                <div class="desk"><strong>#19-20</strong><span>Verification office</span></div>
+                <div class="desk"><strong>#13</strong><span>Alfred Master</span></div>
+                <div class="desk"><strong>#21</strong><span>Secretary / Chief of Staff</span></div>
+              </div>
+            </div>
+          </section>
+
+          <section class="room">
+            <div class="room-header">
+              <div class="room-title">Decision Center</div>
+              <div class="chip"><span class="dot"></span> Prototype terminal</div>
+            </div>
+
+            <div class="room-body decision">
+              <div class="decision-box">
+                <div class="call">Master Decision</div>
+                <div class="call-value wait" id="masterDecision">WAIT</div>
+
+                <div class="subtitle">
+                  Production trading remains blocked until the analytical engine,
+                  verification system, and risk controls are connected and validated.
+                </div>
+
+                <div class="stats-row">
+                  <div class="stat-mini">
+                    <span class="label">Direction</span>
+                    <b>N/A</b>
+                    <span class="subtitle">Awaiting live engine</span>
+                  </div>
+
+                  <div class="stat-mini">
+                    <span class="label">Entry</span>
+                    <b>N/A</b>
+                    <span class="subtitle">Awaiting live engine</span>
+                  </div>
+
+                  <div class="stat-mini">
+                    <span class="label">Risk</span>
+                    <b>BLOCKED</b>
+                    <span class="subtitle">Prototype safeguard</span>
+                  </div>
+                </div>
+              </div>
+
+              <div class="decision-box">
+                <div class="call">Operational Focus</div>
+
+                <div style="margin-top:12px;display:grid;gap:10px">
+                  <div class="event">
+                    <div class="row"><b>Phase 1</b><small>Locked</small></div>
+                    <p>Signal & risk constitution approved.</p>
+                  </div>
+
+                  <div class="event">
+                    <div class="row"><b>Phase 2</b><small>Locked</small></div>
+                    <p>Data nervous system defined.</p>
+                  </div>
+
+                  <div class="event">
+                    <div class="row"><b>Phase 3A</b><small>Active</small></div>
+                    <p>Frontline contracts #1-6 complete.</p>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </section>
+
+        </div>
+
+        <div class="col">
+
+          <section class="room">
+            <div class="room-header">
+              <div class="room-title">Executive Offices</div>
+              <div class="chip"><span class="dot"></span> Top floor</div>
+            </div>
+            <div class="room-body">
+              <div id="executive" class="bot-grid"></div>
+            </div>
+          </section>
+
+          <section class="room">
+            <div class="room-header">
+              <div class="room-title">Operations Feed</div>
+              <div class="chip">Simulated activity</div>
+            </div>
+            <div class="room-body">
+              <div id="events" class="feed"></div>
+            </div>
+          </section>
+
+        </div>
+
+      </div>
+    </section>
+
+    <!-- VISUAL REPRESENTATION TAB -->
+    <section id="representationTab" class="tab-panel">
+      <div class="cinema">
+        <div class="cinema-head">
+          <div class="cinema-title">Prop Firm Floor — Live Visual Representation</div>
+          <div class="camera-badges">
+            <div class="camera-badge"><span class="record-dot"></span> Live Floor Cam</div>
+            <div class="camera-badge">21 Bots Active</div>
+            <div class="camera-badge">Shadow Representation</div>
+          </div>
+        </div>
+
+        <div class="ticker-wrap">
+          <div class="ticker-track" id="tickerTrack">
+            BTC / FLOW / MICRO / ALFRED / VERIFICATION / GUARD / BTC / FLOW / MICRO / ALFRED / VERIFICATION / GUARD / BTC / FLOW / MICRO / ALFRED / VERIFICATION / GUARD /
+          </div>
+        </div>
+
+        <div class="floor-scene scanlines">
+          <div class="executive-balcony">
+            <div class="alfred-office">
+              <div class="eyebrow">Executive balcony</div>
+              <h2>ALFRED</h2>
+              <p>
+                Final authority above the floor. Every desk, guard, and verification office ultimately routes upward into Alfred before reaching you.
+              </p>
+            </div>
+          </div>
+
+          <div class="office-row">
+            <div class="office-box">
+              <h4>Chief Alpha</h4>
+              <p>Ranking high-quality opportunities and consolidating the strongest trade theses from the floor.</p>
+            </div>
+            <div class="office-box">
+              <h4>Chief Risk</h4>
+              <p>Blocking fragile, low-quality, or dangerous setups before they can advance through the chain.</p>
+            </div>
+            <div class="office-box">
+              <h4>Corporate Verification</h4>
+              <p>Validating the analysis and then validating the validator before anything reaches Alfred.</p>
+            </div>
+          </div>
+
+          <div class="trading-pit" id="visualFloor"></div>
+
+          <div class="representation-note">
+            This tab is a cinematic visual representation of the 21-bot prop-firm environment.
+            It is designed to feel like a live booming trading floor, but remains a simulated visual layer until the real backend logic is connected.
+          </div>
+        </div>
+      </div>
+    </section>
 
     <div class="footer-note">
       Objective: build the most advanced, efficient and reliable Bitcoin trade-analysis
@@ -778,731 +1082,253 @@
   </div>
 
   <div id="modal" class="modal" aria-hidden="true">
-
     <div class="modal-card">
-
       <div class="modal-head">
-
         <div>
           <div class="eyebrow" id="mTier"></div>
           <h3 id="mName"></h3>
           <div class="subtitle" id="mRole"></div>
         </div>
 
-        <button class="close" id="closeBtn">
-          Close
-        </button>
-
+        <button class="close" id="closeBtn">Close</button>
       </div>
 
       <div class="modal-body">
-
         <h4>Mission</h4>
         <p id="mMission"></p>
 
         <h4>Core Duties</h4>
         <ul id="mDuties"></ul>
-
       </div>
-
     </div>
-
   </div>
 
 <script>
-
 const bots = [
-
-  {
-    id:1,
-    name:'STRUCTURE',
-    tier:'Frontline',
-    role:'Price structure and liquidity specialist',
-    mission:'Maps liquidity sweeps, BOS, CHoCH, fair-value gaps, invalidation, and structural context across all required timeframes.',
-    duties:[
-      'Identify liquidity sweeps and structural shifts',
-      'Track support, resistance, and session highs/lows',
-      'Grade continuation versus reversal structure'
-    ]
-  },
-
-  {
-    id:2,
-    name:'FLOW',
-    tier:'Frontline',
-    role:'Order-flow specialist',
-    mission:'Measures actual buying and selling pressure through trades, delta, CVD, absorption, exhaustion, and participation.',
-    duties:[
-      'Track CVD and volume delta',
-      'Detect buyer or seller exhaustion',
-      'Confirm or challenge price-action moves'
-    ]
-  },
-
-  {
-    id:3,
-    name:'MICRO',
-    tier:'Frontline',
-    role:'Order-book and execution specialist',
-    mission:'Reads depth, spread, imbalance, microprice, liquidity pullbacks, replenishment, and short-horizon execution quality.',
-    duties:[
-      'Estimate execution pressure',
-      'Monitor liquidity walls and replenishment',
-      'Improve 1M and 5M entry timing'
-    ]
-  },
-
-  {
-    id:4,
-    name:'REGIME',
-    tier:'Frontline',
-    role:'Market environment specialist',
-    mission:'Determines whether BTC is trending, ranging, compressing, expanding, reversing, or transitioning across timeframes.',
-    duties:[
-      'Classify the current market regime',
-      'Measure multi-timeframe alignment',
-      'Prevent good setups from being used in bad environments'
-    ]
-  },
-
-  {
-    id:5,
-    name:'LEVERAGE',
-    tier:'Frontline',
-    role:'Futures / perpetuals specialist',
-    mission:'Tracks open interest, funding, basis, squeezes, cascades, liquidations, and leverage-driven vulnerability.',
-    duties:[
-      'Measure liquidation risk',
-      'Flag leverage-heavy breakouts',
-      'Monitor spot versus perpetual behaviour'
-    ]
-  },
-
-  {
-    id:6,
-    name:'VOLATILITY',
-    tier:'Frontline',
-    role:'Volatility and macro specialist',
-    mission:'Evaluates realized and implied volatility, options context, major macro events, and changing cross-market influence.',
-    duties:[
-      'Measure event risk',
-      'Track volatility regime',
-      'Adjust macro weight when correlations change'
-    ]
-  },
-
-  {
-    id:7,
-    name:'MARKET FUSION',
-    tier:'Senior',
-    role:'Structure + flow synthesis',
-    mission:'Combines price structure and order-flow evidence into a unified assessment of breakout, continuation, or reversal quality.',
-    duties:[
-      'Compare structure with actual participation',
-      'Score breakout quality',
-      'Escalate high-quality aligned setups'
-    ]
-  },
-
-  {
-    id:8,
-    name:'EXECUTION',
-    tier:'Senior',
-    role:'Entry and timing authority',
-    mission:'Optimizes exact entry timing, structural invalidation, stop placement, target logic, and execution quality.',
-    duties:[
-      'Determine whether timing is ready',
-      'Refine entry and invalidation zones',
-      'Reduce poor entries and unnecessary slippage'
-    ]
-  },
-
-  {
-    id:9,
-    name:'DERIVATIVES INTEL',
-    tier:'Senior',
-    role:'Derivatives synthesis',
-    mission:'Merges leverage, volatility, futures, perpetual, and positioning information into actionable risk intelligence.',
-    duties:[
-      'Flag crowded positioning',
-      'Identify squeeze and cascade risk',
-      'Send derivatives warnings to Chief Risk'
-    ]
-  },
-
-  {
-    id:10,
-    name:'GUARDIAN',
-    tier:'Senior',
-    role:'Adversarial risk critic',
-    mission:'Actively searches for reasons a proposed trade thesis may be wrong before Alfred ever sees it.',
-    duties:[
-      'Challenge weak evidence',
-      'Detect fragile assumptions',
-      'Recommend veto, remediation, or further evidence'
-    ]
-  },
-
-  {
-    id:11,
-    name:'CHIEF ALPHA',
-    tier:'Executive',
-    role:'Opportunity authority',
-    mission:'Converts senior-desk intelligence into ranked trade opportunities and expected-value judgments.',
-    duties:[
-      'Rank opportunity quality',
-      'Measure expected value',
-      'Forward only qualified setups for review'
-    ]
-  },
-
-  {
-    id:12,
-    name:'CHIEF RISK',
-    tier:'Executive',
-    role:'Risk authority',
-    mission:'Assesses failure risk, event risk, disagreement, model uncertainty, and whether a trade is safe enough to advance.',
-    duties:[
-      'Approve or reject risk',
-      'Adjust risk multipliers',
-      'Block dangerous setups'
-    ]
-  },
-
-  {
-    id:13,
-    name:'ALFRED',
-    tier:'Executive',
-    role:'Master intelligence / final authority',
-    mission:'Receives verified analytical packets and makes the final BUY, SHORT, WAIT, or BLOCKED decision.',
-    duties:[
-      'Make the final judgment',
-      'Override consensus only when justified',
-      'Report the final intelligence clearly to Sir Philip'
-    ]
-  },
-
-  {
-    id:14,
-    name:'WATCHTOWER',
-    tier:'Guard',
-    role:'Systems & data auditor',
-    mission:'Monitors uptime, feed freshness, latency, timestamp health, and infrastructure integrity across the organization.',
-    duties:[
-      'Track stale data and feed outages',
-      'Alert on degraded system health',
-      'Reduce trust when infrastructure degrades'
-    ]
-  },
-
-  {
-    id:15,
-    name:'EXAMINER',
-    tier:'Guard',
-    role:'Performance auditor',
-    mission:'Measures whether every bot is actually good at its assigned role using calibration, expectancy, accuracy, and error rates.',
-    duties:[
-      'Audit confidence calibration',
-      'Track false positives and false negatives',
-      'Trigger discipline for repeated preventable underperformance'
-    ]
-  },
-
-  {
-    id:16,
-    name:'WARDEN',
-    tier:'Guard',
-    role:'Learning integrity auditor',
-    mission:'Guards against drift, overfitting, contamination, look-ahead bias, unsafe learning, and bad model promotion.',
-    duties:[
-      'Block overfit models',
-      'Require replay and retraining',
-      'Protect production from unsafe learning'
-    ]
-  },
-
-  {
-    id:17,
-    name:'MARSHAL',
-    tier:'Guard',
-    role:'Productivity auditor',
-    mission:'Ensures every bot performs maximum useful work without idle behaviour, duplicated work, or wasted computation.',
-    duties:[
-      'Audit task completion',
-      'Measure useful workload',
-      'Restrict wasteful resource usage'
-    ]
-  },
-
-  {
-    id:18,
-    name:'SENTINEL',
-    tier:'Guard',
-    role:'Coordination auditor',
-    mission:'Ensures the organization maintains coverage, independence, communication quality, and protection against groupthink.',
-    duties:[
-      'Detect overlap and blind spots',
-      'Monitor for groupthink',
-      'Escalate communication failures'
-    ]
-  },
-
-  {
-    id:19,
-    name:'CHIEF VERIFICATION',
-    tier:'Corporate',
-    role:'First verification office',
-    mission:'Independently recomputes and verifies the analytical package before Alfred can review it.',
-    duties:[
-      'Reproduce key calculations',
-      'Check evidence provenance',
-      'Pass, conditionally pass, reject, or return packets for rework'
-    ]
-  },
-
-  {
-    id:20,
-    name:'EXECUTIVE VERIFICATION',
-    tier:'Corporate',
-    role:'Verify-the-verifier office',
-    mission:'Audits Bot #19 and the complete analytical chain before the packet reaches Alfred.',
-    duties:[
-      'Inspect verification completeness',
-      'Catch missed contradictions',
-      'Approve or return analysis for rework'
-    ]
-  },
-
-  {
-    id:21,
-    name:'PRIVATE SECRETARY',
-    tier:'Executive',
-    role:'Chief of staff / executive assistant',
-    mission:'Organizes reports, alerts, decision logs, assignments, briefings, and follow-ups so Alfred can focus on final judgment.',
-    duties:[
-      'Prepare executive briefings',
-      'Maintain audit trails',
-      'Route priorities and follow-ups'
-    ]
-  }
-
+  {id:1,name:'STRUCTURE',tier:'Frontline',role:'Price structure and liquidity specialist',mission:'Maps liquidity sweeps, BOS, CHoCH, fair-value gaps, invalidation, and structural context across all required timeframes.',duties:['Identify liquidity sweeps and structural shifts','Track support, resistance, and session highs/lows','Grade continuation versus reversal structure']},
+  {id:2,name:'FLOW',tier:'Frontline',role:'Order-flow specialist',mission:'Measures actual buying and selling pressure through trades, delta, CVD, absorption, exhaustion, and participation.',duties:['Track CVD and volume delta','Detect buyer or seller exhaustion','Confirm or challenge price-action moves']},
+  {id:3,name:'MICRO',tier:'Frontline',role:'Order-book and execution specialist',mission:'Reads depth, spread, imbalance, microprice, liquidity pullbacks, replenishment, and short-horizon execution quality.',duties:['Estimate execution pressure','Monitor liquidity walls and replenishment','Improve 1M and 5M entry timing']},
+  {id:4,name:'REGIME',tier:'Frontline',role:'Market environment specialist',mission:'Determines whether BTC is trending, ranging, compressing, expanding, reversing, or transitioning across timeframes.',duties:['Classify the current market regime','Measure multi-timeframe alignment','Prevent good setups from being used in bad environments']},
+  {id:5,name:'LEVERAGE',tier:'Frontline',role:'Futures / perpetuals specialist',mission:'Tracks open interest, funding, basis, squeezes, cascades, liquidations, and leverage-driven vulnerability.',duties:['Measure liquidation risk','Flag leverage-heavy breakouts','Monitor spot versus perpetual behaviour']},
+  {id:6,name:'VOLATILITY',tier:'Frontline',role:'Volatility and macro specialist',mission:'Evaluates realized and implied volatility, options context, major macro events, and changing cross-market influence.',duties:['Measure event risk','Track volatility regime','Adjust macro weight when correlations change']},
+  {id:7,name:'MARKET FUSION',tier:'Senior',role:'Structure + flow synthesis',mission:'Combines price structure and order-flow evidence into a unified assessment of breakout, continuation, or reversal quality.',duties:['Compare structure with actual participation','Score breakout quality','Escalate high-quality aligned setups']},
+  {id:8,name:'EXECUTION',tier:'Senior',role:'Entry and timing authority',mission:'Optimizes exact entry timing, structural invalidation, stop placement, target logic, and execution quality.',duties:['Determine whether timing is ready','Refine entry and invalidation zones','Reduce poor entries and unnecessary slippage']},
+  {id:9,name:'DERIVATIVES INTEL',tier:'Senior',role:'Derivatives synthesis',mission:'Merges leverage, volatility, futures, perpetual, and positioning information into actionable risk intelligence.',duties:['Flag crowded positioning','Identify squeeze and cascade risk','Send derivatives warnings to Chief Risk']},
+  {id:10,name:'GUARDIAN',tier:'Senior',role:'Adversarial risk critic',mission:'Actively searches for reasons a proposed trade thesis may be wrong before Alfred ever sees it.',duties:['Challenge weak evidence','Detect fragile assumptions','Recommend veto, remediation, or further evidence']},
+  {id:11,name:'CHIEF ALPHA',tier:'Executive',role:'Opportunity authority',mission:'Converts senior-desk intelligence into ranked trade opportunities and expected-value judgments.',duties:['Rank opportunity quality','Measure expected value','Forward only qualified setups for review']},
+  {id:12,name:'CHIEF RISK',tier:'Executive',role:'Risk authority',mission:'Assesses failure risk, event risk, disagreement, model uncertainty, and whether a trade is safe enough to advance.',duties:['Approve or reject risk','Adjust risk multipliers','Block dangerous setups']},
+  {id:13,name:'ALFRED',tier:'Executive',role:'Master intelligence / final authority',mission:'Receives verified analytical packets and makes the final BUY, SHORT, WAIT, or BLOCKED decision.',duties:['Make the final judgment','Override consensus only when justified','Report the final intelligence clearly to Sir Philip']},
+  {id:14,name:'WATCHTOWER',tier:'Guard',role:'Systems & data auditor',mission:'Monitors uptime, feed freshness, latency, timestamp health, and infrastructure integrity across the organization.',duties:['Track stale data and feed outages','Alert on degraded system health','Reduce trust when infrastructure degrades']},
+  {id:15,name:'EXAMINER',tier:'Guard',role:'Performance auditor',mission:'Measures whether every bot is actually good at its assigned role using calibration, expectancy, accuracy, and error rates.',duties:['Audit confidence calibration','Track false positives and false negatives','Trigger discipline for repeated preventable underperformance']},
+  {id:16,name:'WARDEN',tier:'Guard',role:'Learning integrity auditor',mission:'Guards against drift, overfitting, contamination, look-ahead bias, unsafe learning, and bad model promotion.',duties:['Block overfit models','Require replay and retraining','Protect production from unsafe learning']},
+  {id:17,name:'MARSHAL',tier:'Guard',role:'Productivity auditor',mission:'Ensures every bot performs maximum useful work without idle behaviour, duplicated work, or wasted computation.',duties:['Audit task completion','Measure useful workload','Restrict wasteful resource usage']},
+  {id:18,name:'SENTINEL',tier:'Guard',role:'Coordination auditor',mission:'Ensures the organization maintains coverage, independence, communication quality, and protection against groupthink.',duties:['Detect overlap and blind spots','Monitor for groupthink','Escalate communication failures']},
+  {id:19,name:'CHIEF VERIFICATION',tier:'Corporate',role:'First verification office',mission:'Independently recomputes and verifies the analytical package before Alfred can review it.',duties:['Reproduce key calculations','Check evidence provenance','Pass, conditionally pass, reject, or return packets for rework']},
+  {id:20,name:'EXECUTIVE VERIFICATION',tier:'Corporate',role:'Verify-the-verifier office',mission:'Audits Bot #19 and the complete analytical chain before the packet reaches Alfred.',duties:['Inspect verification completeness','Catch missed contradictions','Approve or return analysis for rework']},
+  {id:21,name:'PRIVATE SECRETARY',tier:'Executive',role:'Chief of staff / executive assistant',mission:'Organizes reports, alerts, decision logs, assignments, briefings, and follow-ups so Alfred can focus on final judgment.',duties:['Prepare executive briefings','Maintain audit trails','Route priorities and follow-ups']}
 ];
 
 function card(bot){
-
   return `
     <button class="bot-card" onclick="openBot(${bot.id})">
-
       <div class="bot-top">
-
         <div>
           <div class="bot-id">Bot #${bot.id}</div>
           <div class="bot-name">${bot.name}</div>
           <div class="bot-role">${bot.role}</div>
         </div>
-
-        <div class="badge">
-          <span class="dot"></span>
-          Shadow
-        </div>
-
+        <div class="badge"><span class="dot"></span> Shadow</div>
       </div>
-
       <div class="tier">
         <span>${bot.tier}</span>
         <span>View brief</span>
       </div>
-
     </button>
   `;
-
 }
 
 function fill(id,list){
   document.getElementById(id).innerHTML=list.map(card).join('');
 }
 
-fill(
-  'frontline',
-  bots.filter(bot=>bot.tier==='Frontline')
-);
-
-fill(
-  'senior',
-  bots.filter(bot=>bot.tier==='Senior')
-);
-
-fill(
-  'guard',
-  bots.filter(bot=>bot.tier==='Guard')
-);
-
-fill(
-  'corporate',
-  bots.filter(bot=>bot.tier==='Corporate')
-);
-
-fill(
-  'executive',
-  bots.filter(bot=>bot.tier==='Executive')
-);
-
+fill('frontline', bots.filter(bot=>bot.tier==='Frontline'));
+fill('senior', bots.filter(bot=>bot.tier==='Senior'));
+fill('guard', bots.filter(bot=>bot.tier==='Guard'));
+fill('corporate', bots.filter(bot=>bot.tier==='Corporate'));
+fill('executive', bots.filter(bot=>bot.tier==='Executive'));
 
 const timeframes=[
-
   ['1M','Execution'],
   ['5M','Confirmation'],
   ['15M','Intraday'],
   ['30M','Bias'],
   ['1H','Session'],
   ['4H','Regime']
-
 ];
 
 document.getElementById('timeframes').innerHTML=
   timeframes.map(([timeframe,role])=>`
-
     <div class="term">
-
       <span>${role}</span>
-
       <b>${timeframe}</b>
-
-      <div class="subtitle" style="margin-top:6px">
-        State: Shadow
-      </div>
-
+      <div class="subtitle" style="margin-top:6px">State: Shadow</div>
     </div>
-
   `).join('');
 
-
 const logEvents=[
-
-  [
-    'WATCHTOWER',
-    'Prototype heartbeat active. Live feed auditing will activate when backend data services are connected.'
-  ],
-
-  [
-    'EXAMINER',
-    'Calibration panel ready for live and shadow performance metrics.'
-  ],
-
-  [
-    'MARSHAL',
-    'Workload monitoring ready. Awaiting live bot telemetry.'
-  ],
-
-  [
-    'CHIEF ALPHA',
-    'Opportunity desk online in shadow mode. No production thesis issued.'
-  ],
-
-  [
-    'CHIEF RISK',
-    'Production execution intentionally blocked while analytics remain in prototype mode.'
-  ],
-
-  [
-    'PRIVATE SECRETARY',
-    'Compiling the current prototype briefing for Alfred.'
-  ]
-
+  ['WATCHTOWER','Prototype heartbeat active. Live feed auditing will activate when backend data services are connected.'],
+  ['EXAMINER','Calibration panel ready for live and shadow performance metrics.'],
+  ['MARSHAL','Workload monitoring ready. Awaiting live bot telemetry.'],
+  ['CHIEF ALPHA','Opportunity desk online in shadow mode. No production thesis issued.'],
+  ['CHIEF RISK','Production execution intentionally blocked while analytics remain in prototype mode.'],
+  ['PRIVATE SECRETARY','Compiling the current prototype briefing for Alfred.']
 ];
 
-
 function renderEvents(){
-
   const now=new Date();
 
   document.getElementById('events').innerHTML=
-
     logEvents.map((event,index)=>{
-
       const time=
-        new Date(
-          now.getTime()-(index*60000)
-        ).toLocaleTimeString(
-          [],
-          {
-            hour:'2-digit',
-            minute:'2-digit'
-          }
-        );
+        new Date(now.getTime()-(index*60000)).toLocaleTimeString([],{
+          hour:'2-digit',
+          minute:'2-digit'
+        });
 
       return `
         <div class="event">
-
           <div class="row">
             <b>${event[0]}</b>
             <small>${time}</small>
           </div>
-
           <p>${event[1]}</p>
-
         </div>
       `;
-
     }).join('');
-
 }
-
 
 renderEvents();
-
-setInterval(
-  renderEvents,
-  30000
-);
-
+setInterval(renderEvents,30000);
 
 function openBot(id){
-
-  const bot=
-    bots.find(
-      item=>item.id===id
-    );
-
+  const bot=bots.find(item=>item.id===id);
   if(!bot) return;
 
-  document.getElementById('mTier').textContent=
-    `Bot #${bot.id} / ${bot.tier}`;
+  document.getElementById('mTier').textContent=`Bot #${bot.id} / ${bot.tier}`;
+  document.getElementById('mName').textContent=bot.name;
+  document.getElementById('mRole').textContent=bot.role;
+  document.getElementById('mMission').textContent=bot.mission;
+  document.getElementById('mDuties').innerHTML=bot.duties.map(duty=>`<li>${duty}</li>`).join('');
 
-  document.getElementById('mName').textContent=
-    bot.name;
-
-  document.getElementById('mRole').textContent=
-    bot.role;
-
-  document.getElementById('mMission').textContent=
-    bot.mission;
-
-  document.getElementById('mDuties').innerHTML=
-    bot.duties.map(
-      duty=>`<li>${duty}</li>`
-    ).join('');
-
-  const modal=
-    document.getElementById('modal');
-
+  const modal=document.getElementById('modal');
   modal.classList.add('show');
-
-  modal.setAttribute(
-    'aria-hidden',
-    'false'
-  );
-
+  modal.setAttribute('aria-hidden','false');
 }
-
 
 function closeModal(){
-
-  const modal=
-    document.getElementById('modal');
-
+  const modal=document.getElementById('modal');
   modal.classList.remove('show');
-
-  modal.setAttribute(
-    'aria-hidden',
-    'true'
-  );
-
+  modal.setAttribute('aria-hidden','true');
 }
-
 
 window.openBot=openBot;
 
-
-document
-  .getElementById('closeBtn')
-  .addEventListener(
-    'click',
-    closeModal
-  );
-
-
-document
-  .getElementById('modal')
-  .addEventListener(
-    'click',
-    event=>{
-
-      if(event.target.id==='modal'){
-        closeModal();
-      }
-
-    }
-  );
-
-
-document.addEventListener(
-  'keydown',
-  event=>{
-
-    if(event.key==='Escape'){
-      closeModal();
-    }
-
-  }
-);
-
+document.getElementById('closeBtn').addEventListener('click', closeModal);
+document.getElementById('modal').addEventListener('click', event=>{
+  if(event.target.id==='modal'){ closeModal(); }
+});
+document.addEventListener('keydown', event=>{
+  if(event.key==='Escape'){ closeModal(); }
+});
 
 async function loadCoinbasePrice(){
-
-  const response=
-    await fetch(
-      'https://api.coinbase.com/v2/prices/BTC-USD/spot',
-      {
-        cache:'no-store'
-      }
-    );
-
-  if(!response.ok){
-    throw new Error(
-      'Coinbase request failed'
-    );
-  }
-
-  const json=
-    await response.json();
-
-  const amount=
-    Number(
-      json?.data?.amount||0
-    );
-
-  if(!amount){
-    throw new Error(
-      'Coinbase price missing'
-    );
-  }
-
+  const response=await fetch('https://api.coinbase.com/v2/prices/BTC-USD/spot',{cache:'no-store'});
+  if(!response.ok) throw new Error('Coinbase request failed');
+  const json=await response.json();
+  const amount=Number(json?.data?.amount||0);
+  if(!amount) throw new Error('Coinbase price missing');
   return amount;
-
 }
-
 
 async function loadKrakenPrice(){
-
-  const response=
-    await fetch(
-      'https://api.kraken.com/0/public/Ticker?pair=XBTUSD',
-      {
-        cache:'no-store'
-      }
-    );
-
-  if(!response.ok){
-    throw new Error(
-      'Kraken request failed'
-    );
-  }
-
-  const json=
-    await response.json();
-
-  const result=
-    json?.result||{};
-
-  const firstKey=
-    Object.keys(result)[0];
-
-  const amount=
-    Number(
-      firstKey
-        ? result[firstKey]?.c?.[0]
-        : 0
-    );
-
-  if(!amount){
-    throw new Error(
-      'Kraken price missing'
-    );
-  }
-
+  const response=await fetch('https://api.kraken.com/0/public/Ticker?pair=XBTUSD',{cache:'no-store'});
+  if(!response.ok) throw new Error('Kraken request failed');
+  const json=await response.json();
+  const result=json?.result||{};
+  const firstKey=Object.keys(result)[0];
+  const amount=Number(firstKey ? result[firstKey]?.c?.[0] : 0);
+  if(!amount) throw new Error('Kraken price missing');
   return amount;
-
 }
-
 
 function formatUSD(amount){
-
-  return amount.toLocaleString(
-    'en-US',
-    {
-      style:'currency',
-      currency:'USD',
-      maximumFractionDigits:0
-    }
-  );
-
+  return amount.toLocaleString('en-US',{
+    style:'currency',
+    currency:'USD',
+    maximumFractionDigits:0
+  });
 }
-
 
 async function loadPrice(){
-
-  const priceElement=
-    document.getElementById(
-      'btcPrice'
-    );
-
-  const sourceElement=
-    document.getElementById(
-      'btcSource'
-    );
+  const priceElement=document.getElementById('btcPrice');
+  const sourceElement=document.getElementById('btcSource');
 
   try{
-
-    const amount=
-      await loadCoinbasePrice();
-
-    priceElement.textContent=
-      formatUSD(amount);
-
-    sourceElement.textContent=
-      'Source: Coinbase spot';
-
+    const amount=await loadCoinbasePrice();
+    priceElement.textContent=formatUSD(amount);
+    sourceElement.textContent='Source: Coinbase spot';
     return;
-
-  }catch(coinbaseError){
-
+  }catch(error){
     try{
-
-      const amount=
-        await loadKrakenPrice();
-
-      priceElement.textContent=
-        formatUSD(amount);
-
-      sourceElement.textContent=
-        'Source: Kraken spot fallback';
-
+      const amount=await loadKrakenPrice();
+      priceElement.textContent=formatUSD(amount);
+      sourceElement.textContent='Source: Kraken spot fallback';
       return;
-
-    }catch(krakenError){
-
-      priceElement.textContent=
-        '$--';
-
-      sourceElement.textContent=
-        'Live price source unavailable';
-
+    }catch(secondError){
+      priceElement.textContent='$--';
+      sourceElement.textContent='Live price source unavailable';
     }
-
   }
-
 }
 
-
 loadPrice();
+setInterval(loadPrice,20000);
 
-setInterval(
-  loadPrice,
-  20000
-);
+/* Tabs */
+document.querySelectorAll('.tab-btn').forEach(button=>{
+  button.addEventListener('click',()=>{
+    document.querySelectorAll('.tab-btn').forEach(btn=>btn.classList.remove('active'));
+    document.querySelectorAll('.tab-panel').forEach(panel=>panel.classList.remove('active'));
 
+    button.classList.add('active');
+    document.getElementById(button.dataset.tab).classList.add('active');
+    window.scrollTo({top:0,behavior:'smooth'});
+  });
+});
+
+/* Visual floor */
+function renderVisualFloor(){
+  const target=document.getElementById('visualFloor');
+
+  target.innerHTML=bots.map(bot=>`
+    <div class="floor-bot">
+      <div class="cam-status"><span class="live-led"></span> active desk</div>
+      <h3>#${bot.id} ${bot.name}</h3>
+      <div class="floor-role">${bot.role}</div>
+      <div class="monitor-strip">
+        <div class="monitor"></div>
+        <div class="monitor"></div>
+        <div class="monitor"></div>
+      </div>
+      <div class="desk-footer">
+        <span>${bot.tier}</span>
+        <span>Telemetry online</span>
+      </div>
+    </div>
+  `).join('');
+}
+
+renderVisualFloor();
 </script>
-
 </body>
 </html>
