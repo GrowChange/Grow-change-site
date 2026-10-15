@@ -7,6 +7,7 @@
   <style>
     :root{
       --bg:#071018;
+      --bg2:#0a141f;
       --panel:#0d1721;
       --panel2:#111f2d;
       --line:#1f3345;
@@ -23,35 +24,128 @@
 
     *{box-sizing:border-box}
 
+    html{scroll-behavior:smooth}
+
     body{
       margin:0;
-      background:radial-gradient(circle at top,#0c1823 0%,#071018 58%,#050c12 100%);
+      background:
+        radial-gradient(circle at top,#0c1823 0%,#071018 55%,#050c12 100%);
       color:var(--ink);
       font-family:Inter,ui-sans-serif,system-ui,-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,Arial,sans-serif;
     }
 
+    a{color:inherit;text-decoration:none}
+    button{font:inherit}
+
     .shell{
-      max-width:1480px;
+      max-width:1500px;
       margin:0 auto;
-      padding:16px 16px 56px;
+      padding:16px 16px 60px;
     }
 
-    .topbar{
+    /* top website nav */
+    .site-header{
+      position:sticky;
+      top:0;
+      z-index:40;
+      backdrop-filter:blur(12px);
+      background:rgba(7,16,24,.85);
+      border-bottom:1px solid rgba(31,51,69,.9);
+      margin:-16px -16px 16px;
+      padding:0 16px;
+    }
+
+    .site-header-inner{
+      max-width:1500px;
+      margin:0 auto;
       display:flex;
-      gap:14px;
-      flex-wrap:wrap;
+      align-items:center;
       justify-content:space-between;
-      align-items:flex-start;
+      gap:14px;
+      padding:14px 0;
+      flex-wrap:wrap;
+    }
+
+    .brand-wrap{
+      display:flex;
+      align-items:center;
+      gap:12px;
+    }
+
+    .brand-mark{
+      width:44px;
+      height:44px;
+      border-radius:14px;
+      display:grid;
+      place-items:center;
+      background:linear-gradient(180deg,#1a3851,#102232);
+      border:1px solid #32506a;
+      box-shadow:var(--shadow);
+      font-weight:900;
+      color:#d9efff;
+    }
+
+    .brand-copy h1{
+      margin:0;
+      font-size:18px;
+      line-height:1.1;
+    }
+
+    .brand-copy p{
+      margin:3px 0 0;
+      color:var(--muted);
+      font-size:12px;
+    }
+
+    .nav-tabs{
+      display:flex;
+      gap:8px;
+      flex-wrap:wrap;
+    }
+
+    .nav-tab{
+      border:1px solid #274053;
+      background:linear-gradient(180deg,#10202d,#0b151e);
+      color:#d9e8f4;
+      padding:10px 14px;
+      border-radius:12px;
+      cursor:pointer;
+      font-weight:700;
+      font-size:14px;
+      transition:.15s ease;
+    }
+
+    .nav-tab:hover{
+      transform:translateY(-1px);
+      border-color:#4b7396;
+    }
+
+    .nav-tab.active{
+      background:linear-gradient(180deg,#174064,#102a42);
+      border-color:#4ea7ef;
+      color:#fff;
+      box-shadow:0 0 0 1px rgba(78,183,255,.2) inset;
+    }
+
+    .hero{
+      display:grid;
+      grid-template-columns:1.3fr .9fr;
+      gap:14px;
       margin-bottom:14px;
     }
 
-    .brand{
-      background:linear-gradient(180deg,#10202e,#0b1620);
+    .panel{
+      background:linear-gradient(180deg,#101b27,#0b141d);
       border:1px solid var(--line);
       border-radius:22px;
-      padding:18px 20px;
+      padding:18px;
       box-shadow:var(--shadow);
-      min-width:min(100%,500px);
+    }
+
+    .hero-card h2{
+      margin:0;
+      font-size:clamp(26px,3vw,38px);
+      line-height:1.05;
     }
 
     .eyebrow{
@@ -59,35 +153,27 @@
       letter-spacing:.16em;
       text-transform:uppercase;
       color:#84b3d2;
-      margin-bottom:6px;
+      margin-bottom:8px;
     }
 
-    .brand h1{
-      margin:0;
-      font-size:clamp(24px,3vw,34px);
-      line-height:1.05;
-    }
-
-    .brand p{
-      margin:10px 0 0;
+    .hero-card p{
+      margin:12px 0 0;
       color:var(--muted);
+      line-height:1.55;
       max-width:70ch;
     }
 
-    .meta-grid{
+    .hero-stats{
       display:grid;
-      grid-template-columns:repeat(5,minmax(110px,1fr));
+      grid-template-columns:repeat(2,minmax(0,1fr));
       gap:10px;
-      flex:1;
-      min-width:min(100%,560px);
     }
 
     .metric{
-      background:linear-gradient(180deg,#101b27,#0b141d);
+      background:linear-gradient(180deg,#121f2b,#0c141d);
       border:1px solid var(--line);
       border-radius:18px;
       padding:14px;
-      box-shadow:var(--shadow);
     }
 
     .metric .label{
@@ -115,41 +201,67 @@
       color:#b8dbff;
       padding:12px 14px;
       border-radius:16px;
-      margin:0 0 14px;
+      margin:0 0 16px;
+      line-height:1.5;
     }
 
-    .tabs{
-      display:flex;
+    .page{
+      display:none;
+    }
+
+    .page.active{
+      display:block;
+    }
+
+    .section-title{
+      margin:0 0 12px;
+      font-size:20px;
+    }
+
+    .subtle{
+      color:var(--muted);
+      font-size:13px;
+      line-height:1.5;
+    }
+
+    /* Overview */
+    .overview-grid{
+      display:grid;
+      grid-template-columns:1.1fr .9fr;
+      gap:14px;
+    }
+
+    .mini-grid{
+      display:grid;
+      grid-template-columns:repeat(2,minmax(0,1fr));
       gap:10px;
-      margin:0 0 14px;
-      flex-wrap:wrap;
+      margin-top:12px;
     }
 
-    .tab-btn{
-      border:1px solid #294257;
-      background:linear-gradient(180deg,#10202d,#0b151e);
-      color:#d9e8f4;
-      padding:12px 16px;
-      border-radius:14px;
-      font:inherit;
-      cursor:pointer;
-      font-weight:700;
-      letter-spacing:.03em;
+    .mini-card{
+      background:linear-gradient(180deg,#11202e,#0d1822);
+      border:1px solid #24384a;
+      border-radius:16px;
+      padding:14px;
     }
 
-    .tab-btn.active{
-      background:linear-gradient(180deg,#174064,#102a42);
-      border-color:#4ea7ef;
-      color:white;
-      box-shadow:0 0 0 1px rgba(78,183,255,.2) inset;
+    .mini-card h4{
+      margin:0 0 6px;
+      font-size:14px;
+      color:#d7e9f6;
     }
 
-    .tab-panel{display:none}
-    .tab-panel.active{display:block}
+    .mini-card p{
+      margin:0;
+      color:var(--muted);
+      font-size:13px;
+      line-height:1.45;
+    }
 
+    /* market analysis */
     .hq{
       display:grid;
-      grid-template-columns:1.1fr 1.4fr .95fr;
+      grid-template-columns:1.05fr 1.35fr .95fr;
       gap:14px;
       align-items:start;
     }
@@ -162,7 +274,7 @@
     .room{
       background:linear-gradient(180deg,var(--panel),#0a131c);
       border:1px solid var(--line);
-      border-radius:var(--radius);
+      border-radius:18px;
       box-shadow:var(--shadow);
       overflow:hidden;
     }
@@ -171,6 +283,7 @@
       display:flex;
       justify-content:space-between;
       align-items:center;
+      gap:10px;
       padding:14px 16px;
       border-bottom:1px solid var(--line);
     }
@@ -184,6 +297,34 @@
 
     .room-body{
       padding:14px;
+    }
+
+    .chip{
+      display:inline-flex;
+      align-items:center;
+      gap:7px;
+      padding:8px 10px;
+      border-radius:999px;
+      background:#0e1a24;
+      border:1px solid #233749;
+      font-size:12px;
+      color:#c3d8eb;
+      white-space:nowrap;
+    }
+
+    .dot{
+      width:8px;
+      height:8px;
+      border-radius:50%;
+      background:var(--green);
+      box-shadow:0 0 0 0 rgba(54,212,137,.55);
+      animation:pulse 1.7s infinite;
+    }
+
+    @keyframes pulse{
+      0%{box-shadow:0 0 0 0 rgba(54,212,137,.55)}
+      70%{box-shadow:0 0 0 10px rgba(54,212,137,0)}
+      100%{box-shadow:0 0 0 0 rgba(54,212,137,0)}
     }
 
     .subtitle{
@@ -203,7 +344,6 @@
       border:1px solid #24384a;
       background:linear-gradient(180deg,#11202e,#0d1822);
       color:var(--ink);
-      font:inherit;
       text-align:left;
       width:100%;
       appearance:none;
@@ -257,21 +397,6 @@
       white-space:nowrap;
     }
 
-    .dot{
-      width:8px;
-      height:8px;
-      border-radius:50%;
-      background:var(--green);
-      box-shadow:0 0 0 0 rgba(54,212,137,.55);
-      animation:pulse 1.7s infinite;
-    }
-
-    @keyframes pulse{
-      0%{box-shadow:0 0 0 0 rgba(54,212,137,.55)}
-      70%{box-shadow:0 0 0 10px rgba(54,212,137,0)}
-      100%{box-shadow:0 0 0 0 rgba(54,212,137,0)}
-    }
-
     .tier{
       margin-top:12px;
       display:flex;
@@ -279,18 +404,6 @@
       gap:8px;
       font-size:12px;
       color:#9fb5c8;
-    }
-
-    .chip{
-      display:inline-flex;
-      align-items:center;
-      gap:7px;
-      padding:8px 10px;
-      border-radius:999px;
-      background:#0e1a24;
-      border:1px solid #233749;
-      font-size:12px;
-      color:#c3d8eb;
     }
 
     .flow{
@@ -307,8 +420,17 @@
       text-align:center;
     }
 
-    .desk strong{display:block;font-size:14px}
-    .desk span{display:block;font-size:11px;color:#91a7ba;margin-top:5px}
+    .desk strong{
+      display:block;
+      font-size:14px;
+    }
+
+    .desk span{
+      display:block;
+      font-size:11px;
+      color:#91a7ba;
+      margin-top:5px;
+    }
 
     .decision{
       display:grid;
@@ -334,9 +456,8 @@
       font-size:42px;
       font-weight:900;
       margin:8px 0 2px;
+      color:#ffd480;
     }
-
-    .wait{color:#ffd480}
 
     .stats-row{
       display:grid;
@@ -379,7 +500,12 @@
 
     .event b{font-size:13px}
     .event small{color:#8da6bb}
-    .event p{margin:7px 0 0;color:#c9d8e5;font-size:13px;line-height:1.45}
+    .event p{
+      margin:7px 0 0;
+      color:#c9d8e5;
+      font-size:13px;
+      line-height:1.45;
+    }
 
     .tape{
       display:flex;
@@ -409,11 +535,492 @@
       text-transform:uppercase;
     }
 
-    .footer-note{
-      margin-top:14px;
-      color:#8da6bb;
-      font-size:12px;
+    /* visual representation */
+    .cam-shell{
+      background:linear-gradient(180deg,#0b141e,#060d14);
+      border:1px solid #203647;
+      border-radius:24px;
+      overflow:hidden;
+      box-shadow:var(--shadow);
+    }
+
+    .cam-topbar{
+      padding:14px 16px;
+      display:flex;
+      justify-content:space-between;
+      align-items:center;
+      gap:12px;
+      border-bottom:1px solid #1c3141;
+      flex-wrap:wrap;
+      background:linear-gradient(180deg,#101c27,#0b131b);
+    }
+
+    .cam-badges{
+      display:flex;
+      gap:8px;
+      flex-wrap:wrap;
+    }
+
+    .cam-badge{
+      display:inline-flex;
+      align-items:center;
+      gap:7px;
+      padding:7px 10px;
+      border-radius:999px;
+      border:1px solid #2c465a;
+      background:#0d1923;
+      font-size:11px;
+      color:#d2e4f1;
+    }
+
+    .record-dot{
+      width:8px;
+      height:8px;
+      border-radius:50%;
+      background:#ff5368;
+      box-shadow:0 0 10px rgba(255,83,104,.8);
+      animation:blink 1.2s infinite;
+    }
+
+    @keyframes blink{
+      0%,100%{opacity:1}
+      50%{opacity:.35}
+    }
+
+    .camera-feed{
+      position:relative;
+      min-height:980px;
+      padding:18px;
+      background:
+        radial-gradient(circle at top, rgba(78,183,255,.08), transparent 28%),
+        linear-gradient(180deg,#0a1118,#071018 55%,#050a10 100%);
+      overflow:hidden;
+    }
+
+    .camera-feed::before{
+      content:"";
+      position:absolute;
+      inset:0;
+      pointer-events:none;
+      background:repeating-linear-gradient(
+        to bottom,
+        rgba(255,255,255,.018) 0px,
+        rgba(255,255,255,.018) 1px,
+        transparent 2px,
+        transparent 5px
+      );
+      opacity:.35;
+      mix-blend-mode:soft-light;
+    }
+
+    .camera-feed::after{
+      content:"";
+      position:absolute;
+      inset:0;
+      pointer-events:none;
+      box-shadow:inset 0 0 140px rgba(0,0,0,.52);
+    }
+
+    .cctv-overlay{
+      position:absolute;
+      inset:14px;
+      pointer-events:none;
+      border:1px solid rgba(173,219,255,.18);
+      border-radius:18px;
+    }
+
+    .cctv-corner{
+      position:absolute;
+      width:24px;
+      height:24px;
+      border-color:#77c8ff;
+      opacity:.7;
+    }
+
+    .c1{top:10px;left:10px;border-top:2px solid;border-left:2px solid}
+    .c2{top:10px;right:10px;border-top:2px solid;border-right:2px solid}
+    .c3{bottom:10px;left:10px;border-bottom:2px solid;border-left:2px solid}
+    .c4{bottom:10px;right:10px;border-bottom:2px solid;border-right:2px solid}
+
+    .feed-hud{
+      position:absolute;
+      top:18px;
+      left:18px;
+      right:18px;
+      display:flex;
+      justify-content:space-between;
+      align-items:flex-start;
+      gap:10px;
+      z-index:2;
+      pointer-events:none;
+      flex-wrap:wrap;
+    }
+
+    .hud-left,.hud-right{
+      display:grid;
+      gap:8px;
+    }
+
+    .hud-pill{
+      display:inline-flex;
+      align-items:center;
+      gap:7px;
+      background:rgba(8,18,27,.72);
+      border:1px solid rgba(112,173,219,.35);
+      color:#d6ecfb;
+      font-size:11px;
+      padding:8px 10px;
+      border-radius:999px;
+      backdrop-filter:blur(6px);
+    }
+
+    .trading-floor-stage{
+      position:relative;
+      z-index:1;
+      padding-top:78px;
+      display:grid;
+      gap:20px;
+    }
+
+    .alfred-balcony{
+      width:min(100%,520px);
+      margin:0 auto;
+      padding:18px;
+      border-radius:18px;
+      border:1px solid #3a5771;
+      background:
+        radial-gradient(circle at top right, rgba(78,183,255,.18), transparent 40%),
+        linear-gradient(180deg,#112334,#0a1520);
+      text-align:center;
+      box-shadow:0 18px 40px rgba(0,0,0,.35);
+    }
+
+    .alfred-balcony h2{
+      margin:6px 0 8px;
+      font-size:28px;
+    }
+
+    .alfred-balcony p{
+      margin:0;
+      color:#a8bfd2;
       line-height:1.5;
+    }
+
+    .upper-ring{
+      display:grid;
+      grid-template-columns:repeat(3,minmax(0,1fr));
+      gap:14px;
+    }
+
+    .upper-box{
+      padding:14px;
+      border-radius:16px;
+      border:1px solid #24394c;
+      background:linear-gradient(180deg,#101c28,#0a121a);
+      min-height:120px;
+    }
+
+    .upper-box h4{
+      margin:0 0 8px;
+      font-size:13px;
+      color:#9ed0f4;
+      letter-spacing:.08em;
+      text-transform:uppercase;
+    }
+
+    .upper-box p{
+      margin:0;
+      color:#aac0d1;
+      font-size:13px;
+      line-height:1.45;
+    }
+
+    .floor-grid{
+      display:grid;
+      grid-template-columns:repeat(4,minmax(0,1fr));
+      gap:16px;
+      position:relative;
+    }
+
+    .worker-desk{
+      position:relative;
+      min-height:182px;
+      border-radius:18px;
+      border:1px solid #274155;
+      background:
+        linear-gradient(180deg,#112130,#0b151e);
+      overflow:hidden;
+      box-shadow:0 12px 28px rgba(0,0,0,.25);
+    }
+
+    .worker-desk::before{
+      content:"";
+      position:absolute;
+      inset:0;
+      background:radial-gradient(circle at top, rgba(78,183,255,.09), transparent 36%);
+    }
+
+    .worker-header{
+      position:relative;
+      z-index:1;
+      padding:12px 12px 8px;
+      display:flex;
+      align-items:center;
+      justify-content:space-between;
+      gap:8px;
+    }
+
+    .worker-header h3{
+      margin:0;
+      font-size:15px;
+      line-height:1.2;
+    }
+
+    .worker-role{
+      color:#8eafc5;
+      font-size:11px;
+      padding:0 12px;
+      position:relative;
+      z-index:1;
+      min-height:28px;
+    }
+
+    .desk-scene{
+      position:relative;
+      z-index:1;
+      margin:12px;
+      height:92px;
+      border-radius:14px;
+      background:linear-gradient(180deg,#0f1a24,#0b1218);
+      border:1px solid #1f3447;
+      overflow:hidden;
+    }
+
+    .desk-table{
+      position:absolute;
+      left:8%;
+      right:8%;
+      bottom:12px;
+      height:18px;
+      border-radius:10px;
+      background:linear-gradient(180deg,#1f3a4e,#142532);
+    }
+
+    .monitor-a,.monitor-b,.monitor-c{
+      position:absolute;
+      top:14px;
+      width:22%;
+      height:28px;
+      border-radius:6px;
+      background:linear-gradient(180deg,#173044,#10222f);
+      border:1px solid #28485f;
+      overflow:hidden;
+    }
+
+    .monitor-a{left:10%}
+    .monitor-b{left:39%}
+    .monitor-c{left:68%}
+
+    .monitor-a::before,.monitor-b::before,.monitor-c::before{
+      content:"";
+      position:absolute;
+      inset:0;
+      background:linear-gradient(90deg,transparent,rgba(78,183,255,.25),transparent);
+      transform:translateX(-100%);
+      animation:screenSweep 2.4s linear infinite;
+    }
+
+    @keyframes screenSweep{
+      100%{transform:translateX(100%)}
+    }
+
+    .trader{
+      position:absolute;
+      left:50%;
+      bottom:22px;
+      width:22px;
+      height:40px;
+      transform:translateX(-50%);
+    }
+
+    .trader .head{
+      position:absolute;
+      top:0;
+      left:50%;
+      width:12px;
+      height:12px;
+      transform:translateX(-50%);
+      border-radius:50%;
+      background:#d7e8f5;
+    }
+
+    .trader .body{
+      position:absolute;
+      top:10px;
+      left:50%;
+      width:14px;
+      height:16px;
+      transform:translateX(-50%);
+      border-radius:6px 6px 5px 5px;
+      background:#7bbfff;
+    }
+
+    .trader .arm-left,.trader .arm-right{
+      position:absolute;
+      top:14px;
+      width:12px;
+      height:3px;
+      background:#d7e8f5;
+      transform-origin:left center;
+      animation:typing 1.8s ease-in-out infinite;
+    }
+
+    .trader .arm-left{
+      left:1px;
+      transform:rotate(22deg);
+    }
+
+    .trader .arm-right{
+      right:1px;
+      transform:rotate(-22deg);
+      animation-delay:.45s;
+    }
+
+    .trader.phone .arm-right{
+      top:8px;
+      right:-1px;
+      width:11px;
+      transform:rotate(-55deg);
+      animation:callMove 1.8s ease-in-out infinite;
+    }
+
+    .trader .legs{
+      position:absolute;
+      bottom:0;
+      left:50%;
+      width:10px;
+      height:12px;
+      transform:translateX(-50%);
+      border-left:2px solid #bcd2e2;
+      border-right:2px solid #bcd2e2;
+    }
+
+    @keyframes typing{
+      0%,100%{transform:rotate(22deg)}
+      50%{transform:rotate(5deg)}
+    }
+
+    @keyframes callMove{
+      0%,100%{transform:rotate(-55deg)}
+      50%{transform:rotate(-35deg)}
+    }
+
+    .desk-footer{
+      position:relative;
+      z-index:1;
+      padding:0 12px 12px;
+      display:flex;
+      justify-content:space-between;
+      gap:8px;
+      font-size:11px;
+      color:#a9c6da;
+    }
+
+    .desk-status{
+      display:inline-flex;
+      align-items:center;
+      gap:6px;
+    }
+
+    .live-led{
+      width:7px;
+      height:7px;
+      border-radius:50%;
+      background:#37d58e;
+      box-shadow:0 0 10px rgba(55,213,142,.95);
+      animation:blink 1.4s infinite;
+    }
+
+    /* Knights */
+    .patrol-lane{
+      position:relative;
+      height:94px;
+      border-radius:16px;
+      border:1px dashed rgba(123,191,255,.2);
+      background:linear-gradient(180deg,rgba(17,31,45,.6),rgba(9,16,24,.5));
+      overflow:hidden;
+    }
+
+    .lane-label{
+      position:absolute;
+      left:14px;
+      top:12px;
+      font-size:11px;
+      color:#93b7d4;
+      text-transform:uppercase;
+      letter-spacing:.12em;
+    }
+
+    .knight{
+      position:absolute;
+      bottom:12px;
+      width:26px;
+      height:58px;
+      animation:patrol 14s linear infinite;
+    }
+
+    .knight.k2{animation-delay:3s}
+    .knight.k3{animation-delay:6s}
+    .knight.k4{animation-delay:9s}
+
+    @keyframes patrol{
+      0%{left:-30px}
+      50%{left:calc(100% - 20px)}
+      100%{left:-30px}
+    }
+
+    .knight .k-head{
+      position:absolute;
+      top:0;
+      left:50%;
+      width:12px;
+      height:12px;
+      transform:translateX(-50%);
+      border-radius:50%;
+      background:#dcecf8;
+    }
+
+    .knight .k-body{
+      position:absolute;
+      top:10px;
+      left:50%;
+      width:14px;
+      height:22px;
+      transform:translateX(-50%);
+      border-radius:6px;
+      background:#ffdc6a;
+      border:1px solid rgba(0,0,0,.15);
+    }
+
+    .knight .k-legs{
+      position:absolute;
+      bottom:0;
+      left:50%;
+      width:10px;
+      height:16px;
+      transform:translateX(-50%);
+      border-left:2px solid #c8d8e4;
+      border-right:2px solid #c8d8e4;
+    }
+
+    .knight .k-arm{
+      position:absolute;
+      top:16px;
+      left:50%;
+      width:18px;
+      height:2px;
+      background:#dcecf8;
+      transform:translateX(-50%) rotate(12deg);
     }
 
     .modal{
@@ -485,345 +1092,84 @@
       padding:0;
     }
 
-    /* Visual representation tab */
-    .cinema{
-      background:
-        radial-gradient(circle at top, rgba(78,183,255,.12), transparent 35%),
-        linear-gradient(180deg,#0c1723,#050b11);
-      border:1px solid var(--line);
-      border-radius:22px;
-      overflow:hidden;
-      box-shadow:var(--shadow);
-    }
-
-    .cinema-head{
-      padding:14px 16px;
-      border-bottom:1px solid #1d3346;
-      display:flex;
-      justify-content:space-between;
-      align-items:center;
-      gap:10px;
-      flex-wrap:wrap;
-    }
-
-    .cinema-title{
-      font-size:13px;
-      letter-spacing:.14em;
-      text-transform:uppercase;
-      color:#91b8d8;
-    }
-
-    .camera-badges{
-      display:flex;
-      gap:8px;
-      flex-wrap:wrap;
-    }
-
-    .camera-badge{
-      display:inline-flex;
-      align-items:center;
-      gap:7px;
-      padding:7px 10px;
-      border-radius:999px;
-      border:1px solid #284054;
-      background:#0d1821;
-      font-size:11px;
-      color:#d0e1ef;
-    }
-
-    .record-dot{
-      width:8px;
-      height:8px;
-      border-radius:50%;
-      background:#ff4d62;
-      box-shadow:0 0 12px rgba(255,77,98,.8);
-      animation:blink 1.2s infinite;
-    }
-
-    @keyframes blink{
-      0%,100%{opacity:1}
-      50%{opacity:.35}
-    }
-
-    .ticker-wrap{
-      overflow:hidden;
-      border-top:1px solid #16293b;
-      border-bottom:1px solid #16293b;
-      background:#08111a;
-      white-space:nowrap;
-    }
-
-    .ticker-track{
-      display:inline-block;
-      padding:10px 0;
-      animation:scrollTicker 28s linear infinite;
-      color:#8cc9ff;
+    .footer-note{
+      margin-top:16px;
+      color:#8da6bb;
       font-size:12px;
-      letter-spacing:.08em;
-      text-transform:uppercase;
-    }
-
-    @keyframes scrollTicker{
-      from{transform:translateX(0)}
-      to{transform:translateX(-50%)}
-    }
-
-    .floor-scene{
-      position:relative;
-      min-height:820px;
-      padding:26px 18px 18px;
-      background:
-        radial-gradient(circle at 50% 0%, rgba(78,183,255,.10), transparent 35%),
-        linear-gradient(180deg,#0a121a 0%, #081119 30%, #050b11 100%);
-      overflow:hidden;
-    }
-
-    .scanlines::before{
-      content:"";
-      position:absolute;
-      inset:0;
-      pointer-events:none;
-      background:repeating-linear-gradient(
-        to bottom,
-        rgba(255,255,255,.02) 0px,
-        rgba(255,255,255,.02) 1px,
-        transparent 2px,
-        transparent 4px
-      );
-      mix-blend-mode:soft-light;
-      opacity:.3;
-    }
-
-    .executive-balcony{
-      display:flex;
-      justify-content:center;
-      margin-bottom:30px;
-    }
-
-    .alfred-office{
-      width:min(100%,520px);
-      padding:18px;
-      border-radius:18px;
-      border:1px solid #375472;
-      background:
-        radial-gradient(circle at top right, rgba(78,183,255,.18), transparent 40%),
-        linear-gradient(180deg,#112334,#0a1520);
-      text-align:center;
-      box-shadow:0 18px 40px rgba(0,0,0,.35);
-    }
-
-    .alfred-office h2{
-      margin:6px 0 8px;
-      font-size:28px;
-    }
-
-    .alfred-office p{
-      margin:0;
-      color:#a8bfd2;
       line-height:1.5;
     }
 
-    .office-row{
-      display:grid;
-      grid-template-columns:repeat(3,minmax(0,1fr));
-      gap:14px;
-      align-items:start;
-      margin-top:10px;
-    }
-
-    .office-box{
-      padding:14px;
-      border-radius:16px;
-      border:1px solid #22394d;
-      background:linear-gradient(180deg,#0f1d2a,#0a131c);
-      min-height:136px;
-    }
-
-    .office-box h4{
-      margin:0 0 8px;
-      font-size:13px;
-      color:#9ed0f4;
-      letter-spacing:.08em;
-      text-transform:uppercase;
-    }
-
-    .office-box p{
-      margin:0;
-      color:#aac0d1;
-      font-size:13px;
-      line-height:1.45;
-    }
-
-    .trading-pit{
-      margin-top:26px;
-      display:grid;
-      grid-template-columns:repeat(4,minmax(0,1fr));
-      gap:16px;
-    }
-
-    .floor-bot{
-      position:relative;
-      padding:14px 14px 12px;
-      border-radius:18px;
-      border:1px solid #263f52;
-      background:
-        radial-gradient(circle at top, rgba(78,183,255,.10), transparent 34%),
-        linear-gradient(180deg,#10202e,#0b141d);
-      min-height:138px;
-      overflow:hidden;
-      box-shadow:0 10px 30px rgba(0,0,0,.22);
-      animation:deskGlow 3.4s ease-in-out infinite;
-    }
-
-    .floor-bot:nth-child(2n){animation-delay:.4s}
-    .floor-bot:nth-child(3n){animation-delay:.9s}
-    .floor-bot:nth-child(4n){animation-delay:1.3s}
-
-    @keyframes deskGlow{
-      0%,100%{transform:translateY(0); box-shadow:0 10px 30px rgba(0,0,0,.20)}
-      50%{transform:translateY(-2px); box-shadow:0 12px 36px rgba(78,183,255,.12)}
-    }
-
-    .floor-bot::after{
-      content:"";
-      position:absolute;
-      inset:auto -20% -40% -20%;
-      height:80px;
-      background:radial-gradient(circle, rgba(78,183,255,.12), transparent 60%);
-      animation:sweep 4.8s linear infinite;
-    }
-
-    @keyframes sweep{
-      0%{transform:translateX(-20%)}
-      100%{transform:translateX(20%)}
-    }
-
-    .floor-bot .cam-status{
-      display:inline-flex;
-      align-items:center;
-      gap:6px;
-      font-size:10px;
-      color:#b9d8ef;
-      text-transform:uppercase;
-      letter-spacing:.08em;
-      margin-bottom:10px;
-    }
-
-    .live-led{
-      width:8px;
-      height:8px;
-      border-radius:50%;
-      background:#39d78f;
-      box-shadow:0 0 10px rgba(57,215,143,.9);
-      animation:blink 1.4s infinite;
-    }
-
-    .floor-bot h3{
-      margin:0;
-      font-size:16px;
-      line-height:1.2;
-    }
-
-    .floor-bot .floor-role{
-      margin-top:4px;
-      color:#8fb0c6;
-      font-size:12px;
-      min-height:30px;
-    }
-
-    .monitor-strip{
-      display:flex;
-      gap:7px;
-      margin-top:12px;
-    }
-
-    .monitor{
-      flex:1;
-      min-height:28px;
-      border-radius:8px;
-      border:1px solid #264357;
-      background:
-        linear-gradient(180deg,#132839,#0f1b27);
-      position:relative;
-      overflow:hidden;
-    }
-
-    .monitor::before{
-      content:"";
-      position:absolute;
-      inset:0;
-      background:linear-gradient(90deg, transparent, rgba(78,183,255,.22), transparent);
-      transform:translateX(-100%);
-      animation:monitorSweep 2.4s linear infinite;
-    }
-
-    @keyframes monitorSweep{
-      100%{transform:translateX(100%)}
-    }
-
-    .desk-footer{
-      margin-top:10px;
-      display:flex;
-      justify-content:space-between;
-      gap:8px;
-      font-size:11px;
-      color:#a8c4d9;
-    }
-
-    .representation-note{
-      margin-top:18px;
-      color:#89a1b5;
-      font-size:12px;
-      line-height:1.55;
-      text-align:center;
-    }
-
-    @media (max-width:1180px){
+    @media (max-width:1200px){
+      .hero{grid-template-columns:1fr}
+      .overview-grid{grid-template-columns:1fr}
       .hq{grid-template-columns:1fr}
-      .meta-grid{grid-template-columns:repeat(2,minmax(120px,1fr))}
       .decision{grid-template-columns:1fr}
       .flow{grid-template-columns:repeat(3,minmax(0,1fr))}
-      .trading-pit{grid-template-columns:repeat(3,minmax(0,1fr))}
-      .office-row{grid-template-columns:1fr}
+      .upper-ring{grid-template-columns:1fr}
+      .floor-grid{grid-template-columns:repeat(3,minmax(0,1fr))}
     }
 
-    @media (max-width:720px){
+    @media (max-width:760px){
       .shell{padding:12px 12px 40px}
+      .site-header{margin:-12px -12px 14px;padding:0 12px}
+      .hero-stats{grid-template-columns:repeat(2,minmax(0,1fr))}
+      .mini-grid{grid-template-columns:1fr}
       .bot-grid{grid-template-columns:1fr}
       .flow{grid-template-columns:repeat(2,minmax(0,1fr))}
-      .meta-grid{grid-template-columns:repeat(2,minmax(0,1fr))}
-      .brand{min-width:100%}
-      .call-value{font-size:34px}
-      .trading-pit{grid-template-columns:repeat(2,minmax(0,1fr))}
-      .floor-scene{min-height:auto}
+      .floor-grid{grid-template-columns:repeat(2,minmax(0,1fr))}
+      .camera-feed{min-height:auto}
+    }
+
+    @media (max-width:520px){
+      .hero-stats{grid-template-columns:1fr}
+      .floor-grid{grid-template-columns:1fr}
     }
   </style>
 </head>
-
 <body>
+
+  <header class="site-header">
+    <div class="site-header-inner">
+      <div class="brand-wrap">
+        <div class="brand-mark">A</div>
+        <div class="brand-copy">
+          <h1>ALFRED Capital</h1>
+          <p>Bitcoin Intelligence / Prop-Firm Command Floor</p>
+        </div>
+      </div>
+
+      <nav class="nav-tabs">
+        <button class="nav-tab active" data-page="overviewPage">Overview</button>
+        <button class="nav-tab" data-page="analysisPage">Market Analysis</button>
+        <button class="nav-tab" data-page="visualPage">Visual Representation</button>
+        <button class="nav-tab" data-page="directoryPage">Bot Directory</button>
+      </nav>
+    </div>
+  </header>
+
   <div class="shell">
 
-    <div class="topbar">
-      <section class="brand">
+    <section class="hero">
+      <div class="panel hero-card">
         <div class="eyebrow">ALFRED Capital / Bitcoin Intelligence Division</div>
-        <h1>BTC Command Floor</h1>
+        <h2>BTC Command Floor</h2>
         <p>
-          Prototype headquarters for the 21-bot Bitcoin trade-analysis system.
-          Styled like a quantitative prop firm with layered supervision,
-          verification, and Alfred above the floor.
+          A website-style control center for your Bitcoin intelligence project.
+          The system is organized like a prop firm: workers, senior desks, executives,
+          verification, and Alfred’s Knights keeping order across the floor.
         </p>
-      </section>
+      </div>
 
-      <section class="meta-grid">
+      <div class="hero-stats">
         <div class="metric">
           <div class="label">System Bots</div>
           <div class="value">21</div>
-          <div class="sub">Locked roster</div>
+          <div class="sub">Locked organization</div>
         </div>
 
         <div class="metric">
           <div class="label">Master Bias</div>
-          <div class="value wait" id="masterBias">SHADOW</div>
+          <div class="value" style="color:#ffd480">SHADOW</div>
           <div class="sub">No live signal yet</div>
         </div>
 
@@ -834,40 +1180,83 @@
         </div>
 
         <div class="metric">
-          <div class="label">System Health</div>
-          <div class="value">UI ONLINE</div>
-          <div class="sub">Prototype monitoring only</div>
-        </div>
-
-        <div class="metric">
           <div class="label">Current Stage</div>
           <div class="value">Phase 3A</div>
-          <div class="sub">Contracts 1-6</div>
+          <div class="sub">Frontline contracts complete</div>
         </div>
-      </section>
-    </div>
+      </div>
+    </section>
 
     <div class="notice">
-      <strong>SHADOW / DESIGN PROTOTYPE:</strong>
-      GitHub Pages is the frontend and Supabase is reserved for the backend/data layer.
-      Bot activity and analytical values shown here are simulated placeholders until the
-      live engines are connected and validated.
+      <strong>Prototype notice:</strong>
+      This is a presentation layer for the concept. GitHub Pages is serving the frontend.
+      Supabase remains reserved for backend data, auth, state, and future live bot infrastructure.
+      The visual feed is intentionally a simulated representation until the real engines are connected.
     </div>
 
-    <div class="tabs">
-      <button class="tab-btn active" data-tab="analysisTab">Market Analysis</button>
-      <button class="tab-btn" data-tab="representationTab">Visual Representation</button>
-    </div>
+    <!-- OVERVIEW -->
+    <section id="overviewPage" class="page active">
+      <div class="overview-grid">
+        <div class="panel">
+          <h3 class="section-title">Mission Overview</h3>
+          <p class="subtle">
+            The objective is to build the most advanced, efficient, and reliable Bitcoin trade-analysis
+            system practical for you. The design focuses on market structure, order flow, microstructure,
+            leverage, regime, volatility, verification, and disciplined oversight.
+          </p>
 
-    <!-- MARKET ANALYSIS TAB -->
-    <section id="analysisTab" class="tab-panel active">
+          <div class="mini-grid">
+            <div class="mini-card">
+              <h4>Frontline Intelligence</h4>
+              <p>Structure, Flow, Micro, Regime, Leverage, and Volatility form the first analytical layer.</p>
+            </div>
+            <div class="mini-card">
+              <h4>Senior Synthesis</h4>
+              <p>Market Fusion, Execution, Derivatives Intelligence, and Guardian refine and challenge raw evidence.</p>
+            </div>
+            <div class="mini-card">
+              <h4>Executive Authority</h4>
+              <p>Chief Alpha, Chief Risk, Alfred, and the Private Secretary govern final opportunity, risk, and communication.</p>
+            </div>
+            <div class="mini-card">
+              <h4>Oversight & Verification</h4>
+              <p>Alfred’s Knights and the Verification Office keep the system accountable, calibrated, and honest.</p>
+            </div>
+          </div>
+        </div>
+
+        <div class="panel">
+          <h3 class="section-title">Current Website Sections</h3>
+          <div class="mini-grid">
+            <div class="mini-card">
+              <h4>Overview</h4>
+              <p>A clean website entry page explaining the command-floor concept.</p>
+            </div>
+            <div class="mini-card">
+              <h4>Market Analysis</h4>
+              <p>The operational dashboard and floor hierarchy.</p>
+            </div>
+            <div class="mini-card">
+              <h4>Visual Representation</h4>
+              <p>A camera-feed style look into a busy trading floor with workers and patrols.</p>
+            </div>
+            <div class="mini-card">
+              <h4>Bot Directory</h4>
+              <p>A browsable directory of the bot organization and mission details.</p>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- MARKET ANALYSIS -->
+    <section id="analysisPage" class="page">
       <div class="hq">
 
         <div class="col">
-
           <section class="room">
             <div class="room-header">
-              <div class="room-title">Alfred's Guard Wing</div>
+              <div class="room-title">Alfred's Knights</div>
               <div class="chip"><span class="dot"></span> Shadow oversight</div>
             </div>
             <div class="room-body">
@@ -894,11 +1283,9 @@
               <div class="tape" id="timeframes"></div>
             </div>
           </section>
-
         </div>
 
         <div class="col">
-
           <section class="room">
             <div class="room-header">
               <div class="room-title">Trading Floor</div>
@@ -939,8 +1326,7 @@
             <div class="room-body decision">
               <div class="decision-box">
                 <div class="call">Master Decision</div>
-                <div class="call-value wait" id="masterDecision">WAIT</div>
-
+                <div class="call-value">WAIT</div>
                 <div class="subtitle">
                   Production trading remains blocked until the analytical engine,
                   verification system, and risk controls are connected and validated.
@@ -952,13 +1338,11 @@
                     <b>N/A</b>
                     <span class="subtitle">Awaiting live engine</span>
                   </div>
-
                   <div class="stat-mini">
                     <span class="label">Entry</span>
                     <b>N/A</b>
                     <span class="subtitle">Awaiting live engine</span>
                   </div>
-
                   <div class="stat-mini">
                     <span class="label">Risk</span>
                     <b>BLOCKED</b>
@@ -969,7 +1353,6 @@
 
               <div class="decision-box">
                 <div class="call">Operational Focus</div>
-
                 <div style="margin-top:12px;display:grid;gap:10px">
                   <div class="event">
                     <div class="row"><b>Phase 1</b><small>Locked</small></div>
@@ -989,11 +1372,9 @@
               </div>
             </div>
           </section>
-
         </div>
 
         <div class="col">
-
           <section class="room">
             <div class="room-header">
               <div class="room-title">Executive Offices</div>
@@ -1013,64 +1394,126 @@
               <div id="events" class="feed"></div>
             </div>
           </section>
-
         </div>
 
       </div>
     </section>
 
-    <!-- VISUAL REPRESENTATION TAB -->
-    <section id="representationTab" class="tab-panel">
-      <div class="cinema">
-        <div class="cinema-head">
-          <div class="cinema-title">Prop Firm Floor — Live Visual Representation</div>
-          <div class="camera-badges">
-            <div class="camera-badge"><span class="record-dot"></span> Live Floor Cam</div>
-            <div class="camera-badge">21 Bots Active</div>
-            <div class="camera-badge">Shadow Representation</div>
+    <!-- VISUAL REPRESENTATION -->
+    <section id="visualPage" class="page">
+      <div class="cam-shell">
+        <div class="cam-topbar">
+          <div>
+            <div class="eyebrow" style="margin-bottom:4px">Visual representation</div>
+            <div style="font-size:20px;font-weight:800">Live Trading Floor Camera</div>
+          </div>
+
+          <div class="cam-badges">
+            <div class="cam-badge"><span class="record-dot"></span> REC</div>
+            <div class="cam-badge">Busy trading day</div>
+            <div class="cam-badge">21 active desks</div>
+            <div class="cam-badge">Alfred’s Knights on patrol</div>
           </div>
         </div>
 
-        <div class="ticker-wrap">
-          <div class="ticker-track" id="tickerTrack">
-            BTC / FLOW / MICRO / ALFRED / VERIFICATION / GUARD / BTC / FLOW / MICRO / ALFRED / VERIFICATION / GUARD / BTC / FLOW / MICRO / ALFRED / VERIFICATION / GUARD /
+        <div class="camera-feed">
+          <div class="cctv-overlay">
+            <div class="cctv-corner c1"></div>
+            <div class="cctv-corner c2"></div>
+            <div class="cctv-corner c3"></div>
+            <div class="cctv-corner c4"></div>
           </div>
-        </div>
 
-        <div class="floor-scene scanlines">
-          <div class="executive-balcony">
-            <div class="alfred-office">
+          <div class="feed-hud">
+            <div class="hud-left">
+              <div class="hud-pill"><span class="record-dot"></span> Camera 03 / Main Floor</div>
+              <div class="hud-pill">Status: Observation Mode</div>
+            </div>
+            <div class="hud-right">
+              <div class="hud-pill" id="cameraClock">00:00:00</div>
+              <div class="hud-pill">Floor Traffic: High</div>
+            </div>
+          </div>
+
+          <div class="trading-floor-stage">
+            <div class="alfred-balcony">
               <div class="eyebrow">Executive balcony</div>
               <h2>ALFRED</h2>
               <p>
-                Final authority above the floor. Every desk, guard, and verification office ultimately routes upward into Alfred before reaching you.
+                Final authority above the floor. Every desk, every report,
+                every patrol, and every verification chain routes upward through Alfred before reaching you.
               </p>
             </div>
-          </div>
 
-          <div class="office-row">
-            <div class="office-box">
-              <h4>Chief Alpha</h4>
-              <p>Ranking high-quality opportunities and consolidating the strongest trade theses from the floor.</p>
+            <div class="upper-ring">
+              <div class="upper-box">
+                <h4>Chief Alpha</h4>
+                <p>Ranking opportunities, consolidating high-quality trade theses, and escalating worthy setups.</p>
+              </div>
+              <div class="upper-box">
+                <h4>Chief Risk</h4>
+                <p>Screening dangerous conditions and blocking weak or unstable trades before they escalate.</p>
+              </div>
+              <div class="upper-box">
+                <h4>Verification Office</h4>
+                <p>Re-checking the analysis and verifying the verifier before Alfred receives the packet.</p>
+              </div>
             </div>
-            <div class="office-box">
-              <h4>Chief Risk</h4>
-              <p>Blocking fragile, low-quality, or dangerous setups before they can advance through the chain.</p>
-            </div>
-            <div class="office-box">
-              <h4>Corporate Verification</h4>
-              <p>Validating the analysis and then validating the validator before anything reaches Alfred.</p>
-            </div>
-          </div>
 
-          <div class="trading-pit" id="visualFloor"></div>
+            <div class="patrol-lane">
+              <div class="lane-label">Alfred’s Knights — floor patrol</div>
 
-          <div class="representation-note">
-            This tab is a cinematic visual representation of the 21-bot prop-firm environment.
-            It is designed to feel like a live booming trading floor, but remains a simulated visual layer until the real backend logic is connected.
+              <div class="knight k1">
+                <div class="k-head"></div><div class="k-body"></div><div class="k-arm"></div><div class="k-legs"></div>
+              </div>
+              <div class="knight k2">
+                <div class="k-head"></div><div class="k-body"></div><div class="k-arm"></div><div class="k-legs"></div>
+              </div>
+              <div class="knight k3">
+                <div class="k-head"></div><div class="k-body"></div><div class="k-arm"></div><div class="k-legs"></div>
+              </div>
+              <div class="knight k4">
+                <div class="k-head"></div><div class="k-body"></div><div class="k-arm"></div><div class="k-legs"></div>
+              </div>
+            </div>
+
+            <div class="floor-grid" id="visualFloor"></div>
+
+            <div class="patrol-lane">
+              <div class="lane-label">Security oversight / roaming supervision</div>
+
+              <div class="knight k1">
+                <div class="k-head"></div><div class="k-body"></div><div class="k-arm"></div><div class="k-legs"></div>
+              </div>
+              <div class="knight k2">
+                <div class="k-head"></div><div class="k-body"></div><div class="k-arm"></div><div class="k-legs"></div>
+              </div>
+              <div class="knight k3">
+                <div class="k-head"></div><div class="k-body"></div><div class="k-arm"></div><div class="k-legs"></div>
+              </div>
+            </div>
+
           </div>
         </div>
       </div>
+
+      <div class="footer-note">
+        This page is a stylized camera-feed representation of a busy prop-firm floor.
+        Workers are shown at desks operating terminals and calls, while Alfred’s Knights patrol the room.
+      </div>
+    </section>
+
+    <!-- DIRECTORY -->
+    <section id="directoryPage" class="page">
+      <section class="room">
+        <div class="room-header">
+          <div class="room-title">Bot Directory</div>
+          <div class="chip"><span class="dot"></span> Click any card</div>
+        </div>
+        <div class="room-body">
+          <div id="directoryGrid" class="bot-grid"></div>
+        </div>
+      </section>
     </section>
 
     <div class="footer-note">
@@ -1089,7 +1532,6 @@
           <h3 id="mName"></h3>
           <div class="subtitle" id="mRole"></div>
         </div>
-
         <button class="close" id="closeBtn">Close</button>
       </div>
 
@@ -1147,8 +1589,9 @@ function card(bot){
   `;
 }
 
-function fill(id,list){
-  document.getElementById(id).innerHTML=list.map(card).join('');
+function fill(id, list){
+  const el=document.getElementById(id);
+  if(el) el.innerHTML=list.map(card).join('');
 }
 
 fill('frontline', bots.filter(bot=>bot.tier==='Frontline'));
@@ -1156,8 +1599,9 @@ fill('senior', bots.filter(bot=>bot.tier==='Senior'));
 fill('guard', bots.filter(bot=>bot.tier==='Guard'));
 fill('corporate', bots.filter(bot=>bot.tier==='Corporate'));
 fill('executive', bots.filter(bot=>bot.tier==='Executive'));
+fill('directoryGrid', bots);
 
-const timeframes=[
+const timeframes = [
   ['1M','Execution'],
   ['5M','Confirmation'],
   ['15M','Intraday'],
@@ -1166,7 +1610,7 @@ const timeframes=[
   ['4H','Regime']
 ];
 
-document.getElementById('timeframes').innerHTML=
+document.getElementById('timeframes').innerHTML =
   timeframes.map(([timeframe,role])=>`
     <div class="term">
       <span>${role}</span>
@@ -1175,7 +1619,7 @@ document.getElementById('timeframes').innerHTML=
     </div>
   `).join('');
 
-const logEvents=[
+const logEvents = [
   ['WATCHTOWER','Prototype heartbeat active. Live feed auditing will activate when backend data services are connected.'],
   ['EXAMINER','Calibration panel ready for live and shadow performance metrics.'],
   ['MARSHAL','Workload monitoring ready. Awaiting live bot telemetry.'],
@@ -1187,13 +1631,12 @@ const logEvents=[
 function renderEvents(){
   const now=new Date();
 
-  document.getElementById('events').innerHTML=
+  document.getElementById('events').innerHTML =
     logEvents.map((event,index)=>{
-      const time=
-        new Date(now.getTime()-(index*60000)).toLocaleTimeString([],{
-          hour:'2-digit',
-          minute:'2-digit'
-        });
+      const time = new Date(now.getTime() - (index*60000)).toLocaleTimeString([],{
+        hour:'2-digit',
+        minute:'2-digit'
+      });
 
       return `
         <div class="event">
@@ -1206,10 +1649,10 @@ function renderEvents(){
       `;
     }).join('');
 }
-
 renderEvents();
 setInterval(renderEvents,30000);
 
+/* Modal */
 function openBot(id){
   const bot=bots.find(item=>item.id===id);
   if(!bot) return;
@@ -1224,23 +1667,33 @@ function openBot(id){
   modal.classList.add('show');
   modal.setAttribute('aria-hidden','false');
 }
+window.openBot=openBot;
 
 function closeModal(){
   const modal=document.getElementById('modal');
   modal.classList.remove('show');
   modal.setAttribute('aria-hidden','true');
 }
-
-window.openBot=openBot;
-
 document.getElementById('closeBtn').addEventListener('click', closeModal);
 document.getElementById('modal').addEventListener('click', event=>{
-  if(event.target.id==='modal'){ closeModal(); }
+  if(event.target.id==='modal') closeModal();
 });
 document.addEventListener('keydown', event=>{
-  if(event.key==='Escape'){ closeModal(); }
+  if(event.key==='Escape') closeModal();
 });
 
+/* site pages */
+document.querySelectorAll('.nav-tab').forEach(button=>{
+  button.addEventListener('click', ()=>{
+    document.querySelectorAll('.nav-tab').forEach(b=>b.classList.remove('active'));
+    document.querySelectorAll('.page').forEach(page=>page.classList.remove('active'));
+    button.classList.add('active');
+    document.getElementById(button.dataset.page).classList.add('active');
+    window.scrollTo({top:0,behavior:'smooth'});
+  });
+});
+
+/* price */
 async function loadCoinbasePrice(){
   const response=await fetch('https://api.coinbase.com/v2/prices/BTC-USD/spot',{cache:'no-store'});
   if(!response.ok) throw new Error('Coinbase request failed');
@@ -1290,45 +1743,61 @@ async function loadPrice(){
     }
   }
 }
-
 loadPrice();
 setInterval(loadPrice,20000);
 
-/* Tabs */
-document.querySelectorAll('.tab-btn').forEach(button=>{
-  button.addEventListener('click',()=>{
-    document.querySelectorAll('.tab-btn').forEach(btn=>btn.classList.remove('active'));
-    document.querySelectorAll('.tab-panel').forEach(panel=>panel.classList.remove('active'));
-
-    button.classList.add('active');
-    document.getElementById(button.dataset.tab).classList.add('active');
-    window.scrollTo({top:0,behavior:'smooth'});
-  });
-});
-
-/* Visual floor */
-function renderVisualFloor(){
+/* visual floor */
+function buildVisualFloor(){
   const target=document.getElementById('visualFloor');
+  if(!target) return;
 
-  target.innerHTML=bots.map(bot=>`
-    <div class="floor-bot">
-      <div class="cam-status"><span class="live-led"></span> active desk</div>
-      <h3>#${bot.id} ${bot.name}</h3>
-      <div class="floor-role">${bot.role}</div>
-      <div class="monitor-strip">
-        <div class="monitor"></div>
-        <div class="monitor"></div>
-        <div class="monitor"></div>
+  const phoneBots = new Set([2,5,8,11,19]);
+
+  target.innerHTML = bots.map(bot=>`
+    <div class="worker-desk">
+      <div class="worker-header">
+        <h3>#${bot.id} ${bot.name}</h3>
+        <div class="desk-status"><span class="live-led"></span> Active</div>
       </div>
+      <div class="worker-role">${bot.role}</div>
+
+      <div class="desk-scene">
+        <div class="monitor-a"></div>
+        <div class="monitor-b"></div>
+        <div class="monitor-c"></div>
+        <div class="desk-table"></div>
+
+        <div class="trader ${phoneBots.has(bot.id) ? 'phone' : ''}">
+          <div class="head"></div>
+          <div class="body"></div>
+          <div class="arm-left"></div>
+          <div class="arm-right"></div>
+          <div class="legs"></div>
+        </div>
+      </div>
+
       <div class="desk-footer">
         <span>${bot.tier}</span>
-        <span>Telemetry online</span>
+        <span>Busy desk</span>
       </div>
     </div>
   `).join('');
 }
+buildVisualFloor();
 
-renderVisualFloor();
+/* camera clock */
+function updateCameraClock(){
+  const el=document.getElementById('cameraClock');
+  if(!el) return;
+  const now=new Date();
+  el.textContent=now.toLocaleTimeString([],{
+    hour:'2-digit',
+    minute:'2-digit',
+    second:'2-digit'
+  });
+}
+updateCameraClock();
+setInterval(updateCameraClock,1000);
 </script>
 </body>
 </html>
